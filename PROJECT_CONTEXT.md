@@ -13,7 +13,7 @@ A centralized web platform for students and security/admins to report, match, co
 1. **Authentication & Users** (Roles: Student, Admin, Security)
 2. **Lost Item Management**
 3. **Found Item Management**
-4. **Intelligent Matching** (Rule-based scoring: Category, Location, Date, Color, Brand, Description)
+4. **Rule-based Matching** (Rule-based scoring: Category=40, Location=30, Date/Timeline=30. Match threshold >= 70)
 5. **Real-Time Communication** (WebSocket chat for potential matches)
 6. **Claim & Verification**
 7. **Admin Dashboard**

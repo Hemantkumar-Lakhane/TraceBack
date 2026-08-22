@@ -11,7 +11,7 @@ The TraceBack experience is optimized for:
 * **Clear Match Discovery**: Highlighting potential matches vividly to draw user attention immediately.
 * **Trust and Verification**: Ensuring the claim process feels secure, formal, and authoritative.
 * **Simple Communication**: WhatsApp-style, low-friction chat interface focused strictly on item recovery.
-* **Clear Status Tracking**: Visual pipelines (like e-commerce order tracking) for item lifecycle (e.g., Open → Matched → Verifying → Returned).
+* **Clear Status Tracking**: Visual pipelines (like e-commerce order tracking) for item lifecycle (Report → Match → Chat Verification → Security Review → Ownership Verified → Return Complete).
 
 ---
 
@@ -25,9 +25,8 @@ The TraceBack experience is optimized for:
 
 #### Student Discovering a Match
 1. Receives notification (in-app or visually on Dashboard).
-2. Clicks notification → Opens Match Details screen.
-3. Reviews the found item's details (image, location).
-4. Clicks "Accept Match" → Unlocks the "Message Finder" button.
+2. Clicks notification.
+3. Opens the Match Details screen, reviews the potential match, and starts Chat Verification.
 
 #### Student Chatting and Claiming
 1. In Match Details, clicks "Message Finder".
@@ -84,8 +83,7 @@ The TraceBack experience is optimized for:
 
 **Student App**
 * Student Dashboard
-* Report Lost Form
-* Report Found Form
+* Report Item Form (Reusable for both Lost and Found modes)
 * Browse/Search Reports
 * Report Details (View Single Report)
 * My Reports (List of user's own reports)
@@ -97,16 +95,19 @@ The TraceBack experience is optimized for:
 * Claim Status
 
 **Security App**
-* Security Dashboard
-* Pending Claims List
-* Claim Verification Details
-* Found Item Management (View/Update all found items)
+* Security Dashboard (Focusing on pending verifications)
+* Pending Claims List (Data table of claims to review)
+* Claim Verification Details (Side-by-side student answers vs. physical item)
+* Approve / Reject Action Modal (Mark item as `RETURNED`)
+
+Note: Security must only handle found items, claim verification, and physical return.
 
 **Admin App**
-* Admin Dashboard
-* User Management
-* Moderation Queue
-* System Statistics
+* Admin Dashboard (System statistics and platform health)
+* User Management (View and audit accounts)
+* Moderation Queue (Review and delete inappropriate posts)
+
+Note: Admin must only handle platform-level management and MUST NOT approve/reject ownership claims.
 
 ---
 
@@ -131,12 +132,16 @@ The TraceBack experience is optimized for:
 └────────────┴────────────────────────────────────────────────┘
 ```
 
+#### Landing Page
+* **Visuals**: Clean visual representation of the TraceBack workflow or product-value explanation.
+* **Constraints**: Do NOT present invented production statistics (e.g., "2,847 returned", "94%").
+
 #### Dashboard (Student)
-* **Header**: Welcome message, Quick Stats (Lost: 2, Matches: 1, Claims: 1).
+* **Header**: Welcome message.
 * **Main**: 
   * "Action Needed": Highlighted card if a Match is pending review.
-  * "Recent Reports": A grid of 3-4 recently reported items on campus.
-* **Actions**: Floating Action Button (FAB) or prominent primary buttons for "Report Lost" and "Report Found".
+  * "Recent Reports": A grid of 3-4 recently reported items on campus (use authentic campus landmarks).
+* **Actions**: Prominent primary button for "Report Item".
 
 #### Browse/Search Reports
 * **Sidebar/Top Bar**: Filters (Category Dropdown, Date Range Picker, Status Checkboxes).
@@ -147,6 +152,46 @@ The TraceBack experience is optimized for:
 * **Header**: "Chatting regarding: Black Wallet" + Match Status Badge.
 * **Main**: Scrollable message area. Left/Right aligned message bubbles.
 * **Bottom**: Input field with "Send" button.
+
+#### Security Dashboard
+* **Header**: "Security Operations" + Quick Stats (Pending Claims, Items Awaiting Verification, Recently Returned).
+* **Main**: 
+  * "Action Required": List of claims needing immediate verification.
+  * "Recent Returns": Log of items successfully returned.
+* **Actions**: Button to "Manage Found Items".
+
+#### Pending Claims List (Security)
+* **Top Bar**: Search input, Status filter (Pending, Verifying).
+* **Main Content**: Data table with columns: `Claimant`, `Item`, `Match Score`, `Submitted Date`, `Claim Status`, `Priority/Action`.
+* **Action**: "Review Claim" button on each row.
+
+#### Claim Verification View (Security)
+* **Header**: Claim verification for [Item Name].
+* **Layout**: Split screen design.
+  * **Left Side (Student Claim)**: Student claim info, ownership verification answers, supporting proof.
+  * **Right Side (Found Item)**: Found item details, lost item details.
+  * **Match Indicators**: Category (✓), Location (✓), Timeline (✓) + Final match score.
+* **Bottom**: Security verification checklist.
+* **Actions**: "Approve Claim" (Emerald), "Reject Claim" (Rose).
+
+#### Approve / Reject Modal (Security)
+* **Approve Modal**: Confirmation dialog. "Marking this as Approved will set the Claim to APPROVED, Found Report to RETURNED, and Match Record to CLOSED."
+* **Reject Modal**: Clear warning state. Requires an optional reason text box before rejection.
+
+#### Admin Dashboard
+* **Header**: "Platform Overview"
+* **Stats Panel**: User count, Active reports, Total matches, Claims, Returned items, Moderation alerts.
+* **Main**: Summary feed of recent system activity and alerts.
+
+#### User Management (Admin)
+* **Top Bar**: Search users, Role filter (Student / Security / Admin).
+* **Main Content**: Table with columns: `Name`, `Email`, `Role`, `Account Status`, `Action`.
+* **Action**: "View/Manage Account".
+
+#### Moderation Queue (Admin)
+* **Main Content**: List of reported or inappropriate posts.
+* **Details**: Item/report details, Reported user, Reason for flag.
+* **Actions**: "Remove/Hide Report", "Dismiss".
 
 ---
 

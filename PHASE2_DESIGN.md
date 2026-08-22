@@ -146,6 +146,8 @@ erDiagram
         BIGINT match_id FK
         BIGINT claimant_id FK
         TEXT verification_data
+        DATE pickup_date
+        TIME pickup_time
         ENUM status "PENDING, APPROVED, REJECTED"
         DATETIME created_at
         DATETIME reviewed_at
