@@ -5,6 +5,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import { StudentDashboard, SecurityDashboard, AdminDashboard } from './pages/DashboardShell';
+import ReportLost from './pages/ReportLost';
+import ReportFound from './pages/ReportFound';
 
 function App() {
   return (
@@ -17,10 +19,13 @@ function App() {
           
           <Route element={<ProtectedRoute allowedRoles={['STUDENT']} />}>
             <Route path="/dashboard" element={<StudentDashboard />} />
+            <Route path="/report/lost" element={<ReportLost />} />
+            <Route path="/report/found" element={<ReportFound />} />
           </Route>
           
           <Route element={<ProtectedRoute allowedRoles={['SECURITY']} />}>
             <Route path="/security" element={<SecurityDashboard />} />
+            <Route path="/security/report/found" element={<ReportFound />} />
           </Route>
           
           <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>

@@ -65,6 +65,7 @@ The rule-based algorithm is locked and strictly deterministic (NO AI/ML):
 ## 10. UI → API Traceability
 * **Report Lost/Found** → `POST /api/reports/lost` (or `found`)
 * **Report Details** → `GET /api/reports/lost/{id}` or `GET /api/reports/found/{id}`
+* **Student Dashboard Reports** → `GET /api/reports/my`
 * **Student Dashboard Matches** → `GET /api/matches/my-matches`
 * **Match Details** → `GET /api/matches/{id}`
 * **Chat Screen** → `GET /api/conversations/{id}/messages` + WebSocket connection

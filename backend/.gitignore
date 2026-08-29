@@ -31,3 +31,11 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### IDEs
+.idea/
+*.iml
+.vscode/
+
+# Application uploads
+uploads/

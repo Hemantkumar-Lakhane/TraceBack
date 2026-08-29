@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Added
+- Completed Milestone 2 (Reporting & Image Uploads).
+- Configured Spring Boot multipart file upload limits (`max-file-size=10MB`).
+- Built backend entities (`Item`, `LostReport`, `FoundReport`) matching SQL schema without modifying `DATABASE_SCHEMA.sql`.
+- Added image upload handling restricting to JPG/PNG, stored locally in `backend/uploads/` (with orphaned file cleanup on DB failure).
+- Configured `/uploads/**` static resource routing via `WebMvcConfig`.
+- Added `GET /api/reports/my` to isolate student-specific reports.
+- Created `ReportController` to handle `POST /api/reports/lost` and `POST /api/reports/found`.
+- Created `ReportLost.jsx` and `ReportFound.jsx` frontend components linked via `DashboardShell.jsx`.
+- Verified file size, authorization restrictions, and duplicate file handling via Integration Tests.
+
 
 ### Added
 - Completed Milestone 1 implementation including Spring Boot security layer, global exception handling, and Auth Controller.

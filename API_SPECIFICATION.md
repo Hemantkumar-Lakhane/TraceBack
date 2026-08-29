@@ -31,6 +31,11 @@ All endpoints are prefixed with `/api`. Unless marked as PUBLIC, all endpoints r
 * **Parameters**: `?type=LOST|FOUND&category=...&location=...`
 * **Response (200 OK)**: Pagination array of report objects.
 
+### `GET /api/reports/my` (STUDENT)
+* **Purpose**: Returns reports belonging only to the currently authenticated student.
+* **Parameters**: `?type=LOST|FOUND`
+* **Response (200 OK)**: Pagination array of report objects for the current user.
+
 ### `GET /api/reports/lost/{id}` (ALL ROLES)
 * **Response (200 OK)**: Full lost report details.
 
