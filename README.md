@@ -42,20 +42,20 @@ Three-tier enterprise application architecture:
 2. **Application Layer**: Spring Boot REST APIs & WebSocket Services
 3. **Data Layer**: MySQL Database
 
-## Getting Started
+## 🚀 Getting Started & Testing
 
-*(Setup instructions will be added in later phases once the codebase is initialized)*
+To run the application locally, test APIs, or view the documentation, please refer to the following guides:
 
-## Project Phases
+- **[Running Locally](RUNNING_LOCALLY.md)**: Full setup instructions for the database, backend, and frontend.
+- **[API Testing Guide](API_TESTING.md)**: How to use Postman, Insomnia, or Swagger to test the REST endpoints.
+- **Swagger UI**: Accessible locally at `http://localhost:8080/swagger-ui/index.html` (once the backend is running).
+- **Postman Collection**: Import `postman/TraceBack.postman_collection.json` into Postman to test APIs.
 
-- **Phase 1**: Planning & Requirements (Current)
-- **Phase 2**: System Design
-- **Phase 3**: UI/UX Design
-- **Phase 4**: Database + API Design
-- **Phase 5**: Frontend Development
-- **Phase 6**: Backend Development
-- **Phase 7**: Real-Time Communication
-- **Phase 8**: Integration
-- **Phase 9**: Testing
-- **Phase 10**: Deployment
-- **Phase 11**: Documentation + Demo
+## 📊 Current Development Status
+
+- **Phase 1-4**: COMPLETED (Planning, Design, UI/UX, Database & API Contracts)
+- **Milestone 1**: COMPLETED (Authentication, Infrastructure, MySQL integration)
+- **Milestone 2**: COMPLETED (Reporting & File Handling - APIs built, UI integrated)
+- **Milestone 3**: PENDING (Matching Engine & Action Dashboard)
+
+*Note: For a detailed breakdown of manual API verification progress for Milestone 2, please check the `API_TESTING.md` and `CHANGELOG.md` files.*

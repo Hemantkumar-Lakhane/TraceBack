@@ -18,6 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -40,6 +42,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new user")
+    @SecurityRequirements // Overrides global security, making it public in Swagger
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             ErrorResponse error = new ErrorResponse();
@@ -65,6 +69,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Authenticate a user and get JWT")
+    @SecurityRequirements // Overrides global security, making it public in Swagger
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

@@ -39,11 +39,16 @@
 - [x] REST API Endpoints Definition
 
 **Current Phase:** Implementation
-**Current Milestone:** Milestone 3 - Matching Engine & Action Dashboard
+**Current Milestone:** End of Lab Session (Milestone 2 completed, Milestone 3 pending)
 
 ### Implementation Milestones (Approved)
 *   **Milestone 1 — Authentication & Infrastructure:** COMPLETED
 *   **Milestone 2 — Reporting & File Handling:** COMPLETED
+    *   Automated tests: COMPLETED
+    *   Local application startup: COMPLETED
+    *   Live MySQL registration/login verification: COMPLETED
+    *   Swagger setup: COMPLETED
+    *   Manual report/image API testing: IN PROGRESS / PARTIALLY VERIFIED
 *   **Milestone 3 — Matching Engine & Action Dashboard:** PENDING
 *   **Milestone 4 — Chat & Communication:** PENDING
 *   **Milestone 5 — Claims & Verification:** PENDING

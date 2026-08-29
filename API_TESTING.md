@@ -81,3 +81,27 @@ All REST endpoints mentioned above can be easily imported or tested manually in 
 2. Use the base URL: `http://localhost:8080`.
 3. After logging in, go to the **Auth** tab in Insomnia for protected requests, select **Bearer Token**, and paste your JWT token.
 4. For report creation, set the Body type to **Multipart Form**, and ensure the file field is named `image` and configured as a File.
+
+## 4. Manual Testing Progress
+
+### Passed Tests (Verified via Swagger UI)
+- [x] `POST /api/auth/register`: Successful 200 response; Student account created in live MySQL.
+- [x] `POST /api/auth/login`: Successful 200 response; JWT successfully returned.
+- [x] Swagger Bearer Authorization: JWT successfully accepted by Swagger.
+- [x] `GET /api/reports/my`: Successful 200 response (Returned an empty list before any reports existed).
+- [x] MySQL connectivity: Spring Boot successfully connected to live MySQL; Hikari connection established; Registration caused a real INSERT into MySQL.
+- [x] Swagger Documentation: Multipart upload UI correctly visible with a real "Choose File" control for report images.
+
+### Pending Tests (Not yet verified)
+- [ ] Successful Lost Report upload with a real JPG/PNG through Swagger (`POST /api/reports/lost`)
+- [ ] Successful Found Report upload with a real JPG/PNG through Swagger (`POST /api/reports/found`)
+- [ ] Verification of physical files inside `backend/uploads/`
+- [ ] Verification of `ITEM.image_url` in MySQL
+- [ ] `GET /api/reports` after creating reports
+- [ ] `GET /api/reports/lost/{id}`
+- [ ] `GET /api/reports/found/{id}`
+- [ ] `GET /api/reports/my` after creating reports
+- [ ] Invalid PDF upload rejection
+- [ ] Oversized image rejection
+- [ ] Unauthorized endpoint testing
+- [ ] Frontend end-to-end report submission

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Lab Session Update (August 29, 2026):
+  - Live MySQL environment verified.
+  - Registration manually verified.
+  - Login manually verified.
+  - JWT authorization manually verified.
+  - `GET /api/reports/my` manually verified.
+  - Swagger multipart file chooser verified.
+  - Fixed Vite frontend routing to properly render the TraceBack React app instead of the default Vite starter template.
+  - Fixed a Swagger OpenAPI configuration issue to correctly document multipart endpoints and query filters.
+  - Remaining report/image API tests intentionally left pending for the next lab session.
+  - No Milestone 3 implementation started.
 - Added `RUNNING_LOCALLY.md`, `API_TESTING.md`, Postman collection, and configured Swagger UI for API documentation and manual local testing.
 - Completed Milestone 2 (Reporting & Image Uploads).
 - Configured Spring Boot multipart file upload limits (`max-file-size=10MB`).
