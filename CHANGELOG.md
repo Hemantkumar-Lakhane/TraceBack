@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Added `RUNNING_LOCALLY.md`, `API_TESTING.md`, Postman collection, and configured Swagger UI for API documentation and manual local testing.
 - Completed Milestone 2 (Reporting & Image Uploads).
 - Configured Spring Boot multipart file upload limits (`max-file-size=10MB`).
 - Built backend entities (`Item`, `LostReport`, `FoundReport`) matching SQL schema without modifying `DATABASE_SCHEMA.sql`.

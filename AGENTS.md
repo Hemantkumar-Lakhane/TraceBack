@@ -19,6 +19,13 @@ A Full-Stack Lost & Found Management System.
 - Develop strictly phase-by-phase according to the roadmap.
 - Adhere to the Product Requirements Document (PRD) and Software Requirements Specification (SRS) defined in Phase 1.
 - Ensure syllabus mapping requirements are met (Client-server architecture, TCP, HTTP/HTTPS, REST, React, Spring Boot, MySQL).
+- Before debugging API behavior, agents should first verify:
+  1. MySQL is running
+  2. traceback database exists
+  3. Spring Boot is running
+  4. environment variables are configured
+  5. frontend/backend URLs are correct
+- The API contracts in `API_SPECIFICATION.md` remain the source of truth.
 
 ## Constraints & Fixed Decisions (LOCKED)
 - **Architecture**: STRICT three-tier (React -> Spring Boot + WebSocket/STOMP -> MySQL). DO NOT introduce Node.js or any microservices.

@@ -10,7 +10,19 @@ TraceBack is a centralized web platform for educational campuses that allows use
 
 - **User Roles**: Student, Security, Admin.
 - **Lost & Found Reporting**: Detailed forms for lost and found items.
-- **Intelligent Matching**: Rule-based weighted matching algorithm based on category, location, date, color, brand, and description.
+- **Intelligent Matching**: This system matches missing university items using an exact deterministic algorithm based on category, location, and dates.
+
+## 🚀 Getting Started
+
+To run the application locally, test APIs, or view the documentation, please refer to the following guides:
+
+- **[Running Locally](RUNNING_LOCALLY.md)**: Full setup instructions for the database, backend, and frontend.
+- **[API Testing Guide](API_TESTING.md)**: How to use Postman, Insomnia, or Swagger to test the REST endpoints.
+- **Swagger UI**: Accessible locally at `http://localhost:8080/swagger-ui/index.html` (once the backend is running).
+- **Postman Collection**: Import `postman/TraceBack.postman_collection.json` into Postman to test APIs.
+
+## 📦 Project Structure
+
 - **Real-Time Communication**: WebSocket-based chat between users for potential matches.
 - **Claim & Verification**: Secure process for claiming found items with verification questions.
 - **Admin Dashboard**: Comprehensive management of users, items, claims, and statistics.
