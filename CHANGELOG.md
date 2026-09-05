@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Lab Session Update (September 5, 2026):
+  - Fixed a CORS issue preventing React frontend from accessing the Spring Boot backend.
+  - Fixed an issue in `GET /api/reports/my` where omitting the `type` parameter failed to return both lost and found reports.
+  - Completed and officially passed manual API verification for all Milestone 2 endpoints.
+  - Verified physical image uploads (`backend/uploads/`) and database persistence (`ITEM.image_url`).
+  - Milestone 2 is officially COMPLETED.
+  - Milestone 3 is PENDING.
 - Lab Session Update (August 29, 2026):
   - Live MySQL environment verified.
   - Registration manually verified.

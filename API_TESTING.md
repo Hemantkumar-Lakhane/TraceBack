@@ -88,20 +88,21 @@ All REST endpoints mentioned above can be easily imported or tested manually in 
 - [x] `POST /api/auth/register`: Successful 200 response; Student account created in live MySQL.
 - [x] `POST /api/auth/login`: Successful 200 response; JWT successfully returned.
 - [x] Swagger Bearer Authorization: JWT successfully accepted by Swagger.
-- [x] `GET /api/reports/my`: Successful 200 response (Returned an empty list before any reports existed).
+- [x] `GET /api/reports/my`: Successful 200 response (Returned an empty list before any reports existed, now correctly returns unified list of both).
 - [x] MySQL connectivity: Spring Boot successfully connected to live MySQL; Hikari connection established; Registration caused a real INSERT into MySQL.
 - [x] Swagger Documentation: Multipart upload UI correctly visible with a real "Choose File" control for report images.
+- [x] Successful Lost Report upload with a real JPG/PNG through Swagger (`POST /api/reports/lost`)
+- [x] Successful Found Report upload with a real JPG/PNG through Swagger (`POST /api/reports/found`)
+- [x] Verification of physical files inside `backend/uploads/`
+- [x] Verification of `ITEM.image_url` in MySQL
+- [x] `GET /api/reports` after creating reports (`GET /api/reports?type=LOST` and `GET /api/reports?type=FOUND`)
+- [x] `GET /api/reports/lost/{id}`
+- [x] `GET /api/reports/found/{id}`
+- [x] `GET /api/reports/my` with LOST filter, FOUND filter, and no filter after creating reports
+- [x] Invalid PDF upload rejection (`400 Bad Request`)
+- [x] Oversized image rejection (`413 Payload Too Large`)
+- [x] Unauthorized endpoint testing (`401 Unauthorized`)
+- [x] Frontend end-to-end report submission (Student Dashboard correctly displays reports)
 
 ### Pending Tests (Not yet verified)
-- [ ] Successful Lost Report upload with a real JPG/PNG through Swagger (`POST /api/reports/lost`)
-- [ ] Successful Found Report upload with a real JPG/PNG through Swagger (`POST /api/reports/found`)
-- [ ] Verification of physical files inside `backend/uploads/`
-- [ ] Verification of `ITEM.image_url` in MySQL
-- [ ] `GET /api/reports` after creating reports
-- [ ] `GET /api/reports/lost/{id}`
-- [ ] `GET /api/reports/found/{id}`
-- [ ] `GET /api/reports/my` after creating reports
-- [ ] Invalid PDF upload rejection
-- [ ] Oversized image rejection
-- [ ] Unauthorized endpoint testing
-- [ ] Frontend end-to-end report submission
+*(All Milestone 2 tests have been successfully verified manually)*

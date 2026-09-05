@@ -62,8 +62,14 @@ public class ReportController {
     public ResponseEntity<?> getMyReports(@Parameter(description = "Report type: LOST or FOUND") @RequestParam(required = false) String type, Principal principal) {
         if ("FOUND".equalsIgnoreCase(type)) {
             return ResponseEntity.ok(reportService.getMyFoundReports(principal.getName()));
+        } else if ("LOST".equalsIgnoreCase(type)) {
+            return ResponseEntity.ok(reportService.getMyLostReports(principal.getName()));
         }
-        return ResponseEntity.ok(reportService.getMyLostReports(principal.getName()));
+        
+        java.util.List<Object> allReports = new java.util.ArrayList<>();
+        allReports.addAll(reportService.getMyLostReports(principal.getName()));
+        allReports.addAll(reportService.getMyFoundReports(principal.getName()));
+        return ResponseEntity.ok(allReports);
     }
 
     @GetMapping("/lost/{id}")

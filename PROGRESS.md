@@ -48,7 +48,7 @@
     *   Local application startup: COMPLETED
     *   Live MySQL registration/login verification: COMPLETED
     *   Swagger setup: COMPLETED
-    *   Manual report/image API testing: IN PROGRESS / PARTIALLY VERIFIED
+    *   Manual report/image API testing: COMPLETED
 *   **Milestone 3 — Matching Engine & Action Dashboard:** PENDING
 *   **Milestone 4 — Chat & Communication:** PENDING
 *   **Milestone 5 — Claims & Verification:** PENDING

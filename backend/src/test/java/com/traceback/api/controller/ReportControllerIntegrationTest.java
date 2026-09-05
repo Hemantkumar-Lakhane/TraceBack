@@ -175,12 +175,28 @@ public class ReportControllerIntegrationTest {
                 .header("Authorization", "Bearer " + studentToken))
                 .andExpect(status().isCreated());
 
+        // Create found report
+        mockMvc.perform(multipart("/api/reports/found")
+                .param("category", "Books")
+                .param("name", "Math Book")
+                .param("location", "Room 101")
+                .param("dateFound", LocalDate.now().toString())
+                .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isCreated());
+
+        // Test specific type
         mockMvc.perform(get("/api/reports/my?type=LOST")
                 .header("Authorization", "Bearer " + studentToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].item.name", is("Phone")));
                 
+        // Test no type (returns both)
+        mockMvc.perform(get("/api/reports/my")
+                .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+
         mockMvc.perform(get("/api/reports/my?type=LOST")
                 .header("Authorization", "Bearer " + securityToken))
                 .andExpect(status().isForbidden());
