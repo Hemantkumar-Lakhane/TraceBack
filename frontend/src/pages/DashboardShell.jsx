@@ -32,6 +32,7 @@ export const StudentDashboard = () => {
             <div style={{ margin: '20px 0', display: 'flex', gap: '10px' }}>
                 <Link to="/report/lost"><button>Report Lost Item</button></Link>
                 <Link to="/report/found"><button>Report Found Item</button></Link>
+                <Link to="/matches"><button>View My Matches</button></Link>
             </div>
 
             <div>

@@ -18,18 +18,21 @@ public class ReportService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
+    private final MatchingService matchingService;
 
     @Autowired
     public ReportService(LostReportRepository lostReportRepository,
                          FoundReportRepository foundReportRepository,
                          ItemRepository itemRepository,
                          UserRepository userRepository,
-                         FileStorageService fileStorageService) {
+                         FileStorageService fileStorageService,
+                         MatchingService matchingService) {
         this.lostReportRepository = lostReportRepository;
         this.foundReportRepository = foundReportRepository;
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
         this.fileStorageService = fileStorageService;
+        this.matchingService = matchingService;
     }
 
     @Transactional
@@ -57,7 +60,9 @@ public class ReportService {
             report.setLocation(request.getLocation());
             report.setDateLost(request.getDateLost());
             
-            return lostReportRepository.save(report);
+            LostReport savedReport = lostReportRepository.save(report);
+            matchingService.findMatchesForLostReport(savedReport);
+            return savedReport;
         } catch (Exception e) {
             if (imageUrl != null) {
                 fileStorageService.deleteFile(imageUrl);
@@ -91,7 +96,9 @@ public class ReportService {
             report.setLocation(request.getLocation());
             report.setDateFound(request.getDateFound());
 
-            return foundReportRepository.save(report);
+            FoundReport savedReport = foundReportRepository.save(report);
+            matchingService.findMatchesForFoundReport(savedReport);
+            return savedReport;
         } catch (Exception e) {
             if (imageUrl != null) {
                 fileStorageService.deleteFile(imageUrl);

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface LostReportRepository extends JpaRepository<LostReport, Long> {
     List<LostReport> findByUserId(Long userId);
+    List<LostReport> findByStatus(com.traceback.api.model.LostReportStatus status);
 }

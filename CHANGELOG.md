@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Lab Session Update (September 5, 2026):
+  - Completed Milestone 3 (Matching Engine & Action Dashboard).
+  - Implemented `MatchingService` with deterministic 40/30/30 scoring matrix for Category, Location, and Date.
+  - Implemented automatic generation of `MatchRecord` and `Conversation` when a Lost/Found Report is created.
+  - Handled strict database constraints (unique `lost_id`, `found_id`) to prevent duplicate match records safely.
+  - Created backend `MatchController` to expose `GET /api/matches/my-matches` and `GET /api/matches/{id}`.
+  - Verified backend logic using unit tests and integration tests with live database schema.
+  - Implemented React frontend components `Matches.jsx` and `MatchDetails.jsx` to list and view matches.
+  - Completed manual E2E integration verification via API and live DB testing.
+- Lab Session Update (September 5, 2026 - Earlier):
   - Fixed a CORS issue preventing React frontend from accessing the Spring Boot backend.
   - Fixed an issue in `GET /api/reports/my` where omitting the `type` parameter failed to return both lost and found reports.
   - Completed and officially passed manual API verification for all Milestone 2 endpoints.

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface FoundReportRepository extends JpaRepository<FoundReport, Long> {
     List<FoundReport> findByUserId(Long userId);
+    List<FoundReport> findByStatus(com.traceback.api.model.FoundReportStatus status);
 }

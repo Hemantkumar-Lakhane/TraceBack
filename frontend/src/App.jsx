@@ -7,6 +7,8 @@ import Register from './pages/Register';
 import { StudentDashboard, SecurityDashboard, AdminDashboard } from './pages/DashboardShell';
 import ReportLost from './pages/ReportLost';
 import ReportFound from './pages/ReportFound';
+import Matches from './pages/Matches';
+import MatchDetails from './pages/MatchDetails';
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
             <Route path="/dashboard" element={<StudentDashboard />} />
             <Route path="/report/lost" element={<ReportLost />} />
             <Route path="/report/found" element={<ReportFound />} />
+            <Route path="/matches" element={<Matches />} />
+            <Route path="/matches/:id" element={<MatchDetails />} />
           </Route>
           
           <Route element={<ProtectedRoute allowedRoles={['SECURITY']} />}>
