@@ -1,19 +1,21 @@
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-const ProtectedRoute = ({ allowedRoles }) => {
-    const { token, user } = useAuth();
+export const ProtectedRoute = ({ allowedRoles }) => {
+  const { token, user } = useAuth();
 
-    if (!token) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!token || !user) {
+    return <Navigate to="/login" replace />;
+  }
 
-    if (allowedRoles && user && !allowedRoles.includes(user.role)) {
-        // Basic placeholder unauthorized logic
-        return <div>403 Forbidden - Insufficient Role</div>;
-    }
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user.role === 'ADMIN') return <Navigate to="/admin" replace />;
+    if (user.role === 'SECURITY') return <Navigate to="/security" replace />;
+    return <Navigate to="/dashboard" replace />;
+  }
 
-    return <Outlet />;
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

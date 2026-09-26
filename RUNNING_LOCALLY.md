@@ -11,6 +11,25 @@ This document describes how to set up, run, and verify the TraceBack application
 - **MySQL**: 8.0+
 - **Git**
 
+## Quick Launch (Run All at Once)
+
+You can launch both the **Backend** and **Frontend** simultaneously with a single click or command:
+
+- **Windows Batch (Double-click or CMD)**:
+  Double-click `run_all.bat` or run:
+  ```cmd
+  .\run_all.bat
+  ```
+
+- **PowerShell**:
+  ```powershell
+  .\run_all.ps1
+  ```
+
+This will launch Spring Boot (`http://localhost:8080`) and React/Vite (`http://localhost:5173`) in separate terminal windows automatically.
+
+---
+
 ## 1. Database Setup
 
 1. Start your local MySQL 8 instance.

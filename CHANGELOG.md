@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 ### Added
+- Lab Session Update (September 26, 2026):
+  - Built all End-to-End UI Screens across all roles according to Figma specifications (Figma Handoff & Phase 3 UI/UX).
+  - Modern Design System: Created custom color tokens, glassmorphism surfaces, typography (Plus Jakarta Sans & Outfit), badge pills, and responsive layout utilities in `index.css`.
+  - Auth & Public: Built modern `Landing.jsx` with Golden Path Pipeline tracker, `Login.jsx` with 1-click role switcher tabs for demo testing, and `Register.jsx`.
+  - Student Journey: Built `StudentDashboard.jsx`, `ReportLost.jsx`, `ReportFound.jsx`, `BrowseReports.jsx` (with search and category/location filters), `ReportDetails.jsx` (with item QR tag modal), `Matches.jsx`, `MatchDetails.jsx` (with 40/30/30 side-by-side comparison matrix), `Chat.jsx` (WhatsApp-style real-time messaging UI with quick replies), `ClaimForm.jsx` (ownership verification), `ClaimDetails.jsx` (4-step status tracker with digital pickup pass), and `MyClaims.jsx`.
+  - Security Journey: Built `SecurityDashboard.jsx`, `SecurityPendingClaims.jsx` (claims data table), `SecurityClaimVerification.jsx` (split-screen audit workspace with physical inspection checklist and atomic Approve/Reject modals), and `SecurityInventory.jsx`.
+  - Admin Journey: Built `AdminDashboard.jsx` (system health KPIs and hotspot bars), `AdminUserManagement.jsx` (user directory with role assignment and account suspension), `AdminModeration.jsx` (flagged reports queue), and `AdminAnalytics.jsx`.
+  - Demo Role Switcher: Added `DemoRoleBanner.jsx` allowing instant 1-click role switching between Alex (Student), Officer Marcus (Security), and Dean Sarah (Admin).
+  - Clean API Fallbacks: Implemented resilient API client services (`chatService.js`, `claimService.js`, `notificationService.js`, `adminService.js`) with realistic campus mock fallbacks for pending milestones (Milestones 4-6).
 - Lab Session Update (September 5, 2026):
   - Completed Milestone 3 (Matching Engine & Action Dashboard).
   - Implemented `MatchingService` with deterministic 40/30/30 scoring matrix for Category, Location, and Date.
