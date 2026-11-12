@@ -112,11 +112,11 @@ public class ReportControllerIntegrationTest {
 
     @AfterEach
     void tearDown() {
-        // Clean up uploads directory
+        // Clean up uploads directory, preserving demo assets
         File dir = new File("uploads");
         if (dir.exists()) {
             for (File file : dir.listFiles()) {
-                if (!file.isDirectory()) file.delete();
+                if (!file.isDirectory() && !file.getName().startsWith("demo-")) file.delete();
             }
         }
     }

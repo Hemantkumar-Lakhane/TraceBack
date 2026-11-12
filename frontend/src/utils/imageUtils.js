@@ -1,4 +1,12 @@
-const BACKEND_BASE = 'http://localhost:8080';
+export const LOCAL_CATEGORY_IMAGES = {
+  ELECTRONICS: '/uploads/demo-macbook.jpg',
+  WALLETS_CARDS: '/uploads/demo-wallet.jpg',
+  KEYS: '/uploads/demo-keys.jpg',
+  BAGS_BACKPACKS: '/uploads/demo-macbook.jpg',
+  CLOTHING_ACCESSORIES: '/uploads/demo-wallet.jpg',
+  BOOKS_STATIONERY: '/uploads/demo-bottle.jpg',
+  OTHER: '/uploads/demo-bottle.jpg',
+};
 
 export const CATEGORY_PLACEHOLDERS = {
   ELECTRONICS: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&auto=format&fit=crop&q=80',
@@ -11,29 +19,35 @@ export const CATEGORY_PLACEHOLDERS = {
 };
 
 /**
- * Resolves an item image URL supporting both `item.imageUrl` and `item.image`,
- * relative `/uploads/` paths, absolute CDN URLs, or category fallback.
+ * Resolves an item image URL supporting relative `/uploads/` paths,
+ * absolute CDN URLs, and fallback to local asset or category image.
  */
-export const getItemImageUrl = (item, fallbackToCategory = false) => {
-  if (!item) return fallbackToCategory ? CATEGORY_PLACEHOLDERS.OTHER : null;
+export const getItemImageUrl = (item, fallbackToCategory = true) => {
+  if (!item) {
+    return fallbackToCategory ? (LOCAL_CATEGORY_IMAGES.OTHER || '/uploads/demo-bottle.jpg') : null;
+  }
+
   const rawUrl = item.imageUrl || item.image;
   if (rawUrl && typeof rawUrl === 'string' && rawUrl.trim() !== '') {
-    if (rawUrl.startsWith('http://') || rawUrl.startsWith('https://') || rawUrl.startsWith('data:')) {
-      return rawUrl;
+    const trimmed = rawUrl.trim();
+    if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
+      return trimmed;
     }
-    if (rawUrl.startsWith('/uploads/')) {
-      return `${BACKEND_BASE}${rawUrl}`;
+    if (trimmed.startsWith('/uploads/')) {
+      return trimmed;
     }
-    if (rawUrl.startsWith('uploads/')) {
-      return `${BACKEND_BASE}/${rawUrl}`;
+    if (trimmed.startsWith('uploads/')) {
+      return `/${trimmed}`;
     }
-    return rawUrl;
+    return trimmed;
   }
+
   if (fallbackToCategory) {
-    return (item.category && CATEGORY_PLACEHOLDERS[item.category]) ? CATEGORY_PLACEHOLDERS[item.category] : CATEGORY_PLACEHOLDERS.OTHER;
+    const cat = item.category?.toUpperCase() || 'OTHER';
+    return LOCAL_CATEGORY_IMAGES[cat] || CATEGORY_PLACEHOLDERS[cat] || '/uploads/demo-bottle.jpg';
   }
+
   return null;
 };
 
 export default getItemImageUrl;
-

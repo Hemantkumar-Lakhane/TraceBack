@@ -278,20 +278,26 @@ export const StudentDashboard = () => {
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                       <div style={{
-                        width: '36px',
-                        height: '36px',
-                        borderRadius: '4px',
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '6px',
                         overflow: 'hidden',
                         backgroundColor: 'var(--slate-100)',
-                        flexShrink: 0
+                        border: '1px solid var(--border-color)',
+                        flexShrink: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}>
-                        {getItemImageUrl(report.item, true) ? (
-                          <img src={getItemImageUrl(report.item, true)} alt={report.item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        ) : (
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--slate-400)' }}>
-                            <AlertCircle size={16} />
-                          </div>
-                        )}
+                        <img
+                          src={getItemImageUrl(report.item, true)}
+                          alt=""
+                          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '2px' }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/uploads/demo-macbook.jpg';
+                          }}
+                        />
                       </div>
                       <div style={{ minWidth: 0 }}>
                         <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
@@ -336,9 +342,38 @@ export const StudentDashboard = () => {
                       gap: '12px'
                     }}
                   >
-                    <div>
-                      <h4 style={{ fontSize: '0.875rem', fontWeight: 600 }}>{report.item?.name}</h4>
-                      <p style={{ fontSize: '0.6875rem', color: 'var(--slate-500)' }}>{report.location}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        backgroundColor: 'var(--slate-100)',
+                        border: '1px solid var(--border-color)',
+                        flexShrink: 0,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}>
+                        <img
+                          src={getItemImageUrl(report.item, true)}
+                          alt=""
+                          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '2px' }}
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/uploads/demo-macbook.jpg';
+                          }}
+                        />
+                      </div>
+                      <div style={{ minWidth: 0 }}>
+                        <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                          {report.item?.name || 'Unnamed Item'}
+                        </h4>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.6875rem', color: 'var(--slate-500)' }}>
+                          <MapPin size={11} />
+                          <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{report.location}</span>
+                        </div>
+                      </div>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <StatusBadge status={report.status} />
@@ -377,21 +412,46 @@ export const StudentDashboard = () => {
                   alignItems: 'center'
                 }}
               >
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                    <span style={{
-                      fontSize: '0.6875rem',
-                      fontWeight: 600,
-                      color: item.type === 'LOST' ? 'var(--rose)' : 'var(--emerald)'
-                    }}>
-                      [{item.type}]
-                    </span>
-                    <span style={{ fontSize: '0.8125rem', fontWeight: 500, color: 'var(--slate-900)' }}>
-                      {item.item?.name}
-                    </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '6px',
+                    overflow: 'hidden',
+                    backgroundColor: 'var(--slate-100)',
+                    border: '1px solid var(--border-color)',
+                    flexShrink: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <img
+                      src={getItemImageUrl(item.item, true)}
+                      alt=""
+                      style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '2px' }}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = '/uploads/demo-macbook.jpg';
+                      }}
+                    />
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.6875rem', color: 'var(--slate-500)' }}>
-                    <MapPin size={11} /> {item.location}
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                      <span style={{
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        color: item.type === 'LOST' ? 'var(--rose)' : 'var(--emerald)'
+                      }}>
+                        [{item.type}]
+                      </span>
+                      <span style={{ fontSize: '0.8125rem', fontWeight: 500, color: 'var(--slate-900)', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                        {item.item?.name}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.6875rem', color: 'var(--slate-500)' }}>
+                      <MapPin size={11} />
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{item.location}</span>
+                    </div>
                   </div>
                 </div>
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Calendar, ArrowRight, Laptop, CreditCard, Key, Briefcase, Shirt, BookOpen, HelpCircle, Eye } from 'lucide-react';
 import { StatusBadge, TypeBadge } from './StatusBadge';
-import { getItemImageUrl, CATEGORY_PLACEHOLDERS } from '../utils/imageUtils';
+import { getItemImageUrl, LOCAL_CATEGORY_IMAGES, CATEGORY_PLACEHOLDERS } from '../utils/imageUtils';
 
 const getCategoryIcon = (category) => {
   switch (category) {
@@ -72,12 +72,10 @@ export const ItemCard = ({ report }) => {
               filter: 'drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08))'
             }}
             onError={(e) => {
-              const fallback = CATEGORY_PLACEHOLDERS[item.category] || CATEGORY_PLACEHOLDERS.OTHER;
-              if (e.target.src !== fallback) {
-                e.target.src = fallback;
-              } else {
-                e.target.onerror = null;
-                e.target.style.display = 'none';
+              const cat = item.category?.toUpperCase() || 'OTHER';
+              const localFallback = LOCAL_CATEGORY_IMAGES[cat] || '/uploads/demo-macbook.jpg';
+              if (!e.target.src.includes(localFallback)) {
+                e.target.src = localFallback;
               }
             }}
           />

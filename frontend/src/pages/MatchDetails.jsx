@@ -18,7 +18,7 @@ import MatchScoreBadge from '../components/MatchScoreBadge';
 import StatusBadge from '../components/StatusBadge';
 import { useToast } from '../context/ToastContext';
 import { getMatchDetails } from '../api/matchService';
-import { getItemImageUrl } from '../utils/imageUtils';
+import { getItemImageUrl, LOCAL_CATEGORY_IMAGES } from '../utils/imageUtils';
 
 export const MatchDetails = () => {
   const { id } = useParams();
@@ -148,7 +148,18 @@ export const MatchDetails = () => {
 
           <div style={{ height: '150px', backgroundColor: 'var(--slate-100)', borderRadius: '4px', overflow: 'hidden', marginBottom: '0.75rem' }}>
             {getItemImageUrl(lostItem, true) ? (
-              <img src={getItemImageUrl(lostItem, true)} alt={lostItem.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img
+                src={getItemImageUrl(lostItem, true)}
+                alt={lostItem.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }}
+                onError={(e) => {
+                  const cat = lostItem.category?.toUpperCase() || 'OTHER';
+                  const fallback = LOCAL_CATEGORY_IMAGES[cat] || '/uploads/demo-macbook.jpg';
+                  if (!e.target.src.includes(fallback)) {
+                    e.target.src = fallback;
+                  }
+                }}
+              />
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>No photo</div>
             )}
@@ -193,7 +204,18 @@ export const MatchDetails = () => {
 
           <div style={{ height: '150px', backgroundColor: 'var(--slate-100)', borderRadius: '4px', overflow: 'hidden', marginBottom: '0.75rem' }}>
             {getItemImageUrl(foundItem, true) ? (
-              <img src={getItemImageUrl(foundItem, true)} alt={foundItem.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img
+                src={getItemImageUrl(foundItem, true)}
+                alt={foundItem.name}
+                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }}
+                onError={(e) => {
+                  const cat = foundItem.category?.toUpperCase() || 'OTHER';
+                  const fallback = LOCAL_CATEGORY_IMAGES[cat] || '/uploads/demo-macbook.jpg';
+                  if (!e.target.src.includes(fallback)) {
+                    e.target.src = fallback;
+                  }
+                }}
+              />
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>No photo</div>
             )}
