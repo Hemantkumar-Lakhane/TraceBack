@@ -143,23 +143,27 @@ export const Sidebar = ({ isOpen, onClose }) => {
                   transition: 'all 0.15s ease'
                 })}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: isActive ? '#2563eb' : 'var(--slate-400)', display: 'flex', alignItems: 'center' }}>
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
-                </div>
-                {item.badge && (
-                  <span style={{
-                    fontSize: '0.6875rem',
-                    fontWeight: 600,
-                    padding: '1px 6px',
-                    borderRadius: '4px',
-                    backgroundColor: 'var(--slate-200)',
-                    color: 'var(--slate-700)'
-                  }}>
-                    {item.badge}
-                  </span>
+                {({ isActive }) => (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ color: isActive ? '#2563eb' : 'var(--slate-400)', display: 'flex', alignItems: 'center' }}>
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge && (
+                      <span style={{
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        padding: '1px 6px',
+                        borderRadius: '4px',
+                        backgroundColor: 'var(--slate-200)',
+                        color: 'var(--slate-700)'
+                      }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
                 )}
               </NavLink>
             ))}
