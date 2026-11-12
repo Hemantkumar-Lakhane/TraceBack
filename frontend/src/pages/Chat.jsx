@@ -162,12 +162,12 @@ export const Chat = () => {
       }}>
         {/* Left Pane: Conversation Threads */}
         <div style={{
-          borderRight: '1px solid var(--slate-200)',
-          backgroundColor: '#ffffff',
+          borderRight: '1px solid var(--border-color)',
+          backgroundColor: 'var(--card-bg)',
           display: 'flex',
           flexDirection: 'column'
         }}>
-          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--slate-100)', backgroundColor: 'var(--slate-50)' }}>
+          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--slate-50)' }}>
             <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--slate-700)' }}>
               Active Conversations ({conversations.length})
             </span>
@@ -217,13 +217,13 @@ export const Chat = () => {
         </div>
 
         {/* Right Pane: Active Chat Room */}
-        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'var(--slate-50)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-color)' }}>
           {/* Room Header */}
           {activeConv && (
             <div style={{
               padding: '12px 20px',
-              backgroundColor: '#ffffff',
-              borderBottom: '1px solid var(--slate-200)',
+              backgroundColor: 'var(--card-bg)',
+              borderBottom: '1px solid var(--border-color)',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center'
@@ -303,12 +303,12 @@ export const Chat = () => {
                     style={{
                       padding: '10px 14px',
                       borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                      backgroundColor: isMe ? 'var(--primary)' : '#ffffff',
-                      color: isMe ? '#ffffff' : 'var(--slate-800)',
+                      backgroundColor: isMe ? 'var(--primary)' : 'var(--card-bg)',
+                      color: isMe ? '#ffffff' : 'var(--text-main)',
                       boxShadow: 'var(--shadow-sm)',
                       fontSize: '0.875rem',
                       lineHeight: 1.5,
-                      border: isMe ? 'none' : '1px solid var(--slate-200)'
+                      border: isMe ? 'none' : '1px solid var(--border-color)'
                     }}
                   >
                     {displayText}
@@ -323,7 +323,7 @@ export const Chat = () => {
           </div>
 
           {/* Quick Reply Suggestions */}
-          <div style={{ padding: '6px 16px', backgroundColor: '#ffffff', borderTop: '1px solid var(--slate-100)', display: 'flex', gap: '8px', overflowX: 'auto' }}>
+          <div style={{ padding: '6px 16px', backgroundColor: 'var(--card-bg)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '8px', overflowX: 'auto' }}>
             <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', alignSelf: 'center', whiteSpace: 'nowrap' }}>Quick replies:</span>
             {[
               "Where is it stored right now?",
@@ -336,7 +336,7 @@ export const Chat = () => {
                 onClick={() => handleQuickPrompt(prompt)}
                 style={{
                   background: 'var(--slate-100)',
-                  border: '1px solid var(--slate-200)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '14px',
                   padding: '4px 10px',
                   fontSize: '0.6875rem',
@@ -355,8 +355,8 @@ export const Chat = () => {
             onSubmit={handleSendMessage}
             style={{
               padding: '12px 16px',
-              backgroundColor: '#ffffff',
-              borderTop: '1px solid var(--slate-200)',
+              backgroundColor: 'var(--card-bg)',
+              borderTop: '1px solid var(--border-color)',
               display: 'flex',
               gap: '10px',
               alignItems: 'center'

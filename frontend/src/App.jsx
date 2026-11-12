@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ToastContainer from './components/ToastContainer';
@@ -40,11 +41,12 @@ import AdminAnalytics from './pages/AdminAnalytics';
 
 function App() {
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <Router>
-          <ToastContainer />
-          <Routes>
+    <ThemeProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <Router>
+            <ToastContainer />
+            <Routes>
             {/* Public Pages */}
             <Route path="/" element={<Landing />} />
             <Route path="/landing" element={<Landing />} />
@@ -97,7 +99,8 @@ function App() {
         </Router>
       </ToastProvider>
     </AuthProvider>
-  );
+  </ThemeProvider>
+);
 }
 
 export default App;

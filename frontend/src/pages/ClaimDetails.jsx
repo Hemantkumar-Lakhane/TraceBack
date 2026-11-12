@@ -173,14 +173,14 @@ export const ClaimDetails = () => {
             height: '200px',
             margin: '0 auto 1.25rem',
             backgroundColor: '#ffffff',
-            border: '3px solid var(--slate-900)',
+            border: '3px solid #0f172a',
             borderRadius: '14px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             boxShadow: 'var(--shadow-lg)'
           }}>
-            <QrCode size={160} color="var(--slate-900)" />
+            <QrCode size={160} color="#0f172a" />
           </div>
 
           <span className="badge badge-open" style={{ marginBottom: '8px' }}>CAMPUS VERIFICATION PASS</span>

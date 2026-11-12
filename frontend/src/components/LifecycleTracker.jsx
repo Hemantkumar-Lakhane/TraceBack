@@ -12,7 +12,7 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
   ];
 
   return (
-    <div className="surface-card" style={{ padding: '1rem 1.25rem', marginBottom: '1.25rem', backgroundColor: '#ffffff' }}>
+    <div className="surface-card" style={{ padding: '1rem 1.25rem', marginBottom: '1.25rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <div>
           <span style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--slate-500)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
@@ -40,8 +40,8 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
           const isCurrent = step.number === currentStep;
 
           let stepColor = 'var(--slate-400)';
-          let stepBg = '#ffffff';
-          let stepBorder = 'var(--slate-200)';
+          let stepBg = 'var(--slate-100)';
+          let stepBorder = 'var(--border-color)';
 
           if (isDone) {
             stepColor = '#ffffff';
@@ -49,8 +49,8 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
             stepBorder = '#059669';
           } else if (isCurrent) {
             stepColor = '#ffffff';
-            stepBg = '#0f172a';
-            stepBorder = '#0f172a';
+            stepBg = 'var(--primary)';
+            stepBorder = 'var(--primary)';
           }
 
           return (
@@ -81,7 +81,7 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
               <div style={{
                 fontSize: '0.75rem',
                 fontWeight: isCurrent ? 600 : 500,
-                color: isCurrent ? 'var(--slate-900)' : isDone ? 'var(--emerald-dark)' : 'var(--slate-500)'
+                color: isCurrent ? 'var(--slate-900)' : isDone ? 'var(--emerald)' : 'var(--slate-500)'
               }}>
                 {step.label}
               </div>

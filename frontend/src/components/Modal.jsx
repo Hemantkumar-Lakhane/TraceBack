@@ -32,9 +32,10 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '550px' }) 
         style={{
           width: '100%',
           maxWidth,
-          backgroundColor: '#ffffff',
-          borderRadius: '16px',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          backgroundColor: 'var(--card-bg)',
+          borderRadius: '12px',
+          border: '1px solid var(--border-color)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -47,7 +48,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '550px' }) 
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '1.25rem 1.5rem',
-          borderBottom: '1px solid var(--slate-100)'
+          borderBottom: '1px solid var(--border-color)'
         }}>
           <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--slate-900)' }}>
             {title}

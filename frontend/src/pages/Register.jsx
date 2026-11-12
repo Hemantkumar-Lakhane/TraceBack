@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, Mail, Lock, Phone, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
+import TraceBackLogo from '../components/TraceBackLogo';
 
 export const Register = () => {
   const { register } = useAuth();
@@ -55,31 +56,15 @@ export const Register = () => {
       <div style={{ width: '100%', maxWidth: '460px' }}>
         {/* Brand header */}
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', textDecoration: 'none' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '6px',
-              background: '#0f172a',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: 700,
-              fontSize: '0.9375rem'
-            }}>
-              TB
-            </div>
-            <span style={{ fontWeight: 700, fontSize: '1.25rem', color: '#0f172a', letterSpacing: '-0.02em' }}>
-              TraceBack
-            </span>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', textDecoration: 'none' }}>
+            <TraceBackLogo size={36} showWordmark={true} />
           </Link>
           <p style={{ color: 'var(--slate-500)', fontSize: '0.875rem' }}>
             Student Account Registration
           </p>
         </div>
 
-        <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', backgroundColor: '#ffffff' }}>
+        <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
           {errorMsg && (
             <div style={{
               display: 'flex',

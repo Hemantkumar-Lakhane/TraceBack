@@ -71,8 +71,8 @@ export const Matches = () => {
               style={{
                 borderRadius: '6px',
                 padding: '1.25rem',
-                border: '1px solid var(--slate-200)',
-                backgroundColor: '#ffffff'
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--card-bg)'
               }}
             >
               {/* Match Card Top Row: Match Score & Status */}
@@ -100,16 +100,16 @@ export const Matches = () => {
                 backgroundColor: 'var(--slate-50)',
                 padding: '1rem',
                 borderRadius: '6px',
-                border: '1px solid var(--slate-200)',
+                border: '1px solid var(--border-color)',
                 marginBottom: '1rem'
               }}>
                 {/* Left: Your Lost Report */}
-                <div style={{ backgroundColor: '#ffffff', padding: '0.875rem', borderRadius: '4px', border: '1px solid var(--slate-200)' }}>
+                <div style={{ backgroundColor: 'var(--card-bg)', padding: '0.875rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                     <span className="badge badge-lost" style={{ fontSize: '0.6875rem' }}>Lost Report</span>
                     <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)' }}>#{match.lostReport?.id}</span>
                   </div>
-                  <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)', marginBottom: '3px' }}>
+                  <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)', marginBottom: '3px' }}>
                     {match.lostReport?.item?.name}
                   </h4>
                   <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -134,7 +134,7 @@ export const Matches = () => {
                 </div>
 
                 {/* Right: Found Report */}
-                <div style={{ backgroundColor: '#ffffff', padding: '0.875rem', borderRadius: '4px', border: '1px solid var(--slate-200)' }}>
+                <div style={{ backgroundColor: 'var(--card-bg)', padding: '0.875rem', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                     <span className="badge badge-found" style={{ fontSize: '0.6875rem' }}>Found Report</span>
                     <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)' }}>#{match.foundReport?.id}</span>

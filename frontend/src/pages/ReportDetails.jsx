@@ -186,10 +186,10 @@ export const ReportDetails = () => {
               </div>
 
               <div>
-                <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--slate-700)', marginBottom: '6px' }}>
+                <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px' }}>
                   Description & Notes:
                 </h4>
-                <p style={{ fontSize: '0.9375rem', color: 'var(--slate-700)', lineHeight: 1.6, backgroundColor: '#ffffff', padding: '12px', borderRadius: '8px', border: '1px solid var(--slate-200)' }}>
+                <p style={{ fontSize: '0.9375rem', color: 'var(--text-main)', lineHeight: 1.6, backgroundColor: 'var(--slate-50)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                   {item.description || 'No additional description provided.'}
                 </p>
               </div>
@@ -222,7 +222,7 @@ export const ReportDetails = () => {
             height: '180px',
             margin: '0 auto 1.5rem',
             backgroundColor: '#ffffff',
-            border: '2px solid var(--slate-900)',
+            border: '2px solid #0f172a',
             borderRadius: '12px',
             display: 'flex',
             alignItems: 'center',
@@ -230,7 +230,7 @@ export const ReportDetails = () => {
             boxShadow: 'var(--shadow-md)'
           }}>
             {/* SVG QR Code Simulation */}
-            <QrCode size={130} color="var(--slate-900)" />
+            <QrCode size={130} color="#0f172a" />
           </div>
           <h4 style={{ fontSize: '1.1rem', fontWeight: 700 }}>{item.name}</h4>
           <p style={{ fontSize: '0.8125rem', color: 'var(--slate-500)', marginTop: '4px' }}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   Search,
   GitMerge,
@@ -16,7 +17,9 @@ import {
   FileCheck2,
   Building2,
   HelpCircle,
-  PhoneCall
+  PhoneCall,
+  Sun,
+  Moon
 } from 'lucide-react';
 import LifecycleTracker from '../components/LifecycleTracker';
 import TraceBackLogo from '../components/TraceBackLogo';
@@ -24,21 +27,23 @@ import '../LandingAnimations.css';
 
 export const Landing = () => {
   const { loginAs } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
 
   return (
-    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Top Header */}
       <header style={{
         position: 'sticky',
         top: 0,
         zIndex: 100,
         height: '60px',
-        backgroundColor: '#ffffff',
-        borderBottom: '1px solid var(--slate-200)',
+        backgroundColor: 'var(--navbar-bg)',
+        borderBottom: '1px solid var(--border-color)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 2rem'
+        padding: '0 2rem',
+        transition: 'background-color 0.2s ease, border-color 0.2s ease'
       }}>
         {/* Brand Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
@@ -61,8 +66,28 @@ export const Landing = () => {
           </a>
         </nav>
 
-        {/* Right Auth Action Buttons */}
+        {/* Right Auth Action Buttons & Theme Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'transparent',
+              border: '1px solid var(--border-color)',
+              borderRadius: '6px',
+              width: '34px',
+              height: '34px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: 'var(--text-main)',
+              transition: 'all 0.15s ease'
+            }}
+            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            aria-label="Toggle Theme"
+          >
+            {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="var(--slate-600)" />}
+          </button>
           <Link to="/login" className="btn btn-secondary btn-sm">
             <LogIn size={14} /> Sign In
           </Link>
@@ -174,19 +199,16 @@ export const Landing = () => {
       {/* Featured 3D Interactive Perspective Cards Section */}
       <section id="featured-cases" style={{
         padding: '4.5rem 1.5rem',
-        backgroundColor: '#f8fafc',
-        borderBottom: '1px solid var(--slate-200)'
+        backgroundColor: 'var(--slate-50)',
+        borderBottom: '1px solid var(--border-color)'
       }}>
         <div style={{ maxWidth: '1180px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-            <div style={{
+            <div className="badge badge-matched" style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              backgroundColor: '#e0f2fe',
-              color: '#0369a1',
-              padding: '3px 10px',
-              borderRadius: '4px',
+              padding: '4px 12px',
               fontSize: '0.75rem',
               fontWeight: 600,
               textTransform: 'uppercase',
@@ -287,10 +309,10 @@ export const Landing = () => {
 
       {/* Role Portals Grid */}
       <section id="portals" style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--bg-color)',
         padding: '4rem 1.5rem',
-        borderTop: '1px solid var(--slate-200)',
-        borderBottom: '1px solid var(--slate-200)'
+        borderTop: '1px solid var(--border-color)',
+        borderBottom: '1px solid var(--border-color)'
       }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
@@ -308,13 +330,13 @@ export const Landing = () => {
             gap: '1.5rem'
           }}>
             {/* Student Portal Card */}
-            <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}>
+            <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
               <div style={{
                 width: '40px',
                 height: '40px',
                 borderRadius: '8px',
-                backgroundColor: '#eff6ff',
-                color: '#2563eb',
+                backgroundColor: isDark ? 'rgba(37, 99, 235, 0.18)' : '#eff6ff',
+                color: isDark ? '#38bdf8' : '#2563eb',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -338,13 +360,13 @@ export const Landing = () => {
             </div>
 
             {/* Security Desk Portal Card */}
-            <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}>
+            <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
               <div style={{
                 width: '40px',
                 height: '40px',
                 borderRadius: '8px',
-                backgroundColor: '#f0fdf4',
-                color: '#166534',
+                backgroundColor: isDark ? 'rgba(5, 150, 105, 0.18)' : '#f0fdf4',
+                color: isDark ? '#34d399' : '#166534',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -368,13 +390,13 @@ export const Landing = () => {
             </div>
 
             {/* Campus Admin Portal Card */}
-            <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', border: '1px solid var(--slate-200)' }}>
+            <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
               <div style={{
                 width: '40px',
                 height: '40px',
                 borderRadius: '8px',
-                backgroundColor: '#faf5ff',
-                color: '#7e22ce',
+                backgroundColor: isDark ? 'rgba(124, 58, 237, 0.18)' : '#faf5ff',
+                color: isDark ? '#c084fc' : '#7e22ce',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -401,7 +423,7 @@ export const Landing = () => {
       </section>
 
       {/* Support & Helpline Toolbar with User-Requested Social Tooltips */}
-      <section style={{ backgroundColor: 'var(--slate-900)', color: '#ffffff', padding: '3.5rem 1.5rem' }}>
+      <section style={{ backgroundColor: isDark ? '#080c14' : '#0f172a', color: '#ffffff', padding: '3.5rem 1.5rem', borderTop: '1px solid var(--border-color)' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>
             Campus Safety & Helpdesk Channels
@@ -479,11 +501,12 @@ export const Landing = () => {
 
       {/* Symmetrical Footer */}
       <footer style={{
-        backgroundColor: '#ffffff',
-        borderTop: '1px solid var(--slate-200)',
+        backgroundColor: 'var(--navbar-bg)',
+        borderTop: '1px solid var(--border-color)',
         padding: '2rem 1.5rem',
         fontSize: '0.8125rem',
-        color: 'var(--slate-500)'
+        color: 'var(--slate-500)',
+        transition: 'background-color 0.2s ease, border-color 0.2s ease'
       }}>
         <div style={{
           maxWidth: '1100px',

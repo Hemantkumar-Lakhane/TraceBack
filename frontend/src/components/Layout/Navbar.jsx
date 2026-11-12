@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Search, Bell, Menu, User, LogOut, Shield, Award, UserCheck } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { Search, Bell, Menu, User, LogOut, Shield, Award, UserCheck, Sun, Moon } from 'lucide-react';
 import notificationService from '../../api/notificationService';
 import TraceBackLogo from '../TraceBackLogo';
 
 export const Navbar = ({ onToggleSidebar }) => {
   const { user, logout, loginAs } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   
   const [notifications, setNotifications] = useState([]);
@@ -65,13 +67,14 @@ export const Navbar = ({ onToggleSidebar }) => {
       top: 0,
       zIndex: 100,
       height: '56px',
-      backgroundColor: '#ffffff',
-      borderBottom: '1px solid var(--slate-200)',
+      backgroundColor: 'var(--navbar-bg)',
+      borderBottom: '1px solid var(--border-color)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '0 1.25rem',
-      gap: '1rem'
+      gap: '1rem',
+      transition: 'background-color 0.2s ease, border-color 0.2s ease'
     }}>
       {/* Left section: Hamburger (mobile) + Brand logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -117,18 +120,40 @@ export const Navbar = ({ onToggleSidebar }) => {
           style={{
             width: '100%',
             padding: '0.4rem 0.75rem 0.4rem 2rem',
-            backgroundColor: '#ffffff',
-            border: '1px solid var(--slate-300)',
+            backgroundColor: 'var(--input-bg)',
+            border: '1px solid var(--input-border)',
             borderRadius: '6px',
             fontSize: '0.8125rem',
             outline: 'none',
-            color: 'var(--slate-900)'
+            color: 'var(--text-main)',
+            transition: 'background-color 0.2s ease, border-color 0.2s ease'
           }}
         />
       </form>
 
-      {/* Right Controls: Notifications & Profile */}
+      {/* Right Controls: Theme Toggle, Notifications & Profile */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        {/* Dark / Light Mode Toggle Button */}
+        <button
+          onClick={toggleTheme}
+          style={{
+            background: 'transparent',
+            border: '1px solid var(--border-color)',
+            borderRadius: '6px',
+            width: '34px',
+            height: '34px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--text-main)',
+            transition: 'all 0.15s ease'
+          }}
+          title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          aria-label="Toggle Theme"
+        >
+          {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="var(--slate-600)" />}
+        </button>
         {/* Notifications Dropdown */}
         <div style={{ position: 'relative' }} ref={notifRef}>
           <button
@@ -157,7 +182,7 @@ export const Navbar = ({ onToggleSidebar }) => {
                 height: '8px',
                 backgroundColor: 'var(--rose)',
                 borderRadius: '50%',
-                border: '1.5px solid #ffffff'
+                border: '1.5px solid var(--navbar-bg)'
               }} />
             )}
           </button>
@@ -168,16 +193,16 @@ export const Navbar = ({ onToggleSidebar }) => {
               top: '40px',
               right: '0',
               width: '320px',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'var(--card-bg)',
               borderRadius: '8px',
-              boxShadow: 'var(--shadow-lg)',
-              border: '1px solid var(--slate-200)',
+              boxShadow: 'var(--shadow-xl)',
+              border: '1px solid var(--border-color)',
               overflow: 'hidden',
               zIndex: 1000
             }}>
               <div style={{
                 padding: '10px 14px',
-                borderBottom: '1px solid var(--slate-100)',
+                borderBottom: '1px solid var(--border-color)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
@@ -287,22 +312,22 @@ export const Navbar = ({ onToggleSidebar }) => {
               top: '40px',
               right: '0',
               width: '240px',
-              backgroundColor: '#ffffff',
+              backgroundColor: 'var(--card-bg)',
               borderRadius: '8px',
-              boxShadow: 'var(--shadow-lg)',
-              border: '1px solid var(--slate-200)',
+              boxShadow: 'var(--shadow-xl)',
+              border: '1px solid var(--border-color)',
               overflow: 'hidden',
               zIndex: 1000
             }}>
-              <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--slate-100)' }}>
-                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)' }}>{user?.name}</p>
+              <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--border-color)' }}>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-main)' }}>{user?.name}</p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', wordBreak: 'break-all' }}>{user?.email}</p>
                 <span className="badge badge-open" style={{ marginTop: '6px' }}>{user?.role}</span>
               </div>
 
               {/* Role Switcher in User Menu */}
-              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--slate-100)', backgroundColor: 'var(--slate-50)' }}>
-                <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--slate-500)', marginBottom: '4px' }}>
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--slate-100)' }}>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--slate-400)', marginBottom: '4px' }}>
                   SWITCH ACCOUNT VIEW:
                 </div>
                 <div style={{ display: 'flex', gap: '4px' }}>
@@ -313,10 +338,10 @@ export const Navbar = ({ onToggleSidebar }) => {
                       padding: '4px',
                       fontSize: '0.6875rem',
                       fontWeight: 500,
-                      border: '1px solid var(--slate-200)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '4px',
-                      backgroundColor: user?.role === 'STUDENT' ? '#0f172a' : '#ffffff',
-                      color: user?.role === 'STUDENT' ? '#ffffff' : 'var(--slate-700)',
+                      backgroundColor: user?.role === 'STUDENT' ? '#2563eb' : 'var(--card-bg)',
+                      color: user?.role === 'STUDENT' ? '#ffffff' : 'var(--text-main)',
                       cursor: 'pointer'
                     }}
                   >
@@ -329,10 +354,10 @@ export const Navbar = ({ onToggleSidebar }) => {
                       padding: '4px',
                       fontSize: '0.6875rem',
                       fontWeight: 500,
-                      border: '1px solid var(--slate-200)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '4px',
-                      backgroundColor: user?.role === 'SECURITY' ? '#0f172a' : '#ffffff',
-                      color: user?.role === 'SECURITY' ? '#ffffff' : 'var(--slate-700)',
+                      backgroundColor: user?.role === 'SECURITY' ? '#059669' : 'var(--card-bg)',
+                      color: user?.role === 'SECURITY' ? '#ffffff' : 'var(--text-main)',
                       cursor: 'pointer'
                     }}
                   >
@@ -345,10 +370,10 @@ export const Navbar = ({ onToggleSidebar }) => {
                       padding: '4px',
                       fontSize: '0.6875rem',
                       fontWeight: 500,
-                      border: '1px solid var(--slate-200)',
+                      border: '1px solid var(--border-color)',
                       borderRadius: '4px',
-                      backgroundColor: user?.role === 'ADMIN' ? '#0f172a' : '#ffffff',
-                      color: user?.role === 'ADMIN' ? '#ffffff' : 'var(--slate-700)',
+                      backgroundColor: user?.role === 'ADMIN' ? '#7c3aed' : 'var(--card-bg)',
+                      color: user?.role === 'ADMIN' ? '#ffffff' : 'var(--text-main)',
                       cursor: 'pointer'
                     }}
                   >

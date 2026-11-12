@@ -70,7 +70,7 @@ export const Login = () => {
         </div>
 
         {/* Card */}
-        <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', backgroundColor: '#ffffff' }}>
+        <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)' }}>
           {errorMsg && (
             <div style={{
               display: 'flex',

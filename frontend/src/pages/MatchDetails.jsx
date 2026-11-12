@@ -86,8 +86,8 @@ export const MatchDetails = () => {
       <div className="surface-card" style={{
         padding: '1.125rem 1.25rem',
         borderRadius: '6px',
-        backgroundColor: '#ffffff',
-        border: '1px solid var(--slate-200)',
+        backgroundColor: 'var(--card-bg)',
+        border: '1px solid var(--border-color)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

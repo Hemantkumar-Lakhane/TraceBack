@@ -71,7 +71,7 @@ export const ClaimForm = () => {
         </Link>
       </div>
 
-      <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '6px', borderTop: '3px solid #0f172a' }}>
+      <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '6px', borderTop: '3px solid var(--accent)' }}>
         <div style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--slate-100)', paddingBottom: '0.75rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
             <span className="badge badge-open">Ownership Verification</span>
@@ -230,8 +230,8 @@ export const ClaimForm = () => {
             gap: '10px',
             padding: '12px',
             borderRadius: '8px',
-            backgroundColor: '#f8fafc',
-            border: '1px solid var(--slate-200)',
+            backgroundColor: 'var(--slate-50)',
+            border: '1px solid var(--border-color)',
             marginBottom: '1.75rem'
           }}>
             <input

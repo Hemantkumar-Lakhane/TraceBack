@@ -83,8 +83,8 @@ export const Sidebar = ({ isOpen, onClose }) => {
 
       <aside style={{
         width: '260px',
-        backgroundColor: '#ffffff',
-        borderRight: '1px solid var(--slate-200)',
+        backgroundColor: 'var(--sidebar-bg)',
+        borderRight: '1px solid var(--border-color)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
@@ -94,7 +94,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
         left: 0,
         zIndex: 95,
         transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
-        transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease',
         boxShadow: '1px 0 3px rgba(0, 0, 0, 0.02)',
         overflowY: 'auto'
       }}>
@@ -136,30 +136,34 @@ export const Sidebar = ({ isOpen, onClose }) => {
                   borderRadius: '6px',
                   fontSize: '0.8125rem',
                   fontWeight: isActive ? 600 : 500,
-                  color: isActive ? '#0f172a' : 'var(--slate-600)',
-                  backgroundColor: isActive ? '#f1f5f9' : 'transparent',
+                  color: isActive ? 'var(--text-main)' : 'var(--slate-500)',
+                  backgroundColor: isActive ? 'var(--slate-100)' : 'transparent',
                   borderLeft: isActive ? '3px solid #2563eb' : '3px solid transparent',
                   textDecoration: 'none',
                   transition: 'all 0.15s ease'
                 })}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={{ color: 'var(--slate-500)', display: 'flex', alignItems: 'center' }}>
-                    {item.icon}
-                  </span>
-                  <span>{item.label}</span>
-                </div>
-                {item.badge && (
-                  <span style={{
-                    fontSize: '0.6875rem',
-                    fontWeight: 600,
-                    padding: '1px 6px',
-                    borderRadius: '4px',
-                    backgroundColor: '#e2e8f0',
-                    color: '#334155'
-                  }}>
-                    {item.badge}
-                  </span>
+                {({ isActive }) => (
+                  <>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ color: isActive ? '#2563eb' : 'var(--slate-400)', display: 'flex', alignItems: 'center' }}>
+                        {item.icon}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge && (
+                      <span style={{
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        padding: '1px 6px',
+                        borderRadius: '4px',
+                        backgroundColor: 'var(--slate-200)',
+                        color: 'var(--slate-700)'
+                      }}>
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
                 )}
               </NavLink>
             ))}
@@ -167,15 +171,15 @@ export const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* Bottom Desk Information Box */}
-        <div style={{ padding: '1rem', borderTop: '1px solid var(--slate-100)', backgroundColor: 'var(--slate-50)' }}>
+        <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--slate-50)' }}>
           <div style={{
             padding: '10px 12px',
             borderRadius: '6px',
-            backgroundColor: '#ffffff',
-            border: '1px solid var(--slate-200)',
+            backgroundColor: 'var(--card-bg)',
+            border: '1px solid var(--border-color)',
             fontSize: '0.75rem'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--slate-800)', marginBottom: '3px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--slate-900)', marginBottom: '3px' }}>
               <Building2 size={13} color="#2563eb" />
               <span>Ramanujan Security Vault</span>
             </div>

@@ -1,35 +1,21 @@
 import React from 'react';
 
 export const MatchScoreBadge = ({ score = 0, breakdown }) => {
-  let badgeBg = '#f1f5f9';
-  let badgeColor = '#334155';
-  let badgeBorder = '#e2e8f0';
+  let badgeClass = 'badge-open';
 
   if (score >= 80) {
-    badgeBg = '#eff6ff';
-    badgeColor = '#1d4ed8';
-    badgeBorder = '#dbeafe';
+    badgeClass = 'badge-matched';
   } else if (score >= 60) {
-    badgeBg = '#f0fdf4';
-    badgeColor = '#166534';
-    badgeBorder = '#dcfce7';
+    badgeClass = 'badge-approved';
   } else if (score > 0) {
-    badgeBg = '#fffbeb';
-    badgeColor = '#92400e';
-    badgeBorder = '#fef3c7';
+    badgeClass = 'badge-claim-requested';
   }
 
   return (
     <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', gap: '3px' }}>
-      <div style={{
-        display: 'inline-flex',
-        alignItems: 'center',
+      <div className={`badge ${badgeClass}`} style={{
         gap: '5px',
         padding: '2px 8px',
-        backgroundColor: badgeBg,
-        color: badgeColor,
-        border: `1px solid ${badgeBorder}`,
-        borderRadius: '4px',
         fontSize: '0.75rem',
         fontWeight: 600,
         letterSpacing: '0.01em'
@@ -38,7 +24,7 @@ export const MatchScoreBadge = ({ score = 0, breakdown }) => {
           width: '6px',
           height: '6px',
           borderRadius: '50%',
-          backgroundColor: badgeColor,
+          backgroundColor: 'currentColor',
           display: 'inline-block'
         }} />
         <span>{score}% Match</span>

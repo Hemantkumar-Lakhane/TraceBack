@@ -25,9 +25,9 @@ export const ItemCard = ({ report }) => {
       flexDirection: 'column',
       overflow: 'hidden',
       borderRadius: '6px',
-      border: '1px solid var(--slate-200)',
+      border: '1px solid var(--border-color)',
       height: '100%',
-      backgroundColor: '#ffffff'
+      backgroundColor: 'var(--card-bg)'
     }}>
       {/* Image Thumbnail / Fallback Header */}
       <div style={{

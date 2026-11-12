@@ -1,35 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
   <defs>
-    <linearGradient id="tbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="tbBaseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="45%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="tbInnerGlow" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="50%" stop-color="#2563eb"/>
-      <stop offset="100%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#ffffff"/>
     </linearGradient>
-    <linearGradient id="tbGlow" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#0284c7"/>
-      <stop offset="100%" stop-color="#38bdf8"/>
-    </linearGradient>
+    <filter id="tbShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#1e3a8a" flood-opacity="0.35"/>
+    </filter>
   </defs>
 
-  <!-- Dark rounded container -->
-  <rect width="48" height="48" rx="12" fill="#090d16"/>
-  <rect x="0.5" y="0.5" width="47" height="47" rx="11.5" stroke="#1e293b" fill="none"/>
+  <!-- Vibrant Rich Gradient Squircle Base -->
+  <rect width="48" height="48" rx="12" fill="url(#tbBaseGrad)" filter="url(#tbShadow)"/>
+  <rect x="0.75" y="0.75" width="46.5" height="46.5" rx="11.25" stroke="#60a5fa" stroke-opacity="0.45" fill="none"/>
 
-  <!-- Radar & Return Loop Monogram (T & B) -->
-  <!-- Outer Sweep Arc -->
+  <!-- Radar Tracking Conic Rings -->
+  <circle cx="24" cy="24" r="16" fill="none" stroke="#93c5fd" stroke-opacity="0.2" stroke-width="1" stroke-dasharray="2 3"/>
+  
+  <!-- Outer Sweep Arc in Luminous White-Cyan -->
   <path d="M12 24 C12 17.37 17.37 12 24 12 C30.63 12 36 17.37 36 24 C36 27.5 34.5 30.6 32.1 32.8"
-        fill="none" stroke="url(#tbGrad)" stroke-width="3.5" stroke-linecap="round"/>
+        fill="none" stroke="url(#tbInnerGlow)" stroke-width="3.5" stroke-linecap="round"/>
 
-  <!-- Return Arrow Loop -->
-  <path d="M33 32 L36 32 L36 24 C36 17.37 30.63 12 24 12 L18 12"
-        fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+  <!-- Directional Return Pointer (T & B Arrow) -->
+  <path d="M14 16 L21 13 L18 20 Z" fill="#ffffff"/>
 
-  <!-- Inner Compass / Location Target Center -->
-  <circle cx="24" cy="24" r="4.5" fill="url(#tbGrad)"/>
-  <circle cx="24" cy="24" r="2" fill="#ffffff"/>
+  <!-- Inner Compass Target Center -->
+  <circle cx="24" cy="24" r="5" fill="#ffffff" fill-opacity="0.25"/>
+  <circle cx="24" cy="24" r="3.2" fill="#ffffff"/>
+  <circle cx="24" cy="24" r="1.5" fill="#2563eb"/>
 
-  <!-- Directional Return Vector Arrow -->
-  <path d="M15 15 L21 15 L18 12 Z" fill="#38bdf8"/>
-  <path d="M24 36 L24 28.5" stroke="url(#tbGlow)" stroke-width="3.5" stroke-linecap="round"/>
-  <circle cx="24" cy="36" r="2.5" fill="#38bdf8"/>
+  <!-- Return Anchor Pin Point -->
+  <path d="M24 35 L24 28" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="24" cy="35" r="2.2" fill="#38bdf8"/>
 </svg>

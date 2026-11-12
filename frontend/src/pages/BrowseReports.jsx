@@ -181,7 +181,8 @@ export const BrowseReports = () => {
           <button
             onClick={() => setViewMode('grid')}
             style={{
-              background: viewMode === 'grid' ? '#ffffff' : 'transparent',
+              background: viewMode === 'grid' ? 'var(--card-bg)' : 'transparent',
+              boxShadow: viewMode === 'grid' ? 'var(--shadow-sm)' : 'none',
               border: 'none',
               padding: '4px 8px',
               borderRadius: '6px',
@@ -194,7 +195,8 @@ export const BrowseReports = () => {
           <button
             onClick={() => setViewMode('list')}
             style={{
-              background: viewMode === 'list' ? '#ffffff' : 'transparent',
+              background: viewMode === 'list' ? 'var(--card-bg)' : 'transparent',
+              boxShadow: viewMode === 'list' ? 'var(--shadow-sm)' : 'none',
               border: 'none',
               padding: '4px 8px',
               borderRadius: '6px',

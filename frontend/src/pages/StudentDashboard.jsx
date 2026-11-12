@@ -96,8 +96,8 @@ export const StudentDashboard = () => {
       {/* Action Needed Highlight Card (If match found) */}
       {pendingMatch && (
         <div className="surface-card" style={{
-          backgroundColor: '#ffffff',
-          border: '1px solid var(--slate-200)',
+          backgroundColor: 'var(--card-bg)',
+          border: '1px solid var(--border-color)',
           borderLeft: '4px solid #2563eb',
           borderRadius: '6px',
           padding: '1.125rem 1.25rem',
@@ -123,18 +123,9 @@ export const StudentDashboard = () => {
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  padding: '2px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.6875rem',
-                  fontWeight: 600,
+                <span className="badge badge-matched" style={{
                   textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  backgroundColor: '#eff6ff',
-                  color: '#1d4ed8',
-                  border: '1px solid #bfdbfe'
+                  letterSpacing: '0.04em'
                 }}>
                   Match Detected
                 </span>
@@ -223,8 +214,9 @@ export const StudentDashboard = () => {
               <button
                 onClick={() => setActiveTab('LOST')}
                 style={{
-                  background: activeTab === 'LOST' ? '#ffffff' : 'transparent',
-                  color: activeTab === 'LOST' ? 'var(--slate-900)' : 'var(--slate-600)',
+                  background: activeTab === 'LOST' ? 'var(--card-bg)' : 'transparent',
+                  color: activeTab === 'LOST' ? 'var(--text-main)' : 'var(--slate-500)',
+                  boxShadow: activeTab === 'LOST' ? 'var(--shadow-sm)' : 'none',
                   border: 'none',
                   borderRadius: '4px',
                   padding: '3px 8px',
@@ -238,8 +230,9 @@ export const StudentDashboard = () => {
               <button
                 onClick={() => setActiveTab('FOUND')}
                 style={{
-                  background: activeTab === 'FOUND' ? '#ffffff' : 'transparent',
-                  color: activeTab === 'FOUND' ? 'var(--slate-900)' : 'var(--slate-600)',
+                  background: activeTab === 'FOUND' ? 'var(--card-bg)' : 'transparent',
+                  color: activeTab === 'FOUND' ? 'var(--text-main)' : 'var(--slate-500)',
+                  boxShadow: activeTab === 'FOUND' ? 'var(--shadow-sm)' : 'none',
                   border: 'none',
                   borderRadius: '4px',
                   padding: '3px 8px',
@@ -270,8 +263,8 @@ export const StudentDashboard = () => {
                       justifyContent: 'space-between',
                       padding: '10px 12px',
                       borderRadius: '6px',
-                      border: '1px solid var(--slate-200)',
-                      backgroundColor: '#ffffff',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--card-bg)',
                       gap: '12px'
                     }}
                   >
@@ -330,8 +323,8 @@ export const StudentDashboard = () => {
                       justifyContent: 'space-between',
                       padding: '10px 12px',
                       borderRadius: '6px',
-                      border: '1px solid var(--slate-200)',
-                      backgroundColor: '#ffffff',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: 'var(--card-bg)',
                       gap: '12px'
                     }}
                   >
@@ -369,8 +362,8 @@ export const StudentDashboard = () => {
                 style={{
                   padding: '8px 10px',
                   borderRadius: '6px',
-                  backgroundColor: '#ffffff',
-                  border: '1px solid var(--slate-200)',
+                  backgroundColor: 'var(--card-bg)',
+                  border: '1px solid var(--border-color)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center'
