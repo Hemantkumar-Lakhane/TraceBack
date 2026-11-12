@@ -38,6 +38,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminUserManagement from './pages/AdminUserManagement';
 import AdminModeration from './pages/AdminModeration';
 import AdminAnalytics from './pages/AdminAnalytics';
+import AdminConfig from './pages/AdminConfig';
 
 function App() {
   return (
@@ -90,6 +91,7 @@ function App() {
                 <Route path="/admin/users" element={<AdminUserManagement />} />
                 <Route path="/admin/moderation" element={<AdminModeration />} />
                 <Route path="/admin/analytics" element={<AdminAnalytics />} />
+                <Route path="/admin/config" element={<AdminConfig />} />
               </Route>
             </Route>
 

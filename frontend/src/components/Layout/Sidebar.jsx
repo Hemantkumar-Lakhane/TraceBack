@@ -18,7 +18,8 @@ import {
   BarChart3,
   HelpCircle,
   Building2,
-  Radio
+  Radio,
+  Settings
 } from 'lucide-react';
 
 export const Sidebar = ({ isOpen, onClose }) => {
@@ -42,10 +43,11 @@ export const Sidebar = ({ isOpen, onClose }) => {
       return [
         { to: '/admin', label: 'Platform Overview', icon: <LayoutDashboard size={17} /> },
         { to: '/admin/users', label: 'User Directory & Roles', icon: <Users size={17} /> },
-        { to: '/admin/moderation', label: 'Moderation Queue', icon: <ShieldAlert size={17} />, badge: '1 Flag' },
+        { to: '/admin/moderation', label: 'Moderation Queue', icon: <ShieldAlert size={17} /> },
         { to: '/admin/analytics', label: 'Recovery Metrics & KPIs', icon: <BarChart3 size={17} /> },
         { to: '/browse', label: 'All Campus Reports', icon: <Search size={17} /> },
-        { to: '/profile', label: 'Admin Configuration', icon: <User size={17} /> }
+        { to: '/admin/config', label: 'Campus Configuration', icon: <Settings size={17} /> },
+        { to: '/profile', label: 'Admin Profile', icon: <User size={17} /> }
       ];
     }
 
