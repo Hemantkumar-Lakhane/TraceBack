@@ -15,7 +15,6 @@ import {
   TrendingUp,
   MapPin
 } from 'lucide-react';
-import LifecycleTracker from '../components/LifecycleTracker';
 import ItemCard from '../components/ItemCard';
 import StatusBadge from '../components/StatusBadge';
 import MatchScoreBadge from '../components/MatchScoreBadge';
@@ -90,9 +89,6 @@ export const StudentDashboard = () => {
           </Link>
         </div>
       </div>
-
-      {/* Lifecycle Pipeline Tracker */}
-      <LifecycleTracker currentStep={2} />
 
       {/* Action Needed Highlight Card (If match found) */}
       {pendingMatch && (
