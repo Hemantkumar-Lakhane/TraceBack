@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
 import {
@@ -7,35 +8,43 @@ import {
   GitMerge,
   Paperclip,
   ShieldCheck,
-  AlertTriangle,
   ArrowRight,
   User,
   CheckCheck,
   Smile,
-  Info
+  Info,
+  Search,
+  Lock,
+  MapPin,
+  Clock,
+  Sparkles
 } from 'lucide-react';
 import chatService from '../api/chatService';
+import { getItemImageUrl } from '../utils/imageUtils';
 
 export const Chat = () => {
   const { user } = useAuth();
+  const { isDark } = useTheme();
   const { toast } = useToast();
 
   const [conversations, setConversations] = useState([]);
   const [activeConvId, setActiveConvId] = useState(1);
   const [activeConv, setActiveConv] = useState(null);
   const [inputText, setInputText] = useState('');
+  const [searchFilter, setSearchFilter] = useState('');
   const [loading, setLoading] = useState(true);
 
   const messagesEndRef = useRef(null);
+  const chatScrollContainerRef = useRef(null);
 
+  // Load real conversations from backend
   const loadChatData = async () => {
     try {
-      const list = await chatService.getConversations();
+      const list = await chatService.getConversations(user?.id);
       setConversations(list || []);
-      if (list && list.length > 0) {
-        const conv = await chatService.getConversationById(activeConvId || list[0].id);
-        setActiveConv(conv);
-      }
+      const targetId = activeConvId || (list && list.length > 0 ? list[0].id : 1);
+      const conv = await chatService.getConversationById(targetId, user?.id);
+      setActiveConv(conv);
     } catch (err) {
       console.error("Chat load error", err);
     } finally {
@@ -45,8 +54,27 @@ export const Chat = () => {
 
   useEffect(() => {
     loadChatData();
-  }, [activeConvId]);
+  }, [user?.id]);
 
+  // When active conversation changes, fetch its messages
+  useEffect(() => {
+    let isCancelled = false;
+    const fetchActive = async () => {
+      if (!activeConvId) return;
+      try {
+        const conv = await chatService.getConversationById(activeConvId, user?.id);
+        if (!isCancelled) {
+          setActiveConv(conv);
+        }
+      } catch (e) {
+        console.error("Error switching conversation", e);
+      }
+    };
+    fetchActive();
+    return () => { isCancelled = true; };
+  }, [activeConvId, user?.id]);
+
+  // Real-time STOMP WebSocket subscription
   useEffect(() => {
     let stompSub = null;
     let isCancelled = false;
@@ -91,8 +119,22 @@ export const Chat = () => {
     };
   }, [activeConvId, user?.id]);
 
+  // Auto-scroll to bottom like WhatsApp
+  const scrollToBottom = (smooth = true) => {
+    if (chatScrollContainerRef.current) {
+      chatScrollContainerRef.current.scrollTo({
+        top: chatScrollContainerRef.current.scrollHeight,
+        behavior: smooth ? 'smooth' : 'auto'
+      });
+    }
+  };
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom(false);
+  }, [activeConv?.id]);
+
+  useEffect(() => {
+    scrollToBottom(true);
   }, [activeConv?.messages]);
 
   const handleSendMessage = async (e) => {
@@ -102,29 +144,58 @@ export const Chat = () => {
     const text = inputText.trim();
     setInputText('');
 
-    const newMsg = await chatService.sendMessage(activeConv.id, text, user?.id || 1, user?.name || "Aarav Sharma");
+    try {
+      const newMsg = await chatService.sendMessage(
+        activeConv.id,
+        text,
+        user?.id || 1,
+        user?.name || "Aarav Sharma"
+      );
 
-    // Update active conversation locally
-    setActiveConv(prev => ({
-      ...prev,
-      messages: [...(prev?.messages || []), newMsg]
-    }));
+      // Append immediately to active conversation
+      setActiveConv(prev => ({
+        ...prev,
+        messages: [...(prev?.messages || []), newMsg]
+      }));
 
-    // Simulate finder quick auto-response after 1.5s for rich interactivity!
-    if (text.toLowerCase().includes('where') || text.toLowerCase().includes('desk') || text.toLowerCase().includes('claim')) {
-      setTimeout(async () => {
-        const reply = await chatService.sendMessage(
-          activeConv.id,
-          "Sounds good! The item is safely stored at Ramanujan Building Security Vault Locker A-12. Once Security approves your claim pass, you can pick it up with your Student ID.",
-          4,
-          "Rohan Verma (Finder)"
-        );
-        setActiveConv(prev => ({
-          ...prev,
-          messages: [...(prev?.messages || []), { ...reply, isMe: false }]
-        }));
-        toast.info("New message from Rohan Verma");
-      }, 1500);
+      // Update thread list snippet on the left
+      setConversations(prev => prev.map(c => {
+        if (c.id === activeConv.id) {
+          return {
+            ...c,
+            lastMessage: text,
+            lastMessageTime: new Date().toISOString()
+          };
+        }
+        return c;
+      }));
+
+      // Interactive campus simulated reply for verification guidance
+      if (text.toLowerCase().includes('where') || text.toLowerCase().includes('desk') || text.toLowerCase().includes('claim')) {
+        setTimeout(async () => {
+          const reply = await chatService.sendMessage(
+            activeConv.id,
+            "Sounds good! The item is safely stored at Ramanujan Building Security Vault Locker A-12. Once Security approves your claim pass, you can pick it up with your Student ID.",
+            2,
+            "Rohan Verma (Finder)"
+          );
+          setActiveConv(prev => ({
+            ...prev,
+            messages: [...(prev?.messages || []), { ...reply, isMe: false }]
+          }));
+          toast.info("New message from Rohan Verma");
+        }, 1500);
+      }
+    } catch (err) {
+      console.error("Message send failure", err);
+      toast.error("Failed to deliver message. Check backend connectivity.");
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage(e);
     }
   };
 
@@ -132,159 +203,367 @@ export const Chat = () => {
     setInputText(promptText);
   };
 
+  const filteredConversations = conversations.filter(c => {
+    if (!searchFilter.trim()) return true;
+    const q = searchFilter.toLowerCase();
+    return (
+      c.otherParticipant?.name?.toLowerCase().includes(q) ||
+      c.itemName?.toLowerCase().includes(q) ||
+      c.lastMessage?.toLowerCase().includes(q)
+    );
+  });
+
+  // WhatsApp-inspired color tokens
+  const bubbleMeBg = isDark ? '#005c4b' : '#d9fdd3';
+  const bubbleMeText = isDark ? '#e9edef' : '#111b21';
+  const bubbleOtherBg = isDark ? '#202c33' : '#ffffff';
+  const bubbleOtherText = isDark ? '#e9edef' : '#111b21';
+  const chatCanvasBg = isDark ? '#0b101b' : '#f0f2f5';
+
   return (
-    <div className="animate-fade-in" style={{ height: 'calc(100vh - 140px)', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--slate-900)' }}>
+    <div className="animate-fade-in" style={{
+      height: 'calc(100vh - 100px)',
+      maxHeight: 'calc(100vh - 100px)',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden'
+    }}>
+      {/* Compact Header Bar */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '0.625rem',
+        flexShrink: 0
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <h1 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--slate-900)', margin: 0 }}>
             Verification Messages
           </h1>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.8125rem' }}>
-            Private chat channel between item reporters and finders
-          </p>
+          <span style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '5px',
+            fontSize: '0.6875rem',
+            fontWeight: 600,
+            padding: '2px 8px',
+            borderRadius: '9999px',
+            backgroundColor: isDark ? 'rgba(16, 185, 129, 0.15)' : '#dcfce7',
+            color: isDark ? '#34d399' : '#15803d'
+          }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }}></span>
+            STOMP Live E2E
+          </span>
         </div>
 
-        <Link to="/matches" className="btn btn-outline btn-sm">
-          <GitMerge size={14} /> Back to Matches
+        <Link to="/matches" className="btn btn-outline btn-sm" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
+          <GitMerge size={13} /> Back to Matches
         </Link>
       </div>
 
-      {/* Main Chat Interface Window */}
+      {/* Main WhatsApp-Style Frame */}
       <div className="surface-card" style={{
         flex: 1,
+        minHeight: 0,
         display: 'grid',
-        gridTemplateColumns: 'minmax(240px, 300px) 1fr',
-        borderRadius: '6px',
+        gridTemplateColumns: '320px 1fr',
+        borderRadius: '10px',
         overflow: 'hidden',
-        border: '1px solid var(--slate-200)',
-        boxShadow: 'var(--shadow-md)'
+        border: '1px solid var(--border-color)',
+        boxShadow: 'var(--shadow-md)',
+        backgroundColor: 'var(--card-bg)'
       }}>
         {/* Left Pane: Conversation Threads */}
         <div style={{
           borderRight: '1px solid var(--border-color)',
           backgroundColor: 'var(--card-bg)',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          height: '100%',
+          minHeight: 0
         }}>
-          <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--slate-50)' }}>
-            <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--slate-700)' }}>
-              Active Conversations ({conversations.length})
-            </span>
+          {/* Top of Left Pane: User Header & Search */}
+          <div style={{
+            padding: '12px 14px',
+            borderBottom: '1px solid var(--border-color)',
+            backgroundColor: 'var(--slate-50)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '10px',
+            flexShrink: 0
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--slate-900)' }}>
+                Chats
+              </span>
+              <span style={{ fontSize: '0.6875rem', color: 'var(--slate-500)', fontWeight: 500 }}>
+                {conversations.length} Active Channel{conversations.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+
+            {/* Thread Search Box */}
+            <div style={{ position: 'relative' }}>
+              <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
+              <input
+                type="text"
+                placeholder="Search chats or items..."
+                value={searchFilter}
+                onChange={(e) => setSearchFilter(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '6px 10px 6px 30px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-color)',
+                  backgroundColor: 'var(--card-bg)',
+                  fontSize: '0.75rem',
+                  color: 'var(--text-main)',
+                  outline: 'none',
+                  boxSizing: 'border-box'
+                }}
+              />
+            </div>
           </div>
 
-          <div style={{ flex: 1, overflowY: 'auto' }}>
-            {conversations.map(c => {
-              const isSelected = c.id === activeConvId;
-              return (
-                <div
-                  key={c.id}
-                  onClick={() => setActiveConvId(c.id)}
-                  style={{
-                    padding: '12px 16px',
-                    borderBottom: '1px solid var(--slate-100)',
-                    backgroundColor: isSelected ? 'var(--primary-light)' : 'transparent',
-                    cursor: 'pointer',
-                    transition: 'background 0.15s ease'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: isSelected ? 'var(--primary)' : 'var(--slate-900)' }}>
-                      {c.otherParticipant?.name}
-                    </span>
-                    <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)' }}>
-                      {c.lastMessageTime ? new Date(c.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                    </span>
-                  </div>
+          {/* Scrollable Conversation List */}
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            {filteredConversations.length === 0 ? (
+              <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>
+                No active conversations found.
+              </div>
+            ) : (
+              filteredConversations.map(c => {
+                const isSelected = c.id === activeConvId;
+                const formattedTime = c.lastMessageTime
+                  ? new Date(c.lastMessageTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : '';
 
-                  <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--slate-700)', marginBottom: '2px' }}>
-                    Regarding: {c.itemName}
-                  </div>
+                return (
+                  <div
+                    key={c.id}
+                    onClick={() => setActiveConvId(c.id)}
+                    style={{
+                      padding: '12px 14px',
+                      borderBottom: '1px solid var(--border-color)',
+                      backgroundColor: isSelected ? (isDark ? 'rgba(37, 99, 235, 0.16)' : '#eff6ff') : 'transparent',
+                      borderLeft: isSelected ? '3px solid #2563eb' : '3px solid transparent',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      gap: '12px',
+                      alignItems: 'center',
+                      transition: 'background 0.15s ease'
+                    }}
+                  >
+                    {/* Participant Avatar */}
+                    <div style={{ position: 'relative', flexShrink: 0 }}>
+                      <img
+                        src={c.otherParticipant?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"}
+                        alt={c.otherParticipant?.name}
+                        style={{
+                          width: '42px',
+                          height: '42px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '1px solid var(--border-color)'
+                        }}
+                      />
+                      <span style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        right: 0,
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        backgroundColor: '#10b981',
+                        border: '2px solid var(--card-bg)'
+                      }}></span>
+                    </div>
 
-                  <p style={{
-                    fontSize: '0.75rem',
-                    color: 'var(--slate-500)',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {c.lastMessage || 'No messages yet'}
-                  </p>
-                </div>
-              );
-            })}
+                    {/* Metadata */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
+                        <h4 style={{
+                          fontSize: '0.875rem',
+                          fontWeight: isSelected ? 700 : 600,
+                          color: isSelected ? '#2563eb' : 'var(--slate-900)',
+                          margin: 0,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          {c.otherParticipant?.name || 'Rohan Verma'}
+                        </h4>
+                        <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', flexShrink: 0, marginLeft: '6px' }}>
+                          {formattedTime}
+                        </span>
+                      </div>
+
+                      <div style={{
+                        fontSize: '0.6875rem',
+                        fontWeight: 600,
+                        color: 'var(--slate-600)',
+                        marginBottom: '3px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        📦 {c.itemName}
+                      </div>
+
+                      <p style={{
+                        fontSize: '0.75rem',
+                        color: 'var(--slate-500)',
+                        margin: 0,
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <CheckCheck size={12} color="#94a3b8" />
+                        <span>{c.lastMessage}</span>
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
 
-        {/* Right Pane: Active Chat Room */}
-        <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-color)' }}>
-          {/* Room Header */}
-          {activeConv && (
-            <div style={{
-              padding: '12px 20px',
-              backgroundColor: 'var(--card-bg)',
-              borderBottom: '1px solid var(--border-color)',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {/* Right Pane: WhatsApp Chat Room Canvas */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: chatCanvasBg,
+          height: '100%',
+          minHeight: 0,
+          position: 'relative'
+        }}>
+          {/* WhatsApp Room Header */}
+          <div style={{
+            padding: '10px 18px',
+            backgroundColor: 'var(--card-bg)',
+            borderBottom: '1px solid var(--border-color)',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexShrink: 0,
+            zIndex: 10
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ position: 'relative' }}>
                 <img
-                  src={activeConv.otherParticipant?.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"}
+                  src={activeConv?.otherParticipant?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"}
                   alt="Avatar"
-                  style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '1px solid var(--border-color)'
+                  }}
                 />
-                <div>
-                  <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--slate-900)' }}>
-                    {activeConv.otherParticipant?.name}
-                  </h4>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
-                    {activeConv.otherParticipant?.role} • Regarding: <strong>{activeConv.itemName}</strong>
-                  </span>
+                <span style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                  width: '9px',
+                  height: '9px',
+                  borderRadius: '50%',
+                  backgroundColor: '#10b981',
+                  border: '1.5px solid var(--card-bg)'
+                }}></span>
+              </div>
+
+              <div>
+                <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--slate-900)', margin: 0 }}>
+                  {activeConv?.otherParticipant?.name || 'Rohan Verma'}
+                </h4>
+                <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>{activeConv?.otherParticipant?.role || 'Student Finder'}</span>
+                  <span>•</span>
+                  <span style={{ fontWeight: 600, color: 'var(--slate-700)' }}>{activeConv?.itemName || 'MacBook Pro 14"'}</span>
                 </div>
               </div>
-
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <Link to={`/claims/new/${activeConv.matchId || 1}`} className="btn btn-primary btn-sm">
-                  <ShieldCheck size={14} /> Submit Claim
-                </Link>
-                <Link to={`/matches/${activeConv.matchId || 1}`} className="btn btn-secondary btn-sm">
-                  Match Details
-                </Link>
-              </div>
             </div>
-          )}
 
-          {/* Safety Disclaimer Banner */}
+            {/* Quick Actions */}
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Link
+                to={`/claims/new/${activeConv?.matchId || 1}`}
+                className="btn btn-primary btn-sm"
+                style={{ padding: '6px 12px', fontSize: '0.75rem', gap: '5px' }}
+              >
+                <ShieldCheck size={14} /> Claim Voucher
+              </Link>
+              <Link
+                to={`/matches/${activeConv?.matchId || 1}`}
+                className="btn btn-outline btn-sm"
+                style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+              >
+                View Match
+              </Link>
+            </div>
+          </div>
+
+          {/* Safety Reminder Strip */}
           <div style={{
-            padding: '8px 16px',
-            backgroundColor: '#fffbeb',
-            borderBottom: '1px solid #fde68a',
-            color: '#92400e',
-            fontSize: '0.75rem',
+            padding: '6px 16px',
+            backgroundColor: isDark ? 'rgba(245, 158, 11, 0.12)' : '#fffbeb',
+            borderBottom: '1px solid',
+            borderColor: isDark ? 'rgba(245, 158, 11, 0.25)' : '#fde68a',
+            color: isDark ? '#fbbf24' : '#92400e',
+            fontSize: '0.71875rem',
             display: 'flex',
             alignItems: 'center',
-            gap: '8px'
+            justifyContent: 'center',
+            gap: '8px',
+            flexShrink: 0
           }}>
-            <ShieldCheck size={14} color="#b45309" />
+            <Lock size={12} />
             <span>
-              <strong>Campus Safety Reminder:</strong> Do NOT share passwords, unlock patterns, or bank info. Verification happens via Security Desk.
+              <strong>Verified Campus Protocol:</strong> Item custody is held at Ramanujan Central Security Desk. Never arrange private payments.
             </span>
           </div>
 
-          {/* Messages Area */}
-          <div style={{
-            flex: 1,
-            overflowY: 'auto',
-            padding: '1.25rem',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px'
-          }}>
+          {/* WhatsApp Scrollable Message History Area */}
+          <div
+            ref={chatScrollContainerRef}
+            style={{
+              flex: 1,
+              minHeight: 0,
+              overflowY: 'auto',
+              padding: '1.25rem 1.5rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '10px'
+            }}
+          >
+            {/* Centered Date Badge */}
+            <div style={{ textAlign: 'center', margin: '4px 0 12px' }}>
+              <span style={{
+                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.06)',
+                color: 'var(--slate-500)',
+                padding: '4px 12px',
+                borderRadius: '6px',
+                fontSize: '0.6875rem',
+                fontWeight: 600,
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em'
+              }}>
+                TODAY • NOVEMBER 12, 2026
+              </span>
+            </div>
+
+            {/* Message Bubbles */}
             {activeConv?.messages?.map((msg) => {
               const isMe = msg.isMe || msg.sender?.id === user?.id || msg.senderId === user?.id;
               const displayText = msg.text || msg.content;
-              const senderDisplayName = isMe ? 'You' : (msg.sender?.name || msg.senderName || 'Participant');
+              const formattedTime = msg.timestamp
+                ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : 'Now';
+
               return (
                 <div
                   key={msg.id}
@@ -292,39 +571,73 @@ export const Chat = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: isMe ? 'flex-end' : 'flex-start',
-                    maxWidth: '70%',
+                    maxWidth: '68%',
                     alignSelf: isMe ? 'flex-end' : 'flex-start'
                   }}
                 >
-                  <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginBottom: '2px', padding: '0 4px' }}>
-                    {senderDisplayName}
-                  </span>
                   <div
                     style={{
-                      padding: '10px 14px',
-                      borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                      backgroundColor: isMe ? 'var(--primary)' : '#ffffff',
-                      color: isMe ? '#ffffff' : 'var(--slate-800)',
-                      boxShadow: 'var(--shadow-sm)',
+                      padding: '8px 12px 6px',
+                      borderRadius: isMe ? '10px 10px 2px 10px' : '10px 10px 10px 2px',
+                      backgroundColor: isMe ? bubbleMeBg : bubbleOtherBg,
+                      color: isMe ? bubbleMeText : bubbleOtherText,
+                      boxShadow: '0 1px 1px rgba(0, 0, 0, 0.08)',
                       fontSize: '0.875rem',
-                      lineHeight: 1.5,
-                      border: isMe ? 'none' : '1px solid var(--slate-200)'
+                      lineHeight: 1.45,
+                      wordBreak: 'break-word',
+                      border: isMe
+                        ? (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.2)')
+                        : '1px solid var(--border-color)',
+                      position: 'relative'
                     }}
                   >
-                    {displayText}
+                    {/* Sender Name for inbound messages */}
+                    {!isMe && (
+                      <div style={{
+                        fontSize: '0.71875rem',
+                        fontWeight: 700,
+                        color: '#2563eb',
+                        marginBottom: '2px'
+                      }}>
+                        {msg.senderName || activeConv?.otherParticipant?.name || 'Rohan Verma'}
+                      </div>
+                    )}
+
+                    <div>{displayText}</div>
+
+                    {/* Timestamp & Double Blue Ticks */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      gap: '4px',
+                      fontSize: '0.65625rem',
+                      color: isMe ? (isDark ? '#8696a0' : '#667781') : 'var(--slate-400)',
+                      marginTop: '3px'
+                    }}>
+                      <span>{formattedTime}</span>
+                      {isMe && <CheckCheck size={13} color="#53bdeb" />}
+                    </div>
                   </div>
-                  <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '2px', padding: '0 4px' }}>
-                    {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Now'}
-                  </span>
                 </div>
               );
             })}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Reply Suggestions */}
-          <div style={{ padding: '6px 16px', backgroundColor: 'var(--card-bg)', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '8px', overflowX: 'auto' }}>
-            <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', alignSelf: 'center', whiteSpace: 'nowrap' }}>Quick replies:</span>
+          {/* Quick Reply Chips Bar */}
+          <div style={{
+            padding: '6px 14px',
+            backgroundColor: 'var(--card-bg)',
+            borderTop: '1px solid var(--border-color)',
+            display: 'flex',
+            gap: '8px',
+            overflowX: 'auto',
+            flexShrink: 0
+          }}>
+            <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
+              Suggestions:
+            </span>
             {[
               "Where is it stored right now?",
               "Does it have an identifying mark or sticker?",
@@ -338,11 +651,12 @@ export const Chat = () => {
                   background: 'var(--slate-100)',
                   border: '1px solid var(--border-color)',
                   borderRadius: '14px',
-                  padding: '4px 10px',
+                  padding: '3px 10px',
                   fontSize: '0.6875rem',
                   color: 'var(--slate-700)',
                   cursor: 'pointer',
-                  whiteSpace: 'nowrap'
+                  whiteSpace: 'nowrap',
+                  transition: 'background 0.15s ease'
                 }}
               >
                 {prompt}
@@ -350,33 +664,79 @@ export const Chat = () => {
             ))}
           </div>
 
-          {/* Message Input Box */}
+          {/* WhatsApp Bottom Message Input Dock */}
           <form
             onSubmit={handleSendMessage}
             style={{
-              padding: '12px 16px',
+              padding: '10px 16px',
               backgroundColor: 'var(--card-bg)',
               borderTop: '1px solid var(--border-color)',
               display: 'flex',
               gap: '10px',
-              alignItems: 'center'
+              alignItems: 'center',
+              flexShrink: 0
             }}
           >
+            {/* Attachment Button */}
+            <button
+              type="button"
+              title="Attach Document / Photo"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--slate-500)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '6px',
+                borderRadius: '50%'
+              }}
+              onClick={() => toast.info("Photo attachments are handled through Claim Verification.")}
+            >
+              <Paperclip size={18} />
+            </button>
+
+            {/* Input field */}
             <input
               type="text"
-              placeholder="Type your verification message..."
+              placeholder="Type a message (Press Enter to send)..."
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              className="form-input"
-              style={{ flex: 1 }}
+              onKeyDown={handleKeyDown}
+              style={{
+                flex: 1,
+                padding: '9px 16px',
+                borderRadius: '24px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: isDark ? '#111827' : '#f8fafc',
+                color: 'var(--text-main)',
+                fontSize: '0.875rem',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
             />
+
+            {/* Send Button */}
             <button
               type="submit"
-              className="btn btn-primary"
-              style={{ borderRadius: '10px', padding: '0.625rem 1.25rem' }}
               disabled={!inputText.trim()}
+              title="Send Message"
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                backgroundColor: inputText.trim() ? '#2563eb' : 'var(--slate-200)',
+                color: inputText.trim() ? '#ffffff' : 'var(--slate-400)',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: inputText.trim() ? 'pointer' : 'default',
+                transition: 'background-color 0.15s ease'
+              }}
             >
-              <Send size={16} /> Send
+              <Send size={16} />
             </button>
           </form>
         </div>

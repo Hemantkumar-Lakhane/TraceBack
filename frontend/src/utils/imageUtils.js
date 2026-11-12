@@ -33,3 +33,4 @@ export const getItemImageUrl = (item, fallbackToCategory = false) => {
 };
 
 export default getItemImageUrl;
+
