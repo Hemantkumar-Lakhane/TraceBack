@@ -8,7 +8,7 @@ import TraceBackLogo from '../TraceBackLogo';
 
 export const Navbar = ({ onToggleSidebar }) => {
   const { user, logout, loginAs } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark, toggleTheme, palette, isLuxury, togglePalette } = useTheme();
   const navigate = useNavigate();
 
   const [notifications, setNotifications] = useState([]);
@@ -21,8 +21,13 @@ export const Navbar = ({ onToggleSidebar }) => {
 
   useEffect(() => {
     const loadNotifs = async () => {
-      const data = await notificationService.getNotifications();
-      setNotifications(data || []);
+      try {
+        const data = await notificationService.getNotifications();
+        setNotifications(Array.isArray(data) ? data : []);
+      } catch (e) {
+        console.error("Failed to load notifications", e);
+        setNotifications([]);
+      }
     };
     loadNotifs();
 
@@ -39,7 +44,8 @@ export const Navbar = ({ onToggleSidebar }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const safeNotifications = Array.isArray(notifications) ? notifications : [];
+  const unreadCount = safeNotifications.filter(n => !n.read).length;
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -49,16 +55,24 @@ export const Navbar = ({ onToggleSidebar }) => {
   };
 
   const handleMarkAllRead = async () => {
-    const updated = await notificationService.markAllAsRead();
-    setNotifications(updated);
+    try {
+      await notificationService.markAllAsRead();
+      setNotifications(prev => (Array.isArray(prev) ? prev.map(n => ({ ...n, read: true })) : []));
+    } catch (e) {
+      console.warn("Failed to mark all as read", e);
+    }
   };
 
-  const handleSwitchRole = (role) => {
-    loginAs(role);
-    setShowUserDropdown(false);
-    if (role === 'SECURITY') navigate('/security');
-    else if (role === 'ADMIN') navigate('/admin');
-    else navigate('/dashboard');
+  const handleSwitchAccount = async (target) => {
+    try {
+      await loginAs(target);
+      setShowUserDropdown(false);
+      if (target === 'SECURITY') navigate('/security');
+      else if (target === 'ADMIN') navigate('/admin');
+      else navigate('/dashboard');
+    } catch (e) {
+      console.error("Account switch error", e);
+    }
   };
 
   return (
@@ -131,8 +145,54 @@ export const Navbar = ({ onToggleSidebar }) => {
         />
       </form>
 
-      {/* Right Controls: Theme Toggle, Notifications & Profile */}
+      {/* Right Controls: Palette Switcher, Theme Toggle, Notifications & Profile */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        {/* Color Palette Swatch Pill */}
+        <button
+          onClick={togglePalette}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '6px 10px',
+            borderRadius: '9999px',
+            border: '1px solid var(--border-color)',
+            backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'var(--slate-100)',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            height: '34px'
+          }}
+          title="Toggle Color Theme Palette"
+          aria-label="Toggle Color Theme Palette"
+        >
+          {/* 3 Color Dots */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#3B2418',
+              border: '1px solid rgba(255, 255, 255, 0.4)',
+              display: 'inline-block'
+            }} />
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#F2E8DA',
+              border: '1px solid rgba(0, 0, 0, 0.2)',
+              display: 'inline-block'
+            }} />
+            <span style={{
+              width: '8px',
+              height: '8px',
+              borderRadius: '50%',
+              backgroundColor: '#8EC5FF',
+              display: 'inline-block'
+            }} />
+          </div>
+        </button>
+
         {/* Dark / Light Mode Toggle Button */}
         <button
           onClick={toggleTheme}
@@ -226,35 +286,42 @@ export const Navbar = ({ onToggleSidebar }) => {
               </div>
 
               <div style={{ maxHeight: '260px', overflowY: 'auto' }}>
-                {notifications.length === 0 ? (
+                {safeNotifications.length === 0 ? (
                   <div style={{ padding: '20px', textAlign: 'center', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>
                     No notifications
                   </div>
                 ) : (
-                  notifications.map(n => (
-                    <Link
-                      key={n.id}
-                      to={n.link || '/notifications'}
-                      onClick={() => setShowNotifDropdown(false)}
-                      style={{
-                        display: 'block',
-                        padding: '10px 14px',
-                        borderBottom: '1px solid var(--slate-100)',
-                        backgroundColor: n.read ? 'transparent' : 'var(--slate-50)',
-                        textDecoration: 'none'
-                      }}
-                    >
-                      <div style={{ fontSize: '0.8125rem', fontWeight: n.read ? 500 : 600, color: 'var(--slate-900)' }}>
-                        {n.title}
-                      </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
-                        {n.message}
-                      </div>
-                      <div style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '3px' }}>
-                        {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </div>
-                    </Link>
-                  ))
+                  safeNotifications.map(n => {
+                    const targetLink = n.link || (n.type === 'CHAT' ? `/chat/${n.referenceId || 1}` : '/notifications');
+                    const timeStr = n.timestamp && !isNaN(new Date(n.timestamp).getTime())
+                      ? new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      : 'Recently';
+
+                    return (
+                      <Link
+                        key={n.id}
+                        to={targetLink}
+                        onClick={() => setShowNotifDropdown(false)}
+                        style={{
+                          display: 'block',
+                          padding: '10px 14px',
+                          borderBottom: '1px solid var(--slate-100)',
+                          backgroundColor: n.read ? 'transparent' : 'rgba(37, 99, 235, 0.05)',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        <div style={{ fontSize: '0.8125rem', fontWeight: n.read ? 500 : 600, color: 'var(--slate-900)' }}>
+                          {n.title || (n.type === 'CHAT' ? 'Verification Message' : 'Campus Alert')}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
+                          {n.message}
+                        </div>
+                        <div style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '3px' }}>
+                          {timeStr}
+                        </div>
+                      </Link>
+                    );
+                  })
                 )}
               </div>
 
@@ -328,30 +395,45 @@ export const Navbar = ({ onToggleSidebar }) => {
               {/* Role Switcher in User Menu */}
               <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-color)', backgroundColor: 'var(--slate-100)' }}>
                 <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--slate-400)', marginBottom: '4px' }}>
-                  SWITCH ACCOUNT VIEW:
+                  SWITCH TEST ACCOUNT:
                 </div>
-                <div style={{ display: 'flex', gap: '4px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
                   <button
-                    onClick={() => handleSwitchRole('STUDENT')}
+                    onClick={() => handleSwitchAccount('STUDENT')}
                     style={{
-                      flex: 1,
-                      padding: '4px',
+                      padding: '4px 6px',
                       fontSize: '0.6875rem',
                       fontWeight: 500,
                       border: '1px solid var(--border-color)',
                       borderRadius: '4px',
-                      backgroundColor: user?.role === 'STUDENT' ? '#2563eb' : 'var(--card-bg)',
-                      color: user?.role === 'STUDENT' ? '#ffffff' : 'var(--text-main)',
+                      backgroundColor: user?.email?.includes('aarav') ? '#2563eb' : 'var(--card-bg)',
+                      color: user?.email?.includes('aarav') ? '#ffffff' : 'var(--text-main)',
                       cursor: 'pointer'
                     }}
+                    title="Aarav Sharma (Student)"
                   >
-                    Student
+                    Aarav (12110104)
                   </button>
                   <button
-                    onClick={() => handleSwitchRole('SECURITY')}
+                    onClick={() => handleSwitchAccount('ROHAN')}
                     style={{
-                      flex: 1,
-                      padding: '4px',
+                      padding: '4px 6px',
+                      fontSize: '0.6875rem',
+                      fontWeight: 500,
+                      border: '1px solid var(--border-color)',
+                      borderRadius: '4px',
+                      backgroundColor: user?.email?.includes('rohan') ? '#2563eb' : 'var(--card-bg)',
+                      color: user?.email?.includes('rohan') ? '#ffffff' : 'var(--text-main)',
+                      cursor: 'pointer'
+                    }}
+                    title="Rohan Verma (Student)"
+                  >
+                    Rohan (12110208)
+                  </button>
+                  <button
+                    onClick={() => handleSwitchAccount('SECURITY')}
+                    style={{
+                      padding: '4px 6px',
                       fontSize: '0.6875rem',
                       fontWeight: 500,
                       border: '1px solid var(--border-color)',
@@ -360,14 +442,14 @@ export const Navbar = ({ onToggleSidebar }) => {
                       color: user?.role === 'SECURITY' ? '#ffffff' : 'var(--text-main)',
                       cursor: 'pointer'
                     }}
+                    title="Inspector Rajesh Kumar (Campus Security)"
                   >
-                    Security
+                    Rajesh (Security)
                   </button>
                   <button
-                    onClick={() => handleSwitchRole('ADMIN')}
+                    onClick={() => handleSwitchAccount('ADMIN')}
                     style={{
-                      flex: 1,
-                      padding: '4px',
+                      padding: '4px 6px',
                       fontSize: '0.6875rem',
                       fontWeight: 500,
                       border: '1px solid var(--border-color)',
@@ -376,8 +458,9 @@ export const Navbar = ({ onToggleSidebar }) => {
                       color: user?.role === 'ADMIN' ? '#ffffff' : 'var(--text-main)',
                       cursor: 'pointer'
                     }}
+                    title="Prof. Priya Nair (Campus Admin)"
                   >
-                    Admin
+                    Priya (Admin)
                   </button>
                 </div>
               </div>

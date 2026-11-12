@@ -243,7 +243,7 @@ export const ReportDetails = () => {
           }}>
             {/* Real Scannable 2D QR Code */}
             <QRCodeSVG
-              value={`https://traceback-campus.edu/verify/item/${report.id}?type=${report.type}&item=${encodeURIComponent(item.name || '')}`}
+              value={`https://traceback.vit.edu/verify/item/${report.id}?type=${report.type}&item=${encodeURIComponent(item.name || '')}`}
               size={150}
               level="H"
               includeMargin={false}

@@ -259,12 +259,12 @@ export const MatchDetails = () => {
             Next Steps: Verification
           </h4>
           <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
-            Initiate in-app communication with the finder or submit an ownership verification claim for security desk pickup.
+            Initiate in-app communication with the student or submit an ownership verification claim for security desk pickup.
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '8px' }}>
-          <Link to="/chat" className="btn btn-secondary btn-sm">
+          <Link to={`/chat/${match.id || 1}`} className="btn btn-secondary btn-sm">
             <MessageSquare size={14} /> Open Chat
           </Link>
           <Link to={`/claims/new/${match.id}`} className="btn btn-primary btn-sm">

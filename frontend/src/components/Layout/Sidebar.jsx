@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { CAMPUS_CONFIG } from '../../config/campusConfig';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -138,7 +139,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? 'var(--text-main)' : 'var(--slate-500)',
                   backgroundColor: isActive ? 'var(--slate-100)' : 'transparent',
-                  borderLeft: isActive ? '3px solid #2563eb' : '3px solid transparent',
+                  borderLeft: isActive ? '3px solid var(--accent, #2563eb)' : '3px solid transparent',
                   textDecoration: 'none',
                   transition: 'all 0.15s ease'
                 })}
@@ -146,7 +147,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
                 {({ isActive }) => (
                   <>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ color: isActive ? '#2563eb' : 'var(--slate-400)', display: 'flex', alignItems: 'center' }}>
+                      <span style={{ color: isActive ? 'var(--accent, #2563eb)' : 'var(--slate-400)', display: 'flex', alignItems: 'center' }}>
                         {item.icon}
                       </span>
                       <span>{item.label}</span>
@@ -170,24 +171,18 @@ export const Sidebar = ({ isOpen, onClose }) => {
           </nav>
         </div>
 
-        {/* Bottom Desk Information Box */}
-        <div style={{ padding: '1rem', borderTop: '1px solid var(--border-color)', backgroundColor: 'var(--slate-50)' }}>
-          <div style={{
-            padding: '10px 12px',
-            borderRadius: '6px',
-            backgroundColor: 'var(--card-bg)',
-            border: '1px solid var(--border-color)',
-            fontSize: '0.75rem'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600, color: 'var(--slate-900)', marginBottom: '3px' }}>
-              <Building2 size={13} color="#2563eb" />
-              <span>Ramanujan Security Vault</span>
-            </div>
-            <p style={{ fontSize: '0.6875rem', color: 'var(--slate-500)', lineHeight: 1.4 }}>
-              Ground Floor, Student Activity Center<br />
-              Helpline: <strong>+91 (022) 2576-7000</strong>
-            </p>
-          </div>
+        {/* Clean Sidebar Footer */}
+        <div style={{
+          padding: '0.75rem 1rem',
+          borderTop: '1px solid var(--border-color)',
+          fontSize: '0.6875rem',
+          color: 'var(--slate-400)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <span>TraceBack Network</span>
+          <span>v2.4</span>
         </div>
       </aside>
     </>

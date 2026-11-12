@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
-import { Link } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import {
   Send,
   GitMerge,
@@ -21,14 +21,20 @@ import {
 } from 'lucide-react';
 import chatService, { getCampusAvatar } from '../api/chatService';
 import { getItemImageUrl } from '../utils/imageUtils';
+import { CAMPUS_CONFIG } from '../config/campusConfig';
 
 export const Chat = () => {
   const { user } = useAuth();
-  const { isDark } = useTheme();
+  const { isDark, isLuxury } = useTheme();
   const { toast } = useToast();
 
+  const { id: paramConvId } = useParams();
+  const [searchParams] = useSearchParams();
+  const queryConvId = searchParams.get('conversationId') || searchParams.get('id');
+  const targetRouteId = paramConvId || queryConvId;
+
   const [conversations, setConversations] = useState([]);
-  const [activeConvId, setActiveConvId] = useState(1);
+  const [activeConvId, setActiveConvId] = useState(() => (targetRouteId ? Number(targetRouteId) : 1));
   const [activeConv, setActiveConv] = useState(null);
   const [inputText, setInputText] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
@@ -37,12 +43,24 @@ export const Chat = () => {
   const messagesEndRef = useRef(null);
   const chatScrollContainerRef = useRef(null);
 
+  // Sync if URL param changes (e.g. user clicked notification to /chat/1)
+  useEffect(() => {
+    if (targetRouteId) {
+      const num = Number(targetRouteId);
+      if (!isNaN(num) && num !== activeConvId) {
+        setActiveConvId(num);
+      }
+    }
+  }, [targetRouteId]);
+
   // Load real conversations from backend
   const loadChatData = async () => {
     try {
       const list = await chatService.getConversations(user?.id);
       setConversations(list || []);
-      const targetId = activeConvId || (list && list.length > 0 ? list[0].id : 1);
+      const defaultId = (list && list.length > 0) ? list[0].id : 1;
+      const targetId = targetRouteId ? Number(targetRouteId) : (activeConvId || defaultId);
+      setActiveConvId(targetId);
       const conv = await chatService.getConversationById(targetId, user?.id);
       setActiveConv(conv);
     } catch (err) {
@@ -203,12 +221,26 @@ export const Chat = () => {
     );
   });
 
-  // WhatsApp-inspired color tokens
-  const bubbleMeBg = isDark ? '#005c4b' : '#d9fdd3';
-  const bubbleMeText = isDark ? '#e9edef' : '#111b21';
-  const bubbleOtherBg = isDark ? '#202c33' : '#ffffff';
-  const bubbleOtherText = isDark ? '#e9edef' : '#111b21';
-  const chatCanvasBg = isDark ? '#0b101b' : '#f0f2f5';
+  // Dynamic message bubble color tokens (Instagram Luxury Palette vs Classic)
+  const bubbleMeBg = isLuxury
+    ? (isDark ? '#1C2C3E' : '#E8F3FF') // soft baby blue wash
+    : (isDark ? '#005c4b' : '#d9fdd3');
+
+  const bubbleMeText = isLuxury
+    ? (isDark ? '#F5EFE6' : '#1A2938')
+    : (isDark ? '#e9edef' : '#111b21');
+
+  const bubbleOtherBg = isLuxury
+    ? (isDark ? '#231812' : '#FFFFFF') // dark cocoa bean or pure alabaster
+    : (isDark ? '#202c33' : '#ffffff');
+
+  const bubbleOtherText = isLuxury
+    ? (isDark ? '#F5EFE6' : '#281810') // deep espresso brown
+    : (isDark ? '#e9edef' : '#111b21');
+
+  const chatCanvasBg = isLuxury
+    ? (isDark ? '#160F0B' : '#F6EFE6') // deep espresso or warm cream canvas from snap
+    : (isDark ? '#0b101b' : '#f0f2f5');
 
   return (
     <div className="animate-fade-in" style={{
@@ -242,7 +274,7 @@ export const Chat = () => {
             color: isDark ? '#34d399' : '#15803d'
           }}>
             <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10b981' }}></span>
-            STOMP Live E2E
+            Online
           </span>
         </div>
 
@@ -470,11 +502,11 @@ export const Chat = () => {
                 <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--slate-900)', margin: 0 }}>
                   {activeConv?.otherParticipant?.name || 'Rohan Verma'}
                 </h4>
-                <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span>{activeConv?.otherParticipant?.role || 'Student Finder'}</span>
-                  <span>•</span>
-                  <span style={{ fontWeight: 600, color: 'var(--slate-700)' }}>{activeConv?.itemName || 'MacBook Pro 14"'}</span>
-                </div>
+                {activeConv?.itemName && (
+                  <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
+                    {activeConv.itemName}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -495,26 +527,6 @@ export const Chat = () => {
                 View Match
               </Link>
             </div>
-          </div>
-
-          {/* Safety Reminder Strip */}
-          <div style={{
-            padding: '6px 16px',
-            backgroundColor: isDark ? 'rgba(245, 158, 11, 0.12)' : '#fffbeb',
-            borderBottom: '1px solid',
-            borderColor: isDark ? 'rgba(245, 158, 11, 0.25)' : '#fde68a',
-            color: isDark ? '#fbbf24' : '#92400e',
-            fontSize: '0.71875rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '8px',
-            flexShrink: 0
-          }}>
-            <Lock size={12} />
-            <span>
-              <strong>Verified Campus Protocol:</strong> Item custody is held at Ramanujan Central Security Desk. Never arrange private payments.
-            </span>
           </div>
 
           {/* WhatsApp Scrollable Message History Area */}
@@ -576,7 +588,9 @@ export const Chat = () => {
                       lineHeight: 1.45,
                       wordBreak: 'break-word',
                       border: isMe
-                        ? (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.2)')
+                        ? (isLuxury
+                            ? (isDark ? '1px solid rgba(142, 197, 255, 0.25)' : '1px solid #BAE0FF')
+                            : (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.2)'))
                         : '1px solid var(--border-color)',
                       position: 'relative'
                     }}
@@ -586,7 +600,7 @@ export const Chat = () => {
                       <div style={{
                         fontSize: '0.71875rem',
                         fontWeight: 700,
-                        color: '#2563eb',
+                        color: isLuxury ? (isDark ? '#8EC5FF' : '#1D6FB8') : '#2563eb',
                         marginBottom: '2px'
                       }}>
                         {msg.senderName || activeConv?.otherParticipant?.name || 'Rohan Verma'}
@@ -602,11 +616,11 @@ export const Chat = () => {
                       justifyContent: 'flex-end',
                       gap: '4px',
                       fontSize: '0.65625rem',
-                      color: isMe ? (isDark ? '#8696a0' : '#667781') : 'var(--slate-400)',
+                      color: isMe ? (isDark ? '#BFAEA0' : '#667781') : 'var(--slate-400)',
                       marginTop: '3px'
                     }}>
                       <span>{formattedTime}</span>
-                      {isMe && <CheckCheck size={13} color="#53bdeb" />}
+                      {isMe && <CheckCheck size={13} color={isLuxury ? '#8EC5FF' : '#53bdeb'} />}
                     </div>
                   </div>
                 </div>
@@ -625,9 +639,6 @@ export const Chat = () => {
             overflowX: 'auto',
             flexShrink: 0
           }}>
-            <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
-              Suggestions:
-            </span>
             {[
               "Where is it stored right now?",
               "Does it have an identifying mark or sticker?",
@@ -716,8 +727,12 @@ export const Chat = () => {
                 width: '38px',
                 height: '38px',
                 borderRadius: '50%',
-                backgroundColor: inputText.trim() ? '#2563eb' : 'var(--slate-200)',
-                color: inputText.trim() ? '#ffffff' : 'var(--slate-400)',
+                backgroundColor: inputText.trim()
+                  ? (isLuxury ? (isDark ? '#8EC5FF' : '#3B2418') : '#2563eb')
+                  : 'var(--slate-200)',
+                color: inputText.trim()
+                  ? (isLuxury && isDark ? '#160F0B' : '#ffffff')
+                  : 'var(--slate-400)',
                 border: 'none',
                 display: 'flex',
                 alignItems: 'center',

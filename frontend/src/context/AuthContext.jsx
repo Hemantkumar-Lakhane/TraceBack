@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import api from '../api/axiosConfig';
 import { DEMO_USERS } from '../api/mockData';
 import { supabase, isSupabaseConfigured } from '../api/supabaseClient';
+import { getCampusAvatar } from '../api/chatService';
 
 const AuthContext = createContext();
 
@@ -108,10 +109,10 @@ export const AuthProvider = ({ children }) => {
         name: userDto.name,
         email: email,
         role: userDto.role,
-        studentId: userDto.studentId || `IITB-2024-CS${100 + userDto.id}`,
-        department: userDto.department || 'Computer Science & Engineering',
+        studentId: userDto.studentId || (userDto.role === 'SECURITY' ? 'SEC-409' : userDto.role === 'ADMIN' ? 'ADM-101' : `1211010${userDto.id}`),
+        department: userDto.department || (userDto.role === 'SECURITY' ? 'Campus Security' : userDto.role === 'ADMIN' ? 'Dean Office' : 'Computer Engineering'),
         phone: userDto.phone || '+91 98201 23456',
-        avatar: userDto.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+        avatar: userDto.avatar || getCampusAvatar(userDto.name, userDto.role)
       };
 
       setToken(jwtToken);
@@ -165,8 +166,8 @@ export const AuthProvider = ({ children }) => {
           data: {
             name,
             role: 'STUDENT',
-            studentId: extra.studentId || 'IITB-2024-CS104',
-            department: extra.department || 'Computer Science & Engineering',
+            studentId: extra.studentId || '12110104',
+            department: extra.department || 'Computer Engineering',
             phone: extra.phone || '+91 98201 23456'
           }
         }
@@ -209,6 +210,10 @@ export const AuthProvider = ({ children }) => {
       setToken('demo-jwt-security-token');
       setUser(DEMO_USERS.security);
       return { token: 'demo-jwt-security-token', user: DEMO_USERS.security };
+    } else if (role === 'ROHAN') {
+      setToken('demo-jwt-rohan-token');
+      setUser(DEMO_USERS.rohan);
+      return { token: 'demo-jwt-rohan-token', user: DEMO_USERS.rohan };
     } else {
       setToken('demo-jwt-student-token');
       setUser(DEMO_USERS.student);
@@ -216,8 +221,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const loginAs = (role) => {
-    handleDemoFallback(role);
+  const loginAs = async (roleOrKey) => {
+    let email = 'aarav.sharma@vit.edu';
+    let pw = '12110104';
+    if (roleOrKey === 'ROHAN' || roleOrKey === 'rohan') {
+      email = 'rohan.verma@vit.edu';
+      pw = '12110208';
+    } else if (roleOrKey === 'SECURITY' || roleOrKey === 'security') {
+      email = 'rajesh.kumar@vit.edu';
+      pw = 'SEC-409';
+    } else if (roleOrKey === 'ADMIN' || roleOrKey === 'admin') {
+      email = 'priya.nair@vit.edu';
+      pw = 'ADM-101';
+    } else if (roleOrKey === 'ANANYA' || roleOrKey === 'ananya') {
+      email = 'ananya.iyer@vit.edu';
+      pw = '12110305';
+    }
+
+    try {
+      return await login(email, pw);
+    } catch (e) {
+      return handleDemoFallback(roleOrKey);
+    }
   };
 
   const logout = async () => {

@@ -72,8 +72,8 @@ export const getConversations = async (currentUserId) => {
         otherParticipant: {
           id: other?.id || 2,
           name: other?.name || 'Rohan Verma',
-          email: other?.email || 'rohan.verma@campus.edu',
-          role: other?.role === 'STUDENT' ? 'Student Finder' : other?.role === 'SECURITY' ? 'Security Vault Desk' : 'Campus Member',
+          email: other?.email || 'rohan.verma@vit.edu',
+          role: other?.role === 'STUDENT' ? 'VIT Student' : other?.role === 'SECURITY' ? 'Campus Security Office' : 'Campus Member',
           avatar: other?.avatar || getCampusAvatar(other?.name, other?.role)
         },
         lastMessage: lastMsg?.content || 'No messages yet',
@@ -141,8 +141,8 @@ export const getConversationById = async (id, currentUserId) => {
       otherParticipant: {
         id: other?.id || 2,
         name: other?.name || 'Rohan Verma',
-        email: other?.email || 'rohan.verma@campus.edu',
-        role: other?.role === 'STUDENT' ? 'Student Finder' : other?.role === 'SECURITY' ? 'Security Vault Desk' : 'Campus Member',
+        email: other?.email || 'rohan.verma@vit.edu',
+        role: other?.role === 'STUDENT' ? 'VIT Student' : other?.role === 'SECURITY' ? 'Campus Security Office' : 'Campus Member',
         avatar: other?.avatar || getCampusAvatar(other?.name, other?.role)
       },
       messages: formattedMessages

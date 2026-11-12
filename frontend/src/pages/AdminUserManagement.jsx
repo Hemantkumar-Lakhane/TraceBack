@@ -202,7 +202,7 @@ export const AdminUserManagement = () => {
             <input
               type="email"
               className="form-input"
-              placeholder="e.g. officer.doe@campus.edu"
+              placeholder="e.g. officer.doe@vit.edu"
               value={newStaff.email}
               onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
               required

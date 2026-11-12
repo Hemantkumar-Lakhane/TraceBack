@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertCircle, KeyRound } from 'lucide-react';
 import { DEMO_USERS } from '../api/mockData';
 import TraceBackLogo from '../components/TraceBackLogo';
 
@@ -18,15 +18,18 @@ export const Login = () => {
 
   const handleFillDemo = (role) => {
     setErrorMsg('');
-    if (role === 'STUDENT') {
+    if (role === 'STUDENT' || role === 'AARAV') {
       setEmail(DEMO_USERS.student.email);
-      setPassword('password123');
+      setPassword(DEMO_USERS.student.prn);
+    } else if (role === 'ROHAN') {
+      setEmail(DEMO_USERS.rohan.email);
+      setPassword(DEMO_USERS.rohan.prn);
     } else if (role === 'SECURITY') {
       setEmail(DEMO_USERS.security.email);
-      setPassword('password123');
+      setPassword(DEMO_USERS.security.badgeNumber || 'SEC-409');
     } else if (role === 'ADMIN') {
       setEmail(DEMO_USERS.admin.email);
-      setPassword('password123');
+      setPassword(DEMO_USERS.admin.studentId || 'ADM-101');
     }
   };
 
@@ -42,7 +45,7 @@ export const Login = () => {
       else if (data.user.role === 'ADMIN') navigate('/admin');
       else navigate('/dashboard');
     } catch (err) {
-      setErrorMsg(err.message || 'Login failed. Please check your credentials.');
+      setErrorMsg(err.message || 'Login failed. Please check your VIT email and PRN password.');
       toast.error(err.message || 'Login failed.');
     } finally {
       setLoading(false);
@@ -58,14 +61,14 @@ export const Login = () => {
       justifyContent: 'center',
       padding: '2rem 1rem'
     }}>
-      <div style={{ width: '100%', maxWidth: '400px' }}>
+      <div style={{ width: '100%', maxWidth: '420px' }}>
         {/* Brand header */}
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', textDecoration: 'none' }}>
             <TraceBackLogo size={36} showWordmark={true} />
           </Link>
           <p style={{ color: 'var(--slate-500)', fontSize: '0.875rem' }}>
-            Sign in to your campus account
+            Sign in to your VIT Pune Campus Account
           </p>
         </div>
 
@@ -91,39 +94,36 @@ export const Login = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label" htmlFor="email">Campus Email</label>
+              <label className="form-label" htmlFor="email">VIT Student / Staff Email</label>
               <div style={{ position: 'relative' }}>
                 <Mail size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                 <input
                   id="email"
                   type="email"
+                  autoComplete="username"
                   className="form-input"
                   style={{ paddingLeft: '2.1rem' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="aarav.sharma@campus.edu"
+                  placeholder="e.g. aarav.sharma@vit.edu"
                   required
                 />
               </div>
             </div>
 
             <div className="form-group" style={{ marginBottom: '1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <label className="form-label" htmlFor="password">Password</label>
-                <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)', cursor: 'pointer' }} onClick={() => toast.info("Default password for all test accounts is 'password123'")}>
-                  Default: password123
-                </span>
-              </div>
+              <label className="form-label" htmlFor="password">Password</label>
               <div style={{ position: 'relative' }}>
-                <Lock size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
+                <KeyRound size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                 <input
                   id="password"
                   type="password"
+                  autoComplete="current-password"
                   className="form-input"
                   style={{ paddingLeft: '2.1rem' }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
+                  placeholder="Enter your account password"
                   required
                 />
               </div>
@@ -135,7 +135,7 @@ export const Login = () => {
               style={{ width: '100%', padding: '0.625rem', fontSize: '0.875rem' }}
               disabled={loading}
             >
-              {loading ? 'Signing in...' : 'Sign In'} <ArrowRight size={15} />
+              {loading ? 'Signing in...' : 'Sign In with VIT ID'} <ArrowRight size={15} />
             </button>
           </form>
 
@@ -145,18 +145,28 @@ export const Login = () => {
               Quick fill credentials for review:
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
               <button
                 type="button"
                 onClick={() => handleFillDemo('STUDENT')}
                 className="btn btn-secondary btn-sm"
+                title="Aarav Sharma - PRN: 12110104 (Lost item owner)"
               >
-                Aarav (Student)
+                Aarav (PRN 12110104)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleFillDemo('ROHAN')}
+                className="btn btn-secondary btn-sm"
+                title="Rohan Verma - PRN: 12110208 (Item finder)"
+              >
+                Rohan (PRN 12110208)
               </button>
               <button
                 type="button"
                 onClick={() => handleFillDemo('SECURITY')}
                 className="btn btn-secondary btn-sm"
+                title="Inspector Rajesh Kumar - Central Security Desk"
               >
                 Rajesh (Security)
               </button>
@@ -164,6 +174,7 @@ export const Login = () => {
                 type="button"
                 onClick={() => handleFillDemo('ADMIN')}
                 className="btn btn-secondary btn-sm"
+                title="Prof. Priya Nair - Dean Student Affairs"
               >
                 Priya (Admin)
               </button>
@@ -173,9 +184,9 @@ export const Login = () => {
 
         {/* Footer link */}
         <div style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.8125rem', color: 'var(--slate-600)' }}>
-          Need an account?{' '}
+          New student at VIT Pune?{' '}
           <Link to="/register" style={{ fontWeight: 600 }}>
-            Register as Student
+            Register with your PRN
           </Link>
         </div>
       </div>

@@ -1,0 +1,39 @@
+services:
+  # Spring Boot Backend Web Service
+  - type: web
+    name: traceback-backend
+    env: java
+    region: oregon
+    plan: free
+    buildCommand: "cd TraceBack/backend && ./mvnw clean package -DskipTests"
+    startCommand: "cd TraceBack/backend && java -Dserver.port=$PORT -jar target/*.jar"
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: traceback-db
+          property: connectionString
+
+  # Vite React Frontend Static Site
+  - type: web
+    name: traceback-frontend
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: "cd TraceBack/frontend && npm install && npm run build"
+    staticPublishPath: "TraceBack/frontend/dist"
+    routes:
+      - type: rewrite
+        source: "/*"
+        destination: "/index.html"
+    envVars:
+      - key: VITE_API_URL
+        value: https://traceback-backend.onrender.com
+
+databases:
+  - name: traceback-db
+    plan: free
+    databaseName: traceback
+    user: traceback_user
+

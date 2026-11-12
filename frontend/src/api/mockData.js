@@ -1,47 +1,63 @@
-// Realistic campus mock data for TraceBack
+// Realistic campus mock data for TraceBack - VIT Pune Edition
+import { CAMPUS_CONFIG } from '../config/campusConfig.js';
+
 export const DEMO_USERS = {
   student: {
     id: 1,
     name: "Aarav Sharma",
-    email: "aarav.sharma@campus.edu",
+    email: "aarav.sharma@vit.edu",
     role: "STUDENT",
-    studentId: "IITB-2024-CS104",
-    department: "Computer Science & Engineering",
+    studentId: "12110104",
+    prn: "12110104",
+    department: "Computer Engineering",
     phone: "+91 98201 23456",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
   },
-  security: {
+  rohan: {
     id: 2,
+    name: "Rohan Verma",
+    email: "rohan.verma@vit.edu",
+    role: "STUDENT",
+    studentId: "12110208",
+    prn: "12110208",
+    department: "Mechanical Engineering",
+    phone: "+91 98334 11223",
+    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80"
+  },
+  ananya: {
+    id: 9,
+    name: "Ananya Iyer",
+    email: "ananya.iyer@vit.edu",
+    role: "STUDENT",
+    studentId: "12110305",
+    prn: "12110305",
+    department: "Information Technology",
+    phone: "+91 98112 33445",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
+  },
+  security: {
+    id: 3,
     name: "Inspector Rajesh Kumar",
-    email: "rajesh.kumar@campus.edu",
+    email: "rajesh.kumar@vit.edu",
     role: "SECURITY",
     badgeNumber: "SEC-409",
-    station: "Central Custody Vault - Ramanujan Building",
-    phone: "+91 (022) 2576-7000",
+    studentId: "SEC-409",
+    station: "Central Security Office - Building 1 (Main Gate)",
+    phone: "+91 (020) 2420-2180",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
   },
   admin: {
-    id: 3,
+    id: 4,
     name: "Prof. Priya Nair",
-    email: "priya.nair@campus.edu",
+    email: "priya.nair@vit.edu",
     role: "ADMIN",
-    department: "Dean of Student Affairs & Campus Security",
+    studentId: "ADM-101",
+    department: "Dean of Student Affairs - VIT Pune",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
   }
 };
 
-export const CAMPUS_LOCATIONS = [
-  "Dr. APJ Abdul Kalam Central Library - 2nd Floor Reading Hall",
-  "Dr. APJ Abdul Kalam Central Library - Ground Floor Cafe",
-  "Ramanujan Student Center - Cafeteria",
-  "Visvesvaraya Engineering Block B - IoT Lab 104",
-  "Aryabhatta Science Complex - C.V. Raman Auditorium",
-  "Sarojini Naidu Campus Quadrangle Lawn",
-  "Major Dhyan Chand Sports Complex - Badminton Arena",
-  "Tagore Arts & Humanities Building - Room 302",
-  "Campus Sahitya Bookstore & Stationery Hub",
-  "Campus Metro Gate 2 / South Transit Terminal"
-];
+export const CAMPUS_LOCATIONS = CAMPUS_CONFIG.locations;
 
 export const CATEGORIES = [
   { id: "ELECTRONICS", label: "Electronics & Gadgets", icon: "Laptop" },
@@ -59,7 +75,7 @@ export const MOCK_REPORTS = [
     type: "LOST",
     status: "MATCHED",
     date: "2026-09-24T14:30:00Z",
-    location: "Dr. APJ Abdul Kalam Central Library - 2nd Floor Reading Hall",
+    location: "Central Library - Reading Hall (Building 1, 3rd Floor)",
     item: {
       name: "Space Gray MacBook Air M2",
       category: "ELECTRONICS",
@@ -68,14 +84,14 @@ export const MOCK_REPORTS = [
       description: "Has a GitHub Octocat sticker on top lid and minor scratch near the USB-C port.",
       image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu" }
+    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@vit.edu" }
   },
   {
     id: 102,
     type: "FOUND",
     status: "MATCHED",
     date: "2026-09-24T16:00:00Z",
-    location: "Dr. APJ Abdul Kalam Central Library - 2nd Floor Reading Hall",
+    location: "Central Library - Reading Hall (Building 1, 3rd Floor)",
     item: {
       name: "Apple MacBook Air in Dark Case",
       category: "ELECTRONICS",
@@ -84,31 +100,31 @@ export const MOCK_REPORTS = [
       description: "Found left on desk #14 near window. Has stickers on back lid.",
       image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 4, name: "Rohan Verma (Student)", email: "rohan.verma@campus.edu" },
-    storageLocation: "Security Vault Locker A-12"
+    user: { id: 2, name: "Rohan Verma (Student)", email: "rohan.verma@vit.edu" },
+    storageLocation: "Central Security Office Locker A-12"
   },
   {
     id: 103,
     type: "LOST",
     status: "OPEN",
     date: "2026-09-25T09:15:00Z",
-    location: "Ramanujan Student Center - Cafeteria",
+    location: "Sharad Arena - Central Canteen Quadrangle",
     item: {
       name: "Brown Leather Titan Wallet",
       category: "WALLETS_CARDS",
       brand: "Titan",
       color: "Brown",
-      description: "Contains campus ID card for Aarav Sharma and metro smart card.",
+      description: "Contains campus ID with PRN 12110104 and cafeteria smart card.",
       image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu" }
+    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@vit.edu" }
   },
   {
     id: 104,
     type: "FOUND",
     status: "VERIFYING",
     date: "2026-09-25T11:00:00Z",
-    location: "Visvesvaraya Engineering Block B - IoT Lab 104",
+    location: "Computer Dept - Software Lab 4201 (Building 4)",
     item: {
       name: "Sony WH-1000XM4 Headphones",
       category: "ELECTRONICS",
@@ -117,24 +133,24 @@ export const MOCK_REPORTS = [
       description: "Black wireless noise-canceling headphones in black zip case.",
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 2, name: "Inspector Rajesh Kumar", email: "rajesh.kumar@campus.edu" },
-    storageLocation: "Security Vault Shelf 4"
+    user: { id: 3, name: "Inspector Rajesh Kumar", email: "rajesh.kumar@vit.edu" },
+    storageLocation: "Central Security Office Shelf 4"
   },
   {
     id: 105,
     type: "FOUND",
     status: "RETURNED",
     date: "2026-09-22T13:00:00Z",
-    location: "Major Dhyan Chand Sports Complex - Badminton Arena",
+    location: "Boat Club / Campus Sports Ground",
     item: {
       name: "Milton Thermosteel 1L Water Bottle",
       category: "OTHER",
       brand: "Milton",
       color: "Silver",
-      description: "Silver steel bottle with university sports insignia sticker.",
+      description: "Silver steel bottle with VIT robotics club sticker.",
       image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 5, name: "Ananya Iyer", email: "ananya.iyer@campus.edu" },
+    user: { id: 9, name: "Ananya Iyer", email: "ananya.iyer@vit.edu" },
     storageLocation: "Handed over to owner"
   },
   {
@@ -142,16 +158,16 @@ export const MOCK_REPORTS = [
     type: "LOST",
     status: "OPEN",
     date: "2026-09-26T08:00:00Z",
-    location: "Sarojini Naidu Campus Quadrangle Lawn",
+    location: "Sharad Arena - Central Canteen Quadrangle",
     item: {
       name: "Keychain with Navy Lanyard & Brass Keys",
       category: "KEYS",
       brand: "Campus Hostel Authority",
       color: "Blue / Brass",
-      description: "3 brass keys and an NFC hostel door tag on a navy blue lanyard.",
+      description: "3 brass keys and an RFID door tag on a navy blue lanyard.",
       image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu" }
+    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@vit.edu" }
   }
 ];
 
@@ -178,8 +194,9 @@ export const MOCK_CLAIMS = [
     claimant: {
       id: 1,
       name: "Aarav Sharma",
-      email: "aarav.sharma@campus.edu",
-      studentId: "IITB-2024-CS104",
+      email: "aarav.sharma@vit.edu",
+      studentId: "12110104",
+      prn: "12110104",
       phone: "+91 98201 23456"
     },
     item: {
@@ -187,7 +204,7 @@ export const MOCK_CLAIMS = [
       category: "ELECTRONICS",
       brand: "Apple",
       color: "Space Gray",
-      storageLocation: "Security Vault Locker A-12"
+      storageLocation: "Central Security Office Locker A-12"
     },
     matchScore: 92,
     verificationAnswers: {
@@ -211,10 +228,10 @@ export const MOCK_CONVERSATIONS = [
     matchId: 1,
     itemName: "Space Gray MacBook Air M2",
     otherParticipant: {
-      id: 4,
+      id: 2,
       name: "Rohan Verma",
       role: "STUDENT (Finder)",
-      avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
+      avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80"
     },
     lastMessage: "I deposited it at Central Security Desk Locker A-12 for safe custody!",
     lastMessageTime: "2026-09-24T16:45:00Z",
@@ -222,9 +239,9 @@ export const MOCK_CONVERSATIONS = [
     messages: [
       {
         id: 1,
-        senderId: 4,
+        senderId: 2,
         senderName: "Rohan Verma",
-        text: "Namaste Aarav! I found a MacBook Air on desk #14 in the 2nd floor library reading hall.",
+        text: "Namaste Aarav! I found a MacBook Air on desk #14 in the 3rd floor Central Library reading hall.",
         timestamp: "2026-09-24T16:10:00Z",
         isMe: false
       },
@@ -238,7 +255,7 @@ export const MOCK_CONVERSATIONS = [
       },
       {
         id: 3,
-        senderId: 4,
+        senderId: 2,
         senderName: "Rohan Verma",
         text: "Yes, exactly! It has the black and white Octocat sticker.",
         timestamp: "2026-09-24T16:18:00Z",
@@ -254,9 +271,9 @@ export const MOCK_CONVERSATIONS = [
       },
       {
         id: 5,
-        senderId: 4,
+        senderId: 2,
         senderName: "Rohan Verma",
-        text: "I deposited it at Ramanujan Building Central Security Vault Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
+        text: "I deposited it at VIT Pune Central Security Office Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
         timestamp: "2026-09-24T16:45:00Z",
         isMe: false
       }
@@ -268,7 +285,7 @@ export const MOCK_CONVERSATIONS = [
     itemName: "Milton Thermosteel Water Bottle 1L",
     itemCategory: "OTHER",
     otherParticipant: {
-      id: 5,
+      id: 9,
       name: "Ananya Iyer",
       role: "STUDENT (Finder)",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
@@ -279,9 +296,9 @@ export const MOCK_CONVERSATIONS = [
     messages: [
       {
         id: 201,
-        senderId: 5,
+        senderId: 9,
         senderName: "Ananya Iyer",
-        text: "Hi Aarav! I found your Milton Thermosteel Water Bottle 1L in IoT Lab 104 and handed it to the lab assistant.",
+        text: "Hi Aarav! I found your Milton Thermosteel Water Bottle 1L in Mechanical Workshop & IoT Arena and handed it to the attendant.",
         timestamp: "2026-11-12T10:59:00Z",
         isMe: false
       }
@@ -301,7 +318,7 @@ export const MOCK_NOTIFICATIONS = [
   },
   {
     id: 2,
-    title: "New Message from Finder",
+    title: "New Verification Message",
     message: "Rohan Verma sent a message regarding MacBook Air M2.",
     type: "CHAT",
     link: "/chat/1",
@@ -330,12 +347,11 @@ export const MOCK_ADMIN_DATA = {
     avgTurnaroundHours: "14.5 hrs"
   },
   users: [
-    { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-08-15" },
-    { id: 2, name: "Inspector Rajesh Kumar", email: "rajesh.kumar@campus.edu", role: "SECURITY", status: "ACTIVE", joined: "2026-07-01" },
-    { id: 3, name: "Prof. Priya Nair", email: "priya.nair@campus.edu", role: "ADMIN", status: "ACTIVE", joined: "2026-06-10" },
-    { id: 4, name: "Rohan Verma", email: "rohan.verma@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-09-01" },
-    { id: 5, name: "Ananya Iyer", email: "ananya.iyer@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-09-05" },
-    { id: 6, name: "Spam Bot Account", email: "promo@spambox.xyz", role: "STUDENT", status: "SUSPENDED", joined: "2026-09-20" }
+    { id: 1, name: "Aarav Sharma", email: "aarav.sharma@vit.edu", prn: "12110104", role: "STUDENT", status: "ACTIVE", joined: "2026-08-15" },
+    { id: 2, name: "Rohan Verma", email: "rohan.verma@vit.edu", prn: "12110208", role: "STUDENT", status: "ACTIVE", joined: "2026-09-01" },
+    { id: 3, name: "Inspector Rajesh Kumar", email: "rajesh.kumar@vit.edu", prn: "SEC-409", role: "SECURITY", status: "ACTIVE", joined: "2026-07-01" },
+    { id: 4, name: "Prof. Priya Nair", email: "priya.nair@vit.edu", prn: "ADM-101", role: "ADMIN", status: "ACTIVE", joined: "2026-06-10" },
+    { id: 9, name: "Ananya Iyer", email: "ananya.iyer@vit.edu", prn: "12110305", role: "STUDENT", status: "ACTIVE", joined: "2026-09-05" }
   ],
   moderationQueue: [
     {

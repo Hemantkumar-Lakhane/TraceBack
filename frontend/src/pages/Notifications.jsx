@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, CheckCheck, GitMerge, MessageSquare, ShieldCheck, ArrowRight, Trash2 } from 'lucide-react';
+import { Bell, CheckCheck, GitMerge, MessageSquare, ShieldCheck, ArrowRight, ShieldAlert } from 'lucide-react';
 import notificationService from '../api/notificationService';
 import { useToast } from '../context/ToastContext';
 
@@ -16,7 +16,7 @@ export const Notifications = () => {
       const data = await notificationService.getNotifications();
       setNotifications(data || []);
     } catch (err) {
-      console.error(err);
+      console.error("Failed to load notifications", err);
     } finally {
       setLoading(false);
     }
@@ -27,13 +27,18 @@ export const Notifications = () => {
   }, []);
 
   const handleMarkAllRead = async () => {
-    const updated = await notificationService.markAllAsRead();
-    setNotifications(updated);
+    await notificationService.markAllAsRead();
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     toast.success("All notifications marked as read");
   };
 
   const handleItemClick = async (notif) => {
-    await notificationService.markAsRead(notif.id);
+    try {
+      await notificationService.markAsRead(notif.id);
+      setNotifications(prev => prev.map(item => item.id === notif.id ? { ...item, read: true } : item));
+    } catch (e) {
+      console.warn("Could not mark as read", e);
+    }
   };
 
   const filteredNotifs = notifications.filter(n => {
@@ -43,11 +48,24 @@ export const Notifications = () => {
 
   const getIcon = (type) => {
     switch (type) {
-      case 'MATCH': return <GitMerge size={16} color="var(--slate-700)" />;
-      case 'CHAT': return <MessageSquare size={16} color="var(--slate-700)" />;
-      case 'CLAIM': return <ShieldCheck size={16} color="var(--slate-700)" />;
-      default: return <Bell size={16} color="var(--slate-500)" />;
+      case 'MATCH': return <GitMerge size={17} color="#2563eb" />;
+      case 'CHAT': return <MessageSquare size={17} color="#059669" />;
+      case 'CLAIM': return <ShieldCheck size={17} color="#7c3aed" />;
+      case 'VERIFICATION': return <ShieldAlert size={17} color="#d97706" />;
+      default: return <Bell size={17} color="var(--slate-500)" />;
     }
+  };
+
+  const formatNotificationDate = (ts) => {
+    if (!ts) return 'Recently';
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return 'Recently';
+    return d.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
@@ -100,63 +118,67 @@ export const Notifications = () => {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {filteredNotifs.map(n => (
-              <Link
-                key={n.id}
-                to={n.link || '#'}
-                onClick={() => handleItemClick(n)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '1rem 1.5rem',
-                  borderBottom: '1px solid var(--slate-100)',
-                  backgroundColor: n.read ? 'transparent' : 'var(--primary-light)',
-                  textDecoration: 'none',
-                  gap: '1rem',
-                  transition: 'background 0.15s ease'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <div style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    backgroundColor: 'var(--card-bg)',
-                    border: '1px solid var(--border-color)',
+            {filteredNotifs.map(n => {
+              const targetLink = n.link || (n.type === 'CHAT' ? `/chat/${n.referenceId || 1}` : '/notifications');
+
+              return (
+                <Link
+                  key={n.id}
+                  to={targetLink}
+                  onClick={() => handleItemClick(n)}
+                  style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}>
-                    {getIcon(n.type)}
+                    justifyContent: 'space-between',
+                    padding: '1rem 1.5rem',
+                    borderBottom: '1px solid var(--slate-100)',
+                    backgroundColor: n.read ? 'transparent' : 'rgba(37, 99, 235, 0.04)',
+                    textDecoration: 'none',
+                    gap: '1rem',
+                    transition: 'background 0.15s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                    <div style={{
+                      width: '38px',
+                      height: '38px',
+                      borderRadius: '50%',
+                      backgroundColor: 'var(--card-bg)',
+                      border: '1px solid var(--border-color)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0
+                    }}>
+                      {getIcon(n.type)}
+                    </div>
+                    <div>
+                      <h4 style={{ fontSize: '0.9375rem', fontWeight: n.read ? 600 : 700, color: 'var(--slate-900)' }}>
+                        {n.title}
+                      </h4>
+                      <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginTop: '2px' }}>
+                        {n.message}
+                      </p>
+                      <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '4px', display: 'block' }}>
+                        {formatNotificationDate(n.timestamp)}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <h4 style={{ fontSize: '0.9375rem', fontWeight: n.read ? 600 : 700, color: 'var(--slate-900)' }}>
-                      {n.title}
-                    </h4>
-                    <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginTop: '2px' }}>
-                      {n.message}
-                    </p>
-                    <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '4px', display: 'block' }}>
-                      {new Date(n.timestamp).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {!n.read && (
-                    <span style={{
-                      width: '8px',
-                      height: '8px',
-                      backgroundColor: 'var(--primary)',
-                      borderRadius: '50%'
-                    }} />
-                  )}
-                  <ArrowRight size={16} color="var(--slate-400)" />
-                </div>
-              </Link>
-            ))}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {!n.read && (
+                      <span style={{
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: 'var(--primary)',
+                        borderRadius: '50%'
+                      }} />
+                    )}
+                    <ArrowRight size={16} color="var(--slate-400)" />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </div>

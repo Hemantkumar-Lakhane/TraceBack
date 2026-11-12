@@ -19,7 +19,7 @@ export const createLostReport = async (formData) => {
         description: formData.get('description') || '',
         image: null
       },
-      user: { id: 1, name: 'Aarav Sharma', email: 'aarav.sharma@campus.edu' }
+      user: { id: 1, name: 'Aarav Sharma', email: 'aarav.sharma@vit.edu' }
     };
     return newReport;
   }
@@ -46,7 +46,7 @@ export const createFoundReport = async (formData) => {
         description: formData.get('description') || '',
         image: null
       },
-      user: { id: 1, name: 'Aarav Sharma', email: 'aarav.sharma@campus.edu' }
+      user: { id: 1, name: 'Aarav Sharma', email: 'aarav.sharma@vit.edu' }
     };
     return newReport;
   }

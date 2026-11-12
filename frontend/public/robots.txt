@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Allow: /browse
+Allow: /login
+Allow: /register
+
+# Disallow authenticated private administrative portals
+Disallow: /admin
+Disallow: /security
+Disallow: /dashboard
+Disallow: /chat
+Disallow: /claims
+Disallow: /matches
+Disallow: /notifications
+Disallow: /profile
+
+Sitemap: https://traceback-vit.vercel.app/sitemap.xml
+

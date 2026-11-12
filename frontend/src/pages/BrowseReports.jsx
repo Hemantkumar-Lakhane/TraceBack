@@ -140,7 +140,7 @@ export const BrowseReports = () => {
               </label>
               <select
                 className="form-select"
-                style={{ padding: '4px 8px', fontSize: '0.8125rem' }}
+                style={{ padding: '0.55rem 2.25rem 0.55rem 0.85rem', fontSize: '0.8125rem', lineHeight: '1.4' }}
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
@@ -157,7 +157,7 @@ export const BrowseReports = () => {
               </label>
               <select
                 className="form-select"
-                style={{ padding: '4px 8px', fontSize: '0.8125rem' }}
+                style={{ padding: '0.55rem 2.25rem 0.55rem 0.85rem', fontSize: '0.8125rem', lineHeight: '1.4' }}
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
               >

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import claimService from '../api/claimService';
 import matchService from '../api/matchService';
+import { CAMPUS_CONFIG } from '../config/campusConfig';
 
 export const ClaimForm = () => {
   const { matchId = 1 } = useParams();
@@ -192,7 +193,7 @@ export const ClaimForm = () => {
               </h4>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '3px' }}>
                 <MapPin size={12} color="#2563eb" />
-                <span>Ramanujan Central Security Vault • Custody Locker A-12</span>
+                <span>{CAMPUS_CONFIG.securityOffice.name} • Custody Locker A-12</span>
               </div>
             </div>
             <span className="badge badge-matched" style={{ padding: '6px 12px', fontSize: '0.8125rem' }}>
@@ -318,7 +319,7 @@ export const ClaimForm = () => {
             </div>
 
             <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginBottom: '1.25rem' }}>
-              Pickup Location: <strong>Ramanujan Building Central Security Desk (Ground Floor)</strong>
+              Pickup Location: <strong>{CAMPUS_CONFIG.securityOffice.name} ({CAMPUS_CONFIG.securityOffice.location})</strong>
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.25rem' }}>

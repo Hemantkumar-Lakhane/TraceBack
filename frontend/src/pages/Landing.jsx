@@ -23,11 +23,12 @@ import {
 } from 'lucide-react';
 import LifecycleTracker from '../components/LifecycleTracker';
 import TraceBackLogo from '../components/TraceBackLogo';
+import { CAMPUS_CONFIG } from '../config/campusConfig';
 import '../LandingAnimations.css';
 
 export const Landing = () => {
   const { loginAs } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark, isLuxury, toggleTheme, togglePalette } = useTheme();
 
   return (
     <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -68,6 +69,31 @@ export const Landing = () => {
 
         {/* Right Auth Action Buttons & Theme Toggle */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Color Palette Swatch Pill */}
+          <button
+            onClick={togglePalette}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '6px 10px',
+              borderRadius: '9999px',
+              border: '1px solid var(--border-color)',
+              backgroundColor: isDark ? 'rgba(255, 255, 255, 0.06)' : 'var(--slate-100)',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              height: '34px'
+            }}
+            title="Toggle Color Theme Palette"
+            aria-label="Toggle Color Theme Palette"
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#3B2418', border: '1px solid rgba(255, 255, 255, 0.4)', display: 'inline-block' }} />
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#F2E8DA', border: '1px solid rgba(0, 0, 0, 0.2)', display: 'inline-block' }} />
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#8EC5FF', display: 'inline-block' }} />
+            </div>
+          </button>
+
           <button
             onClick={toggleTheme}
             style={{
@@ -185,7 +211,7 @@ export const Landing = () => {
               Recent Recoveries & Secured Items
             </h2>
             <p style={{ color: 'var(--slate-600)', fontSize: '0.9375rem', maxWidth: '600px', margin: '0.5rem auto 0' }}>
-              Hover over case cards to view 3D telemetry and security clearance checkpoints.
+              Explore recently reported items and their active verification status across campus.
             </p>
           </div>
 
@@ -222,7 +248,7 @@ export const Landing = () => {
                 <div className="content-box" style={{ background: 'rgba(2, 132, 199, 0.85)' }}>
                   <span className="card-title">Titan Leather Wallet</span>
                   <p className="card-content">
-                    Recovered at Ramanujan Student Center Cafeteria. Contains campus ID IITB-2024-CS104. Secured in Locker A-12.
+                    Recovered at Sharad Arena Canteen. Contains campus ID with PRN 12110104. Secured in Locker A-12.
                   </p>
                   <Link to="/login" className="see-more" style={{ textDecoration: 'none' }}>
                     View Case File →
@@ -387,12 +413,17 @@ export const Landing = () => {
       </section>
 
       {/* Support & Helpline Toolbar with User-Requested Social Tooltips */}
-      <section style={{ backgroundColor: isDark ? '#080c14' : '#0f172a', color: '#ffffff', padding: '3.5rem 1.5rem', borderTop: '1px solid var(--border-color)' }}>
+      <section style={{
+        backgroundColor: isDark ? '#160F0B' : (isLuxury ? '#26160F' : '#0f172a'),
+        color: '#ffffff',
+        padding: '3.5rem 1.5rem',
+        borderTop: '1px solid var(--border-color)'
+      }}>
         <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: '#FFFFFF' }}>
             Campus Safety & Helpdesk Channels
           </h3>
-          <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginBottom: '2rem' }}>
+          <p style={{ color: isLuxury ? '#D3C4B2' : '#CBD5E1', fontSize: '0.875rem', marginBottom: '2rem' }}>
             Instant custody inquiries, physical locker appointments, or student assistance.
           </p>
 
@@ -437,10 +468,10 @@ export const Landing = () => {
                 <div className="tooltip">Portal</div>
               </li>
 
-              {/* Spotify / Radio Helpline */}
+              {/* Central Security Desk Hotline */}
               <li className="icon-content">
                 <a
-                  href="tel:+912225767000"
+                  href={`tel:${CAMPUS_CONFIG.securityOffice.helpline.replace(/[^0-9+]/g, '')}`}
                   aria-label="Security Desk Hotline"
                   data-social="spotify"
                 >
@@ -457,8 +488,8 @@ export const Landing = () => {
             </ul>
           </div>
 
-          <div style={{ marginTop: '2rem', fontSize: '0.8125rem', color: '#64748b' }}>
-            Ramanujan Central Security Vault: <strong>+91 (022) 2576-7000</strong> (Ext. 409) • Hours: 08:00 - 20:00 IST
+          <div style={{ marginTop: '2rem', fontSize: '0.8125rem', color: isLuxury ? '#D3C4B2' : '#94A3B8' }}>
+            {CAMPUS_CONFIG.securityOffice.name}: <strong style={{ color: '#FFFFFF' }}>{CAMPUS_CONFIG.securityOffice.helpline}</strong> • Hours: {CAMPUS_CONFIG.securityOffice.hours}
           </div>
         </div>
       </section>
@@ -486,7 +517,7 @@ export const Landing = () => {
           </div>
 
           <div>
-            TraceBack Campus Lost & Found System • Operational Audit Standard ISO 27001
+            TraceBack Campus Recovery Network • Vishwakarma Institute of Technology, Pune
           </div>
 
           <div style={{ display: 'flex', gap: '1.25rem' }}>

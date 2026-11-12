@@ -157,8 +157,8 @@ export const Matches = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '6px' }}>
-                  <Link to="/chat" className="btn btn-secondary btn-sm" style={{ gap: '5px' }}>
-                    <MessageSquare size={13} /> Message Finder
+                  <Link to={`/chat/${match.id || 1}`} className="btn btn-secondary btn-sm" style={{ gap: '5px' }}>
+                    <MessageSquare size={13} /> Open Verification Chat
                   </Link>
                   <Link to={`/claims/new/${match.id}`} className="btn btn-primary btn-sm" style={{ gap: '5px' }}>
                     <FileCheck2 size={13} /> Claim Item

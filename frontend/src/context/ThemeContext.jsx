@@ -3,21 +3,25 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext({
   theme: 'light',
   isDark: false,
-  toggleTheme: () => {}
+  palette: 'luxury',
+  isLuxury: true,
+  toggleTheme: () => {},
+  togglePalette: () => {},
+  setPalette: () => {}
 });
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
-    // 1. Check saved localStorage preference
     const saved = localStorage.getItem('tb_theme');
     if (saved === 'dark' || saved === 'light') return saved;
-
-    // 2. Default to system preference
-    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-
     return 'light';
+  });
+
+  // Default to the luxury Brown + Cream + Baby Blue palette from Instagram reel
+  const [palette, setPalette] = useState(() => {
+    const saved = localStorage.getItem('tb_palette');
+    if (saved === 'luxury' || saved === 'classic') return saved;
+    return 'luxury';
   });
 
   useEffect(() => {
@@ -31,17 +35,28 @@ export const ThemeProvider = ({ children }) => {
       root.setAttribute('data-theme', 'light');
       root.style.colorScheme = 'light';
     }
+
+    root.setAttribute('data-palette', palette);
     localStorage.setItem('tb_theme', theme);
-  }, [theme]);
+    localStorage.setItem('tb_palette', palette);
+  }, [theme, palette]);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
+  const togglePalette = () => {
+    setPalette(prev => (prev === 'luxury' ? 'classic' : 'luxury'));
+  };
+
   const value = {
     theme,
     isDark: theme === 'dark',
-    toggleTheme
+    palette,
+    isLuxury: palette === 'luxury',
+    toggleTheme,
+    togglePalette,
+    setPalette
   };
 
   return (
@@ -54,4 +69,3 @@ export const ThemeProvider = ({ children }) => {
 export const useTheme = () => useContext(ThemeContext);
 
 export default ThemeContext;
-

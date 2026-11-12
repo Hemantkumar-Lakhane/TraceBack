@@ -22,6 +22,7 @@ import {
   Lock
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
+import { CAMPUS_CONFIG } from '../config/campusConfig';
 
 const AVATAR_PRESETS = [
   { label: 'Aarav (Student)', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
@@ -39,8 +40,8 @@ export const Profile = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || 'Aarav Sharma',
-    studentId: user?.studentId || user?.badgeNumber || 'IITB-2024-CS104',
-    department: user?.department || user?.station || 'Computer Science & Engineering',
+    studentId: user?.studentId || user?.badgeNumber || '12110104',
+    department: user?.department || user?.station || 'Computer Engineering',
     phone: user?.phone || '+91 98201 23456',
     hostel: user?.hostel || 'Hostel 14, Room B-208',
     avatar: user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
@@ -49,8 +50,8 @@ export const Profile = () => {
   const handleOpenEdit = () => {
     setFormData({
       name: user?.name || 'Aarav Sharma',
-      studentId: user?.studentId || user?.badgeNumber || 'IITB-2024-CS104',
-      department: user?.department || user?.station || 'Computer Science & Engineering',
+      studentId: user?.studentId || user?.badgeNumber || '12110104',
+      department: user?.department || user?.station || 'Computer Engineering',
       phone: user?.phone || '+91 98201 23456',
       hostel: user?.hostel || 'Hostel 14, Room B-208',
       avatar: user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
@@ -83,7 +84,7 @@ export const Profile = () => {
   };
 
   const currentPhone = user?.phone || '+91 98201 23456';
-  const currentStudentId = user?.studentId || user?.badgeNumber || 'IITB-2024-CS104';
+  const currentStudentId = user?.studentId || user?.badgeNumber || '12110104';
   const currentDepartment = user?.department || user?.station || 'Computer Science & Engineering';
   const currentHostel = user?.hostel || 'Hostel 14, Room B-208';
   const currentAvatar = user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
@@ -181,10 +182,10 @@ export const Profile = () => {
                 </span>
               </div>
               <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem', marginTop: '4px', marginBottom: '6px' }}>
-                {user?.email || "aarav.sharma@campus.edu"}
+                {user?.email || "aarav.sharma@vit.edu"}
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--emerald-dark)', fontWeight: 600 }}>
-                <CheckCircle2 size={14} /> Verified IIT Bombay Student Identity
+                <CheckCircle2 size={14} /> Verified VIT Pune Student Identity
               </div>
             </div>
           </div>
@@ -202,7 +203,7 @@ export const Profile = () => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
           <div style={{ padding: '16px', backgroundColor: 'var(--slate-50)', borderRadius: '10px', border: '1px solid var(--border-color)' }}>
             <span style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--slate-400)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              STUDENT / BADGE ID
+              PRN / BADGE ID
             </span>
             <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--slate-900)', marginTop: '4px' }}>
               {currentStudentId}
@@ -260,7 +261,7 @@ export const Profile = () => {
             </h4>
           </div>
           <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', margin: 0, lineHeight: 1.45 }}>
-            Ramanujan Central Security Vault (Ground Floor). Mon–Fri 08:30 AM to 07:00 PM. Helpline: +91 (022) 2576-7000.
+            {CAMPUS_CONFIG.securityOffice.name} ({CAMPUS_CONFIG.securityOffice.location}). {CAMPUS_CONFIG.securityOffice.hours}. Helpline: {CAMPUS_CONFIG.securityOffice.helpline}.
           </p>
         </div>
 
@@ -374,25 +375,34 @@ export const Profile = () => {
               {/* Student ID & Dept in 2 columns */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label" style={{ fontSize: '0.75rem' }}>Student / Badge ID</label>
+                  <label className="form-label" style={{ fontSize: '0.75rem' }}>PRN / Badge ID</label>
                   <input
                     type="text"
                     className="form-input"
                     value={formData.studentId}
                     onChange={(e) => setFormData(prev => ({ ...prev, studentId: e.target.value }))}
-                    placeholder="IITB-2024-CS104"
+                    placeholder="12110104"
                   />
                 </div>
 
                 <div className="form-group" style={{ margin: 0 }}>
-                  <label className="form-label" style={{ fontSize: '0.75rem' }}>Department / Station</label>
-                  <input
-                    type="text"
-                    className="form-input"
+                  <label className="form-label" style={{ fontSize: '0.75rem' }}>Department / Branch</label>
+                  <select
+                    className="form-select"
+                    style={{
+                      padding: '0.55rem 0.85rem',
+                      fontSize: '0.8125rem',
+                      lineHeight: '1.4'
+                    }}
                     value={formData.department}
                     onChange={(e) => setFormData(prev => ({ ...prev, department: e.target.value }))}
-                    placeholder="Computer Science & Eng"
-                  />
+                  >
+                    {CAMPUS_CONFIG.departments.map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                    <option value="Campus Security">Campus Security</option>
+                    <option value="Administration">Administration</option>
+                  </select>
                 </div>
               </div>
 

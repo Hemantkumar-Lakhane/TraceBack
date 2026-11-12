@@ -18,6 +18,7 @@ import {
 import StatusBadge from '../components/StatusBadge';
 import Modal from '../components/Modal';
 import { QRCodeSVG } from 'qrcode.react';
+import { CAMPUS_CONFIG } from '../config/campusConfig';
 import claimService from '../api/claimService';
 import { MOCK_CLAIMS } from '../api/mockData';
 
@@ -43,7 +44,7 @@ export const ClaimDetails = () => {
             }
           }
           const item = data.matchRecord?.lostReport?.item || data.matchRecord?.foundReport?.item;
-          const claimant = data.claimant || { name: 'Aarav Sharma', studentId: 'IITB-2024-CS104' };
+          const claimant = data.claimant || { name: 'Aarav Sharma', studentId: '12110104' };
 
           setClaim({
             id: data.id,
@@ -52,12 +53,12 @@ export const ClaimDetails = () => {
             submittedAt: data.createdAt,
             claimant: {
               name: claimant.name || 'Aarav Sharma',
-              studentId: claimant.studentId || 'IITB-2024-CS104'
+              studentId: claimant.studentId || '12110104'
             },
             item: {
               name: item?.name || 'Space Gray MacBook Pro 14"',
               category: item?.category,
-              storageLocation: 'Ramanujan Central Security Vault - Locker A-12'
+              storageLocation: `${CAMPUS_CONFIG.securityOffice.name} - Locker A-12`
             },
             verificationAnswers: {
               secretMarks: parsedAnswers.secretMarks || 'Identifying sticker on bottom chassis',
@@ -221,7 +222,7 @@ export const ClaimDetails = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.875rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--slate-700)' }}>
                 <MapPin size={16} color="#2563eb" style={{ flexShrink: 0 }} />
-                <span>{claim.item?.storageLocation || 'Ramanujan Central Security Desk'}</span>
+                <span>{claim.item?.storageLocation || `${CAMPUS_CONFIG.securityOffice.name} - Desk 1`}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--slate-700)' }}>
                 <Calendar size={16} color="var(--slate-500)" style={{ flexShrink: 0 }} />
@@ -229,7 +230,7 @@ export const ClaimDetails = () => {
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--slate-700)' }}>
                 <User size={16} color="var(--slate-500)" style={{ flexShrink: 0 }} />
-                <span>Claimant: <strong>{claim.claimant?.name} ({claim.claimant?.studentId})</strong></span>
+                <span>Claimant: <strong>{claim.claimant?.name} (PRN: {claim.claimant?.studentId})</strong></span>
               </div>
             </div>
 
@@ -245,7 +246,7 @@ export const ClaimDetails = () => {
             }}>
               <strong style={{ color: '#1d4ed8' }}>Mandatory Security Checkpoint:</strong>
               <ul style={{ paddingLeft: '1.2rem', marginTop: '4px', marginBottom: 0 }}>
-                <li>Your physical University Student ID Card</li>
+                <li>Your physical VIT Student ID Card (with PRN)</li>
                 <li>Digital Pickup Pass / QR code on this screen</li>
                 <li>Device unlock passcode (for laptops / smartphones)</li>
               </ul>
@@ -291,10 +292,10 @@ export const ClaimDetails = () => {
             {claim.item?.name}
           </h3>
           <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginTop: '4px' }}>
-            Authorized Claimant: <strong>{claim.claimant?.name} ({claim.claimant?.studentId})</strong>
+            Authorized Claimant: <strong>{claim.claimant?.name} (PRN: {claim.claimant?.studentId})</strong>
           </p>
           <p style={{ fontSize: '0.75rem', color: 'var(--slate-400)', marginTop: '2px' }}>
-            Present this authentic 2D matrix barcode to Inspector Rajesh Kumar at Ramanujan Central Security Vault.
+            Present this authentic 2D matrix barcode to Inspector Rajesh Kumar at {CAMPUS_CONFIG.securityOffice.name}.
           </p>
 
           <button onClick={() => setShowQRModal(false)} className="btn btn-primary" style={{ marginTop: '1.5rem', width: '100%' }}>

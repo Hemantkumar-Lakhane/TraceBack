@@ -1,0 +1,18 @@
+{
+  "short_name": "TraceBack",
+  "name": "TraceBack — Campus Recovery Network",
+  "description": "Deterministic lost and found recovery platform for Vishwakarma Institute of Technology (VIT Pune)",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#F8F4EE",
+  "theme_color": "#3B2418",
+  "display": "standalone",
+  "orientation": "portrait"
+}
+

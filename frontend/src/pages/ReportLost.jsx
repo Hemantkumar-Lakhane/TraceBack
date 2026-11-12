@@ -94,10 +94,6 @@ export const ReportLost = () => {
 
       <div className="surface-card" style={{ padding: '2rem', borderRadius: '18px', borderTop: '4px solid var(--rose)' }}>
         <div style={{ marginBottom: '1.75rem', borderBottom: '1px solid var(--slate-100)', paddingBottom: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span className="badge badge-lost">LOST ITEM REPORT</span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>Step 1 of 6</span>
-          </div>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--slate-900)' }}>
             Report a Missing or Lost Item
           </h2>
