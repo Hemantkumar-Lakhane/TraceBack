@@ -19,7 +19,7 @@ import {
   Clock,
   Sparkles
 } from 'lucide-react';
-import chatService from '../api/chatService';
+import chatService, { getCampusAvatar } from '../api/chatService';
 import { getItemImageUrl } from '../utils/imageUtils';
 
 export const Chat = () => {
@@ -152,11 +152,18 @@ export const Chat = () => {
         user?.name || "Aarav Sharma"
       );
 
-      // Append immediately to active conversation
-      setActiveConv(prev => ({
-        ...prev,
-        messages: [...(prev?.messages || []), newMsg]
-      }));
+      // Append only if not already rendered from the real-time WebSocket broadcast
+      setActiveConv(prev => {
+        if (!prev) return prev;
+        const msgList = prev.messages || [];
+        if (newMsg?.id && msgList.some(m => m.id === newMsg.id)) {
+          return prev;
+        }
+        return {
+          ...prev,
+          messages: [...msgList, newMsg]
+        };
+      });
 
       // Update thread list snippet on the left
       setConversations(prev => prev.map(c => {
@@ -169,23 +176,6 @@ export const Chat = () => {
         }
         return c;
       }));
-
-      // Interactive campus simulated reply for verification guidance
-      if (text.toLowerCase().includes('where') || text.toLowerCase().includes('desk') || text.toLowerCase().includes('claim')) {
-        setTimeout(async () => {
-          const reply = await chatService.sendMessage(
-            activeConv.id,
-            "Sounds good! The item is safely stored at Ramanujan Building Security Vault Locker A-12. Once Security approves your claim pass, you can pick it up with your Student ID.",
-            2,
-            "Rohan Verma (Finder)"
-          );
-          setActiveConv(prev => ({
-            ...prev,
-            messages: [...(prev?.messages || []), { ...reply, isMe: false }]
-          }));
-          toast.info("New message from Rohan Verma");
-        }, 1500);
-      }
     } catch (err) {
       console.error("Message send failure", err);
       toast.error("Failed to deliver message. Check backend connectivity.");
@@ -356,7 +346,7 @@ export const Chat = () => {
                     {/* Participant Avatar */}
                     <div style={{ position: 'relative', flexShrink: 0 }}>
                       <img
-                        src={c.otherParticipant?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"}
+                        src={c.otherParticipant?.avatar || getCampusAvatar(c.otherParticipant?.name, c.otherParticipant?.role)}
                         alt={c.otherParticipant?.name}
                         style={{
                           width: '42px',
@@ -454,7 +444,7 @@ export const Chat = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ position: 'relative' }}>
                 <img
-                  src={activeConv?.otherParticipant?.avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"}
+                  src={activeConv?.otherParticipant?.avatar || getCampusAvatar(activeConv?.otherParticipant?.name, activeConv?.otherParticipant?.role)}
                   alt="Avatar"
                   style={{
                     width: '38px',

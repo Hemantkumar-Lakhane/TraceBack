@@ -261,6 +261,31 @@ export const MOCK_CONVERSATIONS = [
         isMe: false
       }
     ]
+  },
+  {
+    id: 2,
+    matchId: 2,
+    itemName: "Milton Thermosteel Water Bottle 1L",
+    itemCategory: "OTHER",
+    otherParticipant: {
+      id: 5,
+      name: "Ananya Iyer",
+      role: "STUDENT (Finder)",
+      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80"
+    },
+    lastMessage: "Hi Aarav! I turned in your silver Milton bottle to the IoT lab staff desk.",
+    lastMessageTime: "2026-11-12T10:59:00Z",
+    unreadCount: 0,
+    messages: [
+      {
+        id: 201,
+        senderId: 5,
+        senderName: "Ananya Iyer",
+        text: "Hi Aarav! I found your Milton Thermosteel Water Bottle 1L in IoT Lab 104 and handed it to the lab assistant.",
+        timestamp: "2026-11-12T10:59:00Z",
+        isMe: false
+      }
+    ]
   }
 ];
 
