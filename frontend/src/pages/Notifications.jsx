@@ -74,9 +74,9 @@ export const Notifications = () => {
             key={f}
             onClick={() => setFilter(f)}
             style={{
-              background: filter === f ? 'var(--primary)' : 'var(--card-bg)',
-              color: filter === f ? '#ffffff' : 'var(--text-main)',
-              border: '1px solid var(--border-color)',
+              background: filter === f ? 'var(--primary)' : '#ffffff',
+              color: filter === f ? '#ffffff' : 'var(--slate-700)',
+              border: '1px solid var(--slate-200)',
               borderRadius: '20px',
               padding: '6px 16px',
               fontSize: '0.75rem',

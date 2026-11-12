@@ -97,99 +97,63 @@ export const Landing = () => {
         </div>
       </header>
 
-      {/* Hero Section with Parallax Starfield Canvas */}
-      <section className="starfield-container" style={{
-        position: 'relative',
-        minHeight: '620px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '4.5rem 1.5rem 5rem',
-        textAlign: 'center',
-        color: '#ffffff'
-      }}>
-        {/* Parallax Star Layers */}
-        <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div>
-
-        {/* Hero Content with Intro Fade */}
-        <div id="title" style={{ position: 'relative', zIndex: 10, maxWidth: '860px', margin: '0 auto' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            padding: '6px 14px',
-            borderRadius: '20px',
-            fontSize: '0.8125rem',
-            fontWeight: 500,
-            color: '#93c5fd',
-            marginBottom: '1.5rem',
-            letterSpacing: '0.03em'
-          }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#38bdf8', display: 'inline-block' }}></span>
-            Official University Lost & Found Infrastructure
+      {/* Hero Section with Institutional Campus Dot Mesh Banner */}
+      <section className="campus-hero-banner">
+        <div className="hero-content-wrapper animate-fade-in">
+          {/* Official Verification Badge */}
+          <div className="hero-badge">
+            <span className="hero-badge-dot"></span>
+            Official University Lost &amp; Found Infrastructure
           </div>
 
           <h1 style={{
             fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
             fontWeight: 800,
-            color: '#ffffff',
-            lineHeight: 1.15,
-            letterSpacing: '-0.03em',
-            margin: '0 auto 1rem'
+            color: 'var(--slate-900)',
+            lineHeight: 1.18,
+            letterSpacing: '-0.025em',
+            margin: '0 auto 1.25rem',
+            maxWidth: '850px'
           }}>
             Campus Item Recovery Platform
           </h1>
 
           <p style={{
             fontSize: '1.125rem',
-            color: '#94a3b8',
-            maxWidth: '660px',
-            margin: '0 auto 1.5rem',
-            lineHeight: 1.6
+            color: 'var(--slate-600)',
+            maxWidth: '680px',
+            margin: '0 auto 1.75rem',
+            lineHeight: 1.6,
+            letterSpacing: 'normal'
           }}>
             Deterministic multi-parameter matching, privacy-preserving authenticated chat, and verified campus security desk custody.
           </p>
 
-          {/* User Requested Dynamic Rotating Word Flipper */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.25rem' }}>
-            <div className="words-card" style={{
-              backgroundColor: 'rgba(15, 23, 42, 0.85)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              borderRadius: '12px',
-              padding: '6px 20px',
-              backdropFilter: 'blur(8px)',
-              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)'
-            }}>
-              <div className="loader" style={{ height: '36px', alignItems: 'center' }}>
-                <p style={{ margin: 0, paddingRight: '10px', color: '#cbd5e1', fontSize: '1rem', fontWeight: 600 }}>
-                  TraceBack Recovers
-                </p>
-                <div className="words">
-                  <span className="word" style={{ color: '#38bdf8', fontWeight: 700 }}>Laptops</span>
-                  <span className="word" style={{ color: '#818cf8', fontWeight: 700 }}>Wallets</span>
-                  <span className="word" style={{ color: '#34d399', fontWeight: 700 }}>Keychains</span>
-                  <span className="word" style={{ color: '#f472b6', fontWeight: 700 }}>College IDs</span>
-                  <span className="word" style={{ color: '#38bdf8', fontWeight: 700 }}>Smartphones</span>
-                </div>
-              </div>
-            </div>
+          {/* Institutional Rotating Item Category Badge */}
+          <div className="hero-rotator-badge">
+            <span style={{ color: 'var(--slate-600)', fontWeight: 600, fontSize: '0.9375rem' }}>
+              TraceBack Recovers
+            </span>
+            <span className="rotator-flipper">
+              <span className="rotator-words">
+                <span className="rotator-word">Laptops &amp; MacBooks</span>
+                <span className="rotator-word">Wallets &amp; Campus IDs</span>
+                <span className="rotator-word">Keys &amp; Access Cards</span>
+                <span className="rotator-word">Headphones &amp; Audio</span>
+                <span className="rotator-word">Smartphones &amp; Tablets</span>
+              </span>
+            </span>
           </div>
 
           {/* Action CTAs */}
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/report/lost" className="btn btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '0.9375rem', fontWeight: 600 }}>
+          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+            <Link to="/report/lost" className="btn btn-primary" style={{ padding: '0.75rem 1.6rem', fontSize: '0.9375rem', fontWeight: 600 }}>
               <PlusCircle size={16} /> Report Lost Item
             </Link>
-            <Link to="/report/found" className="btn btn-secondary" style={{ padding: '0.75rem 1.5rem', fontSize: '0.9375rem', fontWeight: 600 }}>
+            <Link to="/report/found" className="btn btn-secondary" style={{ padding: '0.75rem 1.6rem', fontSize: '0.9375rem', fontWeight: 600 }}>
               <PlusCircle size={16} /> Report Found Item
             </Link>
-            <Link to="/browse" className="btn btn-outline" style={{ padding: '0.75rem 1.5rem', fontSize: '0.9375rem', fontWeight: 600, color: '#ffffff', borderColor: 'rgba(255,255,255,0.3)' }}>
+            <Link to="/browse" className="btn btn-outline" style={{ padding: '0.75rem 1.6rem', fontSize: '0.9375rem', fontWeight: 600 }}>
               <Search size={16} /> Browse Campus Vault
             </Link>
           </div>

@@ -10,7 +10,7 @@ export const Navbar = ({ onToggleSidebar }) => {
   const { user, logout, loginAs } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
-  
+
   const [notifications, setNotifications] = useState([]);
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
@@ -182,7 +182,7 @@ export const Navbar = ({ onToggleSidebar }) => {
                 height: '8px',
                 backgroundColor: 'var(--rose)',
                 borderRadius: '50%',
-                border: '1.5px solid var(--navbar-bg)'
+                border: '1.5px solid #ffffff'
               }} />
             )}
           </button>

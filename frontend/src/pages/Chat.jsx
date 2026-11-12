@@ -60,8 +60,8 @@ export const Chat = () => {
           if (msgList.some(m => m.id === incomingMsg.id)) return prev;
 
           const isFromMe = incomingMsg.sender?.id === user?.id ||
-                           incomingMsg.senderId === user?.id ||
-                           incomingMsg.isMe;
+            incomingMsg.senderId === user?.id ||
+            incomingMsg.isMe;
 
           const newFormatted = {
             id: incomingMsg.id || Date.now(),
@@ -103,7 +103,7 @@ export const Chat = () => {
     setInputText('');
 
     const newMsg = await chatService.sendMessage(activeConv.id, text, user?.id || 1, user?.name || "Aarav Sharma");
-    
+
     // Update active conversation locally
     setActiveConv(prev => ({
       ...prev,
@@ -303,12 +303,12 @@ export const Chat = () => {
                     style={{
                       padding: '10px 14px',
                       borderRadius: isMe ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
-                      backgroundColor: isMe ? 'var(--primary)' : 'var(--card-bg)',
-                      color: isMe ? '#ffffff' : 'var(--text-main)',
+                      backgroundColor: isMe ? 'var(--primary)' : '#ffffff',
+                      color: isMe ? '#ffffff' : 'var(--slate-800)',
                       boxShadow: 'var(--shadow-sm)',
                       fontSize: '0.875rem',
                       lineHeight: 1.5,
-                      border: isMe ? 'none' : '1px solid var(--border-color)'
+                      border: isMe ? 'none' : '1px solid var(--slate-200)'
                     }}
                   >
                     {displayText}
