@@ -24,10 +24,13 @@ export const getItemImageUrl = (item, fallbackToCategory = false) => {
     if (rawUrl.startsWith('/uploads/')) {
       return `${BACKEND_BASE}${rawUrl}`;
     }
+    if (rawUrl.startsWith('uploads/')) {
+      return `${BACKEND_BASE}/${rawUrl}`;
+    }
     return rawUrl;
   }
-  if (fallbackToCategory && item.category && CATEGORY_PLACEHOLDERS[item.category]) {
-    return CATEGORY_PLACEHOLDERS[item.category];
+  if (fallbackToCategory) {
+    return (item.category && CATEGORY_PLACEHOLDERS[item.category]) ? CATEGORY_PLACEHOLDERS[item.category] : CATEGORY_PLACEHOLDERS.OTHER;
   }
   return null;
 };

@@ -19,7 +19,8 @@ import Modal from '../components/Modal';
 import { useToast } from '../context/ToastContext';
 import reportService from '../api/reportService';
 import matchService from '../api/matchService';
-import { getItemImageUrl } from '../utils/imageUtils';
+import { getItemImageUrl, CATEGORY_PLACEHOLDERS } from '../utils/imageUtils';
+import { QRCodeSVG } from 'qrcode.react';
 
 export const ReportDetails = () => {
   const { id, type = 'lost' } = useParams();
@@ -104,10 +105,15 @@ export const ReportDetails = () => {
                 <img
                   src={itemImg}
                   alt={item.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '16px' }}
                   onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.style.display = 'none';
+                    const fallback = CATEGORY_PLACEHOLDERS[item.category] || CATEGORY_PLACEHOLDERS.OTHER;
+                    if (e.target.src !== fallback) {
+                      e.target.src = fallback;
+                    } else {
+                      e.target.onerror = null;
+                      e.target.style.display = 'none';
+                    }
                   }}
                 />
               ) : (
@@ -233,10 +239,17 @@ export const ReportDetails = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: 'var(--shadow-md)'
+            boxShadow: 'var(--shadow-md)',
+            padding: '10px',
+            boxSizing: 'border-box'
           }}>
-            {/* SVG QR Code Simulation */}
-            <QrCode size={130} color="#0f172a" />
+            {/* Real Scannable 2D QR Code */}
+            <QRCodeSVG
+              value={`https://traceback-campus.edu/verify/item/${report.id}?type=${report.type}&item=${encodeURIComponent(item.name || '')}`}
+              size={150}
+              level="H"
+              includeMargin={false}
+            />
           </div>
           <h4 style={{ fontSize: '1.1rem', fontWeight: 700 }}>{item.name}</h4>
           <p style={{ fontSize: '0.8125rem', color: 'var(--slate-500)', marginTop: '4px' }}>

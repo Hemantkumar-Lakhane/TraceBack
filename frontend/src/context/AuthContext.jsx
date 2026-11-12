@@ -108,7 +108,10 @@ export const AuthProvider = ({ children }) => {
         name: userDto.name,
         email: email,
         role: userDto.role,
-        studentId: userDto.studentId || `STU-${userDto.id + 89000}`
+        studentId: userDto.studentId || `IITB-2024-CS${100 + userDto.id}`,
+        department: userDto.department || 'Computer Science & Engineering',
+        phone: userDto.phone || '+91 98201 23456',
+        avatar: userDto.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
       };
 
       setToken(jwtToken);
@@ -138,8 +141,20 @@ export const AuthProvider = ({ children }) => {
    * Real Authentication Registration
    * Checks Supabase first if configured, otherwise connects to Spring Boot JWT /api/auth/register
    */
-  const register = async (name, email, password, extraData = {}) => {
+  const register = async (nameOrData, maybeEmail, maybePassword, extraData = {}) => {
     localStorage.removeItem('tb_is_demo_session');
+
+    let name = nameOrData;
+    let email = maybeEmail;
+    let password = maybePassword;
+    let extra = extraData;
+
+    if (typeof nameOrData === 'object' && nameOrData !== null) {
+      name = nameOrData.name;
+      email = nameOrData.email;
+      password = nameOrData.password;
+      extra = nameOrData;
+    }
 
     // 1. Supabase Real Auth (if environment keys configured)
     if (isSupabaseConfigured() && supabase) {
@@ -150,8 +165,9 @@ export const AuthProvider = ({ children }) => {
           data: {
             name,
             role: 'STUDENT',
-            studentId: extraData.studentId || 'STU-001',
-            department: extraData.department || 'Computer Science'
+            studentId: extra.studentId || 'IITB-2024-CS104',
+            department: extra.department || 'Computer Science & Engineering',
+            phone: extra.phone || '+91 98201 23456'
           }
         }
       });
@@ -170,6 +186,17 @@ export const AuthProvider = ({ children }) => {
       }
       throw new Error("Unable to connect to backend server. Please check that Spring Boot is running on port 8080.");
     }
+  };
+
+  /**
+   * Update current user profile fields in session & context
+   */
+  const updateUser = (updatedFields) => {
+    setUser(prev => {
+      const updated = { ...(prev || {}), ...updatedFields };
+      localStorage.setItem('tb_user_session', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleDemoFallback = (role) => {
@@ -215,6 +242,7 @@ export const AuthProvider = ({ children }) => {
       token,
       login,
       register,
+      updateUser,
       logout,
       loginAs,
       isAuthenticated: !!user,

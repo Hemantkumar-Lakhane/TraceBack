@@ -37,7 +37,11 @@ public class ClaimController {
     @Operation(summary = "Submit an ownership verification claim")
     public ResponseEntity<?> submitClaim(
             @RequestParam("match_id") Long matchId,
-            @RequestParam("verification_data") String verificationData,
+            @RequestParam(value = "verification_data", required = false) String verificationData,
+            @RequestParam(value = "secret_marks", required = false) String secretMarks,
+            @RequestParam(value = "serial_number", required = false) String serialNumber,
+            @RequestParam(value = "lock_screen_hint", required = false) String lockScreenHint,
+            @RequestParam(value = "item_name", required = false) String itemName,
             @RequestParam(value = "pickup_date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate pickupDate,
             @RequestParam(value = "pickup_time", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime pickupTime,
             @RequestParam(value = "proof_file", required = false) MultipartFile proofFile,
@@ -45,6 +49,14 @@ public class ClaimController {
 
         if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
+
+        if (verificationData == null || verificationData.trim().isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            if (secretMarks != null && !secretMarks.isEmpty()) sb.append("Secret Marks: ").append(secretMarks).append("; ");
+            if (serialNumber != null && !serialNumber.isEmpty()) sb.append("Serial: ").append(serialNumber).append("; ");
+            if (lockScreenHint != null && !lockScreenHint.isEmpty()) sb.append("Wallpaper Hint: ").append(lockScreenHint).append("; ");
+            verificationData = sb.length() > 0 ? sb.toString() : "Standard Student Ownership Claim";
+        }
 
         Claim claim = claimService.submitClaim(matchId, user, verificationData, pickupDate, pickupTime, proofFile);
         return new ResponseEntity<>(claim, HttpStatus.CREATED);

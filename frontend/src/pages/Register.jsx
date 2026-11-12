@@ -159,7 +159,7 @@ export const Register = () => {
                   style={{ paddingLeft: '2.1rem' }}
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 (555) 019-2834"
+                  placeholder="+91 98201 23456"
                 />
               </div>
             </div>
