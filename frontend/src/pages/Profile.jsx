@@ -45,12 +45,12 @@ export const Profile = () => {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--slate-900)' }}>
-                {user?.name || "Alex Johnson"}
+                {user?.name || "Aarav Sharma"}
               </h2>
               <span className="badge badge-open">{user?.role || "STUDENT"}</span>
             </div>
             <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem', marginTop: '2px' }}>
-              {user?.email || "alex.student@campus.edu"}
+              {user?.email || "aarav.sharma@campus.edu"}
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--emerald-dark)', marginTop: '6px', fontWeight: 600 }}>
               <CheckCircle2 size={14} /> Verified Campus Account

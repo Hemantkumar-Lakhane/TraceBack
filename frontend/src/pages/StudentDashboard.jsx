@@ -70,10 +70,10 @@ export const StudentDashboard = () => {
       }}>
         <div>
           <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
-            Welcome back, {user?.name || 'Alex'}
+            Welcome back, {user?.name || 'Aarav'}
           </h1>
           <p style={{ color: 'var(--slate-500)', fontSize: '0.8125rem' }}>
-            ID: {user?.studentId || 'STU-89241'} • Campus Item Management
+            ID: {user?.studentId || 'IITB-2024-CS104'} • Campus Item Management
           </p>
         </div>
 
@@ -122,15 +122,31 @@ export const StudentDashboard = () => {
               <GitMerge size={18} />
             </div>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
-                <span className="badge badge-open">Action Required</span>
-                <MatchScoreBadge score={pendingMatch.matchScore || 92} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  backgroundColor: '#eff6ff',
+                  color: '#1d4ed8',
+                  border: '1px solid #bfdbfe'
+                }}>
+                  Match Detected
+                </span>
+                <span style={{ fontSize: '0.75rem', color: 'var(--slate-600)', fontWeight: 500 }}>
+                  Correlation Score: <strong style={{ color: 'var(--slate-900)' }}>{pendingMatch.matchScore || 92}%</strong>
+                </span>
               </div>
               <h3 style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
                 Match Found for your {pendingMatch.lostReport?.item?.name || 'MacBook Air'}
               </h3>
               <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginTop: '2px' }}>
-                A matching item was reported at <strong>{pendingMatch.foundReport?.location || 'Central Library'}</strong>. Verify details with finder to initiate recovery.
+                A matching item was reported at <strong>{pendingMatch.foundReport?.location || 'Dr. APJ Abdul Kalam Library'}</strong>. Verify details with finder to initiate recovery.
               </p>
             </div>
           </div>

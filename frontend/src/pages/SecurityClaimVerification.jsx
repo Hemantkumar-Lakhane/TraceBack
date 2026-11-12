@@ -43,7 +43,7 @@ export const SecurityClaimVerification = () => {
   const handleApprove = async () => {
     setProcessing(true);
     try {
-      await claimService.updateClaimStatus(claim.id, 'APPROVED', 'Verified by Officer Marcus Vance. Student presented valid university ID and unlocked device.');
+      await claimService.updateClaimStatus(claim.id, 'APPROVED', 'Verified by Inspector Rajesh Kumar. Student presented valid university ID and unlocked device.');
       toast.success("Claim APPROVED! Handover voucher confirmed and case marked as RETURNED.");
       setShowApproveModal(false);
       setClaim(prev => ({ ...prev, status: 'APPROVED' }));

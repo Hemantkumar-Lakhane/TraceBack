@@ -102,7 +102,7 @@ export const Chat = () => {
     const text = inputText.trim();
     setInputText('');
 
-    const newMsg = await chatService.sendMessage(activeConv.id, text, user?.id || 1, user?.name || "Alex Johnson");
+    const newMsg = await chatService.sendMessage(activeConv.id, text, user?.id || 1, user?.name || "Aarav Sharma");
     
     // Update active conversation locally
     setActiveConv(prev => ({
@@ -115,15 +115,15 @@ export const Chat = () => {
       setTimeout(async () => {
         const reply = await chatService.sendMessage(
           activeConv.id,
-          "Sounds good! The item is safely stored at Central Security Desk Locker A-12. Once Security approves your claim pass, you can pick it up with your Student ID.",
+          "Sounds good! The item is safely stored at Ramanujan Building Security Vault Locker A-12. Once Security approves your claim pass, you can pick it up with your Student ID.",
           4,
-          "David Kim (Finder)"
+          "Rohan Verma (Finder)"
         );
         setActiveConv(prev => ({
           ...prev,
           messages: [...(prev?.messages || []), { ...reply, isMe: false }]
         }));
-        toast.info("New message from David Kim");
+        toast.info("New message from Rohan Verma");
       }, 1500);
     }
   };

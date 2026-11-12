@@ -126,7 +126,7 @@ export const AuthProvider = ({ children }) => {
         return handleDemoFallback('ADMIN');
       } else if (email.includes('security') || email.includes('officer')) {
         return handleDemoFallback('SECURITY');
-      } else if (email.includes('alex') || email.includes('student')) {
+      } else if (email.includes('alex') || email.includes('aarav') || email.includes('student')) {
         return handleDemoFallback('STUDENT');
       }
 

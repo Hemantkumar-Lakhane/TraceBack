@@ -4,6 +4,7 @@ import { useToast } from '../context/ToastContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 import { DEMO_USERS } from '../api/mockData';
+import TraceBackLogo from '../components/TraceBackLogo';
 
 export const Login = () => {
   const { login } = useAuth();
@@ -60,24 +61,8 @@ export const Login = () => {
       <div style={{ width: '100%', maxWidth: '400px' }}>
         {/* Brand header */}
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', textDecoration: 'none' }}>
-            <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '6px',
-              background: '#0f172a',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: 700,
-              fontSize: '0.9375rem'
-            }}>
-              TB
-            </div>
-            <span style={{ fontWeight: 700, fontSize: '1.25rem', color: '#0f172a', letterSpacing: '-0.02em' }}>
-              TraceBack
-            </span>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.5rem', textDecoration: 'none' }}>
+            <TraceBackLogo size={36} showWordmark={true} />
           </Link>
           <p style={{ color: 'var(--slate-500)', fontSize: '0.875rem' }}>
             Sign in to your campus account
@@ -116,7 +101,7 @@ export const Login = () => {
                   style={{ paddingLeft: '2.1rem' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@campus.edu"
+                  placeholder="aarav.sharma@campus.edu"
                   required
                 />
               </div>
@@ -166,21 +151,21 @@ export const Login = () => {
                 onClick={() => handleFillDemo('STUDENT')}
                 className="btn btn-secondary btn-sm"
               >
-                Student
+                Aarav (Student)
               </button>
               <button
                 type="button"
                 onClick={() => handleFillDemo('SECURITY')}
                 className="btn btn-secondary btn-sm"
               >
-                Security
+                Rajesh (Security)
               </button>
               <button
                 type="button"
                 onClick={() => handleFillDemo('ADMIN')}
                 className="btn btn-secondary btn-sm"
               >
-                Admin
+                Priya (Admin)
               </button>
             </div>
           </div>

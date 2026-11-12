@@ -191,7 +191,7 @@ export const ClaimDetails = () => {
             Authorized Claimant: <strong>{claim.claimant?.name} ({claim.claimant?.studentId})</strong>
           </p>
           <p style={{ fontSize: '0.75rem', color: 'var(--slate-400)', marginTop: '2px' }}>
-            Present this screen to Officer Marcus Vance at Central Security Desk.
+            Present this screen to Inspector Rajesh Kumar at Ramanujan Central Security Vault.
           </p>
 
           <button onClick={() => setShowQRModal(false)} className="btn btn-primary" style={{ marginTop: '1.5rem', width: '100%' }}>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Search, Bell, Menu, User, LogOut, Shield, Award, UserCheck } from 'lucide-react';
 import notificationService from '../../api/notificationService';
+import TraceBackLogo from '../TraceBackLogo';
 
 export const Navbar = ({ onToggleSidebar }) => {
   const { user, logout, loginAs } = useAuth();
@@ -91,29 +92,8 @@ export const Navbar = ({ onToggleSidebar }) => {
           <Menu size={20} />
         </button>
 
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <div style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '6px',
-            background: '#0f172a',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 700,
-            fontSize: '0.875rem'
-          }}>
-            TB
-          </div>
-          <span style={{
-            fontWeight: 700,
-            fontSize: '1.0625rem',
-            color: '#0f172a',
-            letterSpacing: '-0.02em'
-          }}>
-            TraceBack
-          </span>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <TraceBackLogo size={28} showWordmark={true} />
         </Link>
       </div>
 

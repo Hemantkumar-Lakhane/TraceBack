@@ -8,8 +8,8 @@ export const submitClaim = async (formData) => {
     const newClaim = {
       id: Date.now(),
       matchId: formData.get('match_id') || 1,
-      claimant: { name: "Alex Johnson", studentId: "STU-89241" },
-      item: { name: formData.get('item_name') || "Item", storageLocation: "Central Security Desk" },
+      claimant: { name: "Aarav Sharma", studentId: "IITB-2024-CS104" },
+      item: { name: formData.get('item_name') || "Item", storageLocation: "Ramanujan Central Security Vault" },
       matchScore: 92,
       verificationAnswers: {
         secretMarks: formData.get('secret_marks'),

@@ -110,7 +110,7 @@ export const Register = () => {
                   style={{ paddingLeft: '2.1rem' }}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Alex Johnson"
+                  placeholder="e.g. Aarav Sharma"
                   required
                 />
               </div>
@@ -125,7 +125,7 @@ export const Register = () => {
                   className="form-input"
                   value={studentId}
                   onChange={(e) => setStudentId(e.target.value)}
-                  placeholder="STU-89241"
+                  placeholder="IITB-2024-CS104"
                 />
               </div>
 

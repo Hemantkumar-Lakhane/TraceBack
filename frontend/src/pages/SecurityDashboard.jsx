@@ -204,7 +204,7 @@ export const SecurityDashboard = () => {
             <div style={{ padding: '10px 12px', backgroundColor: 'var(--slate-50)', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <strong>Locker A-12:</strong> Apple MacBook Air
-                <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Deposited by David Kim</div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Deposited by Rohan Verma</div>
               </div>
               <span className="badge badge-claim-requested">Claim Pending</span>
             </div>
@@ -228,8 +228,8 @@ export const SecurityDashboard = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <div style={{ padding: '10px 12px', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <strong style={{ color: 'var(--emerald-dark)' }}>Hydro Flask 32oz</strong>
-                <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)' }}>Verified by Officer Marcus Vance</div>
+                <strong style={{ color: 'var(--emerald-dark)' }}>Milton Thermosteel 1L</strong>
+                <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)' }}>Verified by Inspector Rajesh Kumar</div>
               </div>
               <span className="badge badge-approved">RETURNED</span>
             </div>

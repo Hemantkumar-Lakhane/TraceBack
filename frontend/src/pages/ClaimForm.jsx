@@ -23,7 +23,7 @@ export const ClaimForm = () => {
     item_name: 'Space Gray MacBook Air M2',
     secret_marks: 'There is a small circular silver sticker of the React logo on the bottom right corner underneath the laptop chassis.',
     serial_number: 'FVFX9082MD6R',
-    lock_screen_hint: 'Mountain wallpaper at sunrise with username Alex J.',
+    lock_screen_hint: 'Western Ghats wallpaper with username Aarav S.',
     pickup_date: '2026-09-27',
     pickup_time: '14:00',
     agree_terms: false

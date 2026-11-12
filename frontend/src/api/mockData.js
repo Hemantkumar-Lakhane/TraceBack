@@ -2,45 +2,45 @@
 export const DEMO_USERS = {
   student: {
     id: 1,
-    name: "Alex Johnson",
-    email: "alex.student@campus.edu",
+    name: "Aarav Sharma",
+    email: "aarav.sharma@campus.edu",
     role: "STUDENT",
-    studentId: "STU-89241",
+    studentId: "IITB-2024-CS104",
     department: "Computer Science & Engineering",
-    phone: "+1 (555) 234-5678",
+    phone: "+91 98201 23456",
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
   },
   security: {
     id: 2,
-    name: "Officer Marcus Vance",
-    email: "officer.vance@campus.edu",
+    name: "Inspector Rajesh Kumar",
+    email: "rajesh.kumar@campus.edu",
     role: "SECURITY",
     badgeNumber: "SEC-409",
-    station: "Central Security Desk - Student Union Hall",
-    phone: "+1 (555) 998-0012",
+    station: "Central Custody Vault - Ramanujan Building",
+    phone: "+91 (022) 2576-7000",
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
   },
   admin: {
     id: 3,
-    name: "Dean Sarah Jenkins",
-    email: "admin.sarah@campus.edu",
+    name: "Prof. Priya Nair",
+    email: "priya.nair@campus.edu",
     role: "ADMIN",
-    department: "Campus Safety & Administration",
+    department: "Dean of Student Affairs & Campus Security",
     avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80"
   }
 };
 
 export const CAMPUS_LOCATIONS = [
-  "Central Library - 2nd Floor Study Area",
-  "Central Library - Ground Floor Cafe",
-  "Student Union - Food Court",
-  "Engineering Block B - Room 104 Lab",
-  "Science Complex - Physics Auditorium",
-  "Main Campus Green / Quad Lawn",
-  "Sports Recreation Center - Locker Room",
-  "Arts & Humanities Building - Room 302",
-  "Campus Bookstore & Convenience Shop",
-  "Bus Terminal / North Parking Lot"
+  "Dr. APJ Abdul Kalam Central Library - 2nd Floor Reading Hall",
+  "Dr. APJ Abdul Kalam Central Library - Ground Floor Cafe",
+  "Ramanujan Student Center - Cafeteria",
+  "Visvesvaraya Engineering Block B - IoT Lab 104",
+  "Aryabhatta Science Complex - C.V. Raman Auditorium",
+  "Sarojini Naidu Campus Quadrangle Lawn",
+  "Major Dhyan Chand Sports Complex - Badminton Arena",
+  "Tagore Arts & Humanities Building - Room 302",
+  "Campus Sahitya Bookstore & Stationery Hub",
+  "Campus Metro Gate 2 / South Transit Terminal"
 ];
 
 export const CATEGORIES = [
@@ -59,7 +59,7 @@ export const MOCK_REPORTS = [
     type: "LOST",
     status: "MATCHED",
     date: "2026-09-24T14:30:00Z",
-    location: "Central Library - 2nd Floor Study Area",
+    location: "Dr. APJ Abdul Kalam Central Library - 2nd Floor Reading Hall",
     item: {
       name: "Space Gray MacBook Air M2",
       category: "ELECTRONICS",
@@ -68,14 +68,14 @@ export const MOCK_REPORTS = [
       description: "Has a GitHub Octocat sticker on top lid and minor scratch near the USB-C port.",
       image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 1, name: "Alex Johnson", email: "alex.student@campus.edu" }
+    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu" }
   },
   {
     id: 102,
     type: "FOUND",
     status: "MATCHED",
     date: "2026-09-24T16:00:00Z",
-    location: "Central Library - 2nd Floor Study Area",
+    location: "Dr. APJ Abdul Kalam Central Library - 2nd Floor Reading Hall",
     item: {
       name: "Apple MacBook Air in Dark Case",
       category: "ELECTRONICS",
@@ -84,31 +84,31 @@ export const MOCK_REPORTS = [
       description: "Found left on desk #14 near window. Has stickers on back lid.",
       image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 4, name: "David Kim (Student)", email: "david.kim@campus.edu" },
-    storageLocation: "Security Locker A-12"
+    user: { id: 4, name: "Rohan Verma (Student)", email: "rohan.verma@campus.edu" },
+    storageLocation: "Security Vault Locker A-12"
   },
   {
     id: 103,
     type: "LOST",
     status: "OPEN",
     date: "2026-09-25T09:15:00Z",
-    location: "Student Union - Food Court",
+    location: "Ramanujan Student Center - Cafeteria",
     item: {
-      name: "Brown Leather Tommy Hilfiger Wallet",
+      name: "Brown Leather Titan Wallet",
       category: "WALLETS_CARDS",
-      brand: "Tommy Hilfiger",
+      brand: "Titan",
       color: "Brown",
-      description: "Contains student ID card for Alex Johnson and Metro transit card.",
+      description: "Contains campus ID card for Aarav Sharma and metro smart card.",
       image: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 1, name: "Alex Johnson", email: "alex.student@campus.edu" }
+    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu" }
   },
   {
     id: 104,
     type: "FOUND",
     status: "VERIFYING",
     date: "2026-09-25T11:00:00Z",
-    location: "Engineering Block B - Room 104 Lab",
+    location: "Visvesvaraya Engineering Block B - IoT Lab 104",
     item: {
       name: "Sony WH-1000XM4 Headphones",
       category: "ELECTRONICS",
@@ -117,7 +117,7 @@ export const MOCK_REPORTS = [
       description: "Black wireless noise-canceling headphones in black zip case.",
       image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 2, name: "Officer Marcus Vance", email: "officer.vance@campus.edu" },
+    user: { id: 2, name: "Inspector Rajesh Kumar", email: "rajesh.kumar@campus.edu" },
     storageLocation: "Security Vault Shelf 4"
   },
   {
@@ -125,16 +125,16 @@ export const MOCK_REPORTS = [
     type: "FOUND",
     status: "RETURNED",
     date: "2026-09-22T13:00:00Z",
-    location: "Sports Recreation Center - Locker Room",
+    location: "Major Dhyan Chand Sports Complex - Badminton Arena",
     item: {
-      name: "Hydro Flask 32oz Water Bottle",
+      name: "Milton Thermosteel 1L Water Bottle",
       category: "OTHER",
-      brand: "Hydro Flask",
-      color: "Pacific Blue",
-      description: "Blue bottle with university athletics sticker.",
+      brand: "Milton",
+      color: "Silver",
+      description: "Silver steel bottle with university sports insignia sticker.",
       image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 5, name: "Jessica Taylor", email: "jessica.t@campus.edu" },
+    user: { id: 5, name: "Ananya Iyer", email: "ananya.iyer@campus.edu" },
     storageLocation: "Handed over to owner"
   },
   {
@@ -142,16 +142,16 @@ export const MOCK_REPORTS = [
     type: "LOST",
     status: "OPEN",
     date: "2026-09-26T08:00:00Z",
-    location: "Main Campus Green / Quad Lawn",
+    location: "Sarojini Naidu Campus Quadrangle Lawn",
     item: {
-      name: "Keychain with Blue Lanyard & Brass Keys",
+      name: "Keychain with Navy Lanyard & Brass Keys",
       category: "KEYS",
-      brand: "Campus Housing",
-      color: "Blue / Gold",
-      description: "3 brass keys and an NFC dorm fob on a navy blue lanyard.",
+      brand: "Campus Hostel Authority",
+      color: "Blue / Brass",
+      description: "3 brass keys and an NFC hostel door tag on a navy blue lanyard.",
       image: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=500&auto=format&fit=crop&q=80"
     },
-    user: { id: 1, name: "Alex Johnson", email: "alex.student@campus.edu" }
+    user: { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu" }
   }
 ];
 
@@ -160,11 +160,11 @@ export const MOCK_MATCHES = [
     id: 1,
     matchScore: 92,
     breakdown: {
-      categoryScore: 40, // max 40
-      locationScore: 28, // max 30
-      timelineScore: 24  // max 30
+      categoryScore: 40,
+      locationScore: 28,
+      timelineScore: 24
     },
-    status: "ACTIVE", // ACTIVE, CLAIM_REQUESTED, CLOSED
+    status: "ACTIVE",
     createdAt: "2026-09-24T16:05:00Z",
     lostReport: MOCK_REPORTS[0],
     foundReport: MOCK_REPORTS[1]
@@ -177,28 +177,28 @@ export const MOCK_CLAIMS = [
     matchId: 1,
     claimant: {
       id: 1,
-      name: "Alex Johnson",
-      email: "alex.student@campus.edu",
-      studentId: "STU-89241",
-      phone: "+1 (555) 234-5678"
+      name: "Aarav Sharma",
+      email: "aarav.sharma@campus.edu",
+      studentId: "IITB-2024-CS104",
+      phone: "+91 98201 23456"
     },
     item: {
       name: "Space Gray MacBook Air M2",
       category: "ELECTRONICS",
       brand: "Apple",
       color: "Space Gray",
-      storageLocation: "Security Locker A-12"
+      storageLocation: "Security Vault Locker A-12"
     },
     matchScore: 92,
     verificationAnswers: {
       secretMarks: "There is a small circular silver sticker of the React logo on the bottom right corner underneath the laptop chassis.",
       serialNumber: "FVFX9082MD6R",
-      lockScreenHint: "Wallpaper is a mountain range at sunrise with user profile named 'Alex J.'",
+      lockScreenHint: "Wallpaper is the Western Ghats at sunrise with user profile named 'Aarav S.'",
       pickupDate: "2026-09-27",
       pickupTime: "14:00"
     },
     proofFile: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=500&auto=format&fit=crop&q=80",
-    status: "PENDING", // PENDING, APPROVED, REJECTED, RETURNED
+    status: "PENDING",
     submittedAt: "2026-09-25T10:30:00Z",
     reviewedAt: null,
     reviewedBy: null
@@ -212,7 +212,7 @@ export const MOCK_CONVERSATIONS = [
     itemName: "Space Gray MacBook Air M2",
     otherParticipant: {
       id: 4,
-      name: "David Kim",
+      name: "Rohan Verma",
       role: "STUDENT (Finder)",
       avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80"
     },
@@ -223,23 +223,23 @@ export const MOCK_CONVERSATIONS = [
       {
         id: 1,
         senderId: 4,
-        senderName: "David Kim",
-        text: "Hi Alex! I found a MacBook Air on table #14 in the 2nd floor library study area.",
+        senderName: "Rohan Verma",
+        text: "Namaste Aarav! I found a MacBook Air on desk #14 in the 2nd floor library reading hall.",
         timestamp: "2026-09-24T16:10:00Z",
         isMe: false
       },
       {
         id: 2,
         senderId: 1,
-        senderName: "Alex Johnson",
-        text: "Hi David! Oh thank you so much! Does it have a GitHub sticker on the top shell?",
+        senderName: "Aarav Sharma",
+        text: "Hello Rohan! Oh thank you so much! Does it have a GitHub sticker on the top shell?",
         timestamp: "2026-09-24T16:15:00Z",
         isMe: true
       },
       {
         id: 3,
         senderId: 4,
-        senderName: "David Kim",
+        senderName: "Rohan Verma",
         text: "Yes, exactly! It has the black and white Octocat sticker.",
         timestamp: "2026-09-24T16:18:00Z",
         isMe: false
@@ -247,16 +247,16 @@ export const MOCK_CONVERSATIONS = [
       {
         id: 4,
         senderId: 1,
-        senderName: "Alex Johnson",
-        text: "That is 100% mine! Should we meet up or did you give it to campus security?",
+        senderName: "Aarav Sharma",
+        text: "That is 100% mine! Should we meet up or did you hand it over to campus security?",
         timestamp: "2026-09-24T16:22:00Z",
         isMe: true
       },
       {
         id: 5,
         senderId: 4,
-        senderName: "David Kim",
-        text: "I deposited it at Central Security Desk Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
+        senderName: "Rohan Verma",
+        text: "I deposited it at Ramanujan Building Central Security Vault Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
         timestamp: "2026-09-24T16:45:00Z",
         isMe: false
       }
@@ -267,8 +267,8 @@ export const MOCK_CONVERSATIONS = [
 export const MOCK_NOTIFICATIONS = [
   {
     id: 1,
-    title: "High Confidence Match Found! (92%)",
-    message: "A found report matching your 'MacBook Air M2' was submitted by David Kim.",
+    title: "Match Detected (92% Correlation)",
+    message: "A found report matching your 'MacBook Air M2' was submitted by Rohan Verma.",
     type: "MATCH",
     link: "/matches/1",
     timestamp: "2026-09-24T16:05:00Z",
@@ -277,7 +277,7 @@ export const MOCK_NOTIFICATIONS = [
   {
     id: 2,
     title: "New Message from Finder",
-    message: "David Kim sent a message regarding MacBook Air M2.",
+    message: "Rohan Verma sent a message regarding MacBook Air M2.",
     type: "CHAT",
     link: "/chat/1",
     timestamp: "2026-09-24T16:45:00Z",
@@ -305,20 +305,20 @@ export const MOCK_ADMIN_DATA = {
     avgTurnaroundHours: "14.5 hrs"
   },
   users: [
-    { id: 1, name: "Alex Johnson", email: "alex.student@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-08-15" },
-    { id: 2, name: "Officer Marcus Vance", email: "officer.vance@campus.edu", role: "SECURITY", status: "ACTIVE", joined: "2026-07-01" },
-    { id: 3, name: "Dean Sarah Jenkins", email: "admin.sarah@campus.edu", role: "ADMIN", status: "ACTIVE", joined: "2026-06-10" },
-    { id: 4, name: "David Kim", email: "david.kim@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-09-01" },
-    { id: 5, name: "Jessica Taylor", email: "jessica.t@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-09-05" },
+    { id: 1, name: "Aarav Sharma", email: "aarav.sharma@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-08-15" },
+    { id: 2, name: "Inspector Rajesh Kumar", email: "rajesh.kumar@campus.edu", role: "SECURITY", status: "ACTIVE", joined: "2026-07-01" },
+    { id: 3, name: "Prof. Priya Nair", email: "priya.nair@campus.edu", role: "ADMIN", status: "ACTIVE", joined: "2026-06-10" },
+    { id: 4, name: "Rohan Verma", email: "rohan.verma@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-09-01" },
+    { id: 5, name: "Ananya Iyer", email: "ananya.iyer@campus.edu", role: "STUDENT", status: "ACTIVE", joined: "2026-09-05" },
     { id: 6, name: "Spam Bot Account", email: "promo@spambox.xyz", role: "STUDENT", status: "SUSPENDED", joined: "2026-09-20" }
   ],
   moderationQueue: [
     {
       id: 901,
       reportId: 108,
-      title: "Promotional flyers left on table",
+      title: "Commercial promotional flyers left on desk",
       reason: "Spam / Advertising - Not a legitimate lost/found item",
-      flaggedBy: "Officer Marcus Vance",
+      flaggedBy: "Inspector Rajesh Kumar",
       dateFlagged: "2026-09-25T12:00:00Z",
       status: "PENDING_REVIEW"
     }
