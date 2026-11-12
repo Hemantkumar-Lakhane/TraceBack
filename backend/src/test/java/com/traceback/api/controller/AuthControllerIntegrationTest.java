@@ -5,7 +5,7 @@ import com.traceback.api.dto.AuthRequest;
 import com.traceback.api.dto.RegisterRequest;
 import com.traceback.api.model.Role;
 import com.traceback.api.model.User;
-import com.traceback.api.repository.UserRepository;
+import com.traceback.api.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,30 @@ public class AuthControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired(required = false)
+    private NotificationRepository notificationRepository;
+
+    @Autowired(required = false)
+    private ClaimRepository claimRepository;
+
+    @Autowired(required = false)
+    private MessageRepository messageRepository;
+
+    @Autowired(required = false)
+    private ConversationRepository conversationRepository;
+
+    @Autowired(required = false)
+    private MatchRecordRepository matchRecordRepository;
+
+    @Autowired(required = false)
+    private LostReportRepository lostReportRepository;
+
+    @Autowired(required = false)
+    private FoundReportRepository foundReportRepository;
+
+    @Autowired(required = false)
+    private ItemRepository itemRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -39,6 +63,22 @@ public class AuthControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        if (notificationRepository != null)
+            notificationRepository.deleteAll();
+        if (claimRepository != null)
+            claimRepository.deleteAll();
+        if (messageRepository != null)
+            messageRepository.deleteAll();
+        if (conversationRepository != null)
+            conversationRepository.deleteAll();
+        if (matchRecordRepository != null)
+            matchRecordRepository.deleteAll();
+        if (lostReportRepository != null)
+            lostReportRepository.deleteAll();
+        if (foundReportRepository != null)
+            foundReportRepository.deleteAll();
+        if (itemRepository != null)
+            itemRepository.deleteAll();
         userRepository.deleteAll();
     }
 

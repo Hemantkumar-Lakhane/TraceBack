@@ -5,10 +5,7 @@ import com.traceback.api.model.Item;
 import com.traceback.api.model.LostReport;
 import com.traceback.api.model.Role;
 import com.traceback.api.model.User;
-import com.traceback.api.repository.FoundReportRepository;
-import com.traceback.api.repository.ItemRepository;
-import com.traceback.api.repository.LostReportRepository;
-import com.traceback.api.repository.UserRepository;
+import com.traceback.api.repository.*;
 import com.traceback.api.security.JwtTokenProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +50,21 @@ public class ReportControllerIntegrationTest {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired(required = false)
+    private NotificationRepository notificationRepository;
+
+    @Autowired(required = false)
+    private ClaimRepository claimRepository;
+
+    @Autowired(required = false)
+    private MessageRepository messageRepository;
+
+    @Autowired(required = false)
+    private ConversationRepository conversationRepository;
+
+    @Autowired(required = false)
+    private MatchRecordRepository matchRecordRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -65,6 +77,11 @@ public class ReportControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        if (notificationRepository != null) notificationRepository.deleteAll();
+        if (claimRepository != null) claimRepository.deleteAll();
+        if (messageRepository != null) messageRepository.deleteAll();
+        if (conversationRepository != null) conversationRepository.deleteAll();
+        if (matchRecordRepository != null) matchRecordRepository.deleteAll();
         foundReportRepository.deleteAll();
         lostReportRepository.deleteAll();
         itemRepository.deleteAll();

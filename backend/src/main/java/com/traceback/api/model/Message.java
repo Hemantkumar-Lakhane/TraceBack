@@ -13,9 +13,15 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id", nullable = false)
     private Conversation conversation;
+
+    @com.fasterxml.jackson.annotation.JsonProperty("conversationId")
+    public Long getConversationId() {
+        return conversation != null ? conversation.getId() : null;
+    }
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id", nullable = false)

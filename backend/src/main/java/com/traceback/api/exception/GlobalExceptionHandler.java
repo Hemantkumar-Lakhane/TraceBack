@@ -46,4 +46,16 @@ public class GlobalExceptionHandler {
         
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ErrorResponse> handleSecurityException(SecurityException ex, HttpServletRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setTimestamp(LocalDateTime.now());
+        errorResponse.setStatus(HttpStatus.FORBIDDEN.value());
+        errorResponse.setError(HttpStatus.FORBIDDEN.getReasonPhrase());
+        errorResponse.setMessage(ex.getMessage());
+        errorResponse.setPath(request.getRequestURI());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
 }

@@ -8,13 +8,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "conversations")
+@com.fasterxml.jackson.annotation.JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Conversation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "match_id", nullable = false, unique = true)
     private MatchRecord matchRecord;
 

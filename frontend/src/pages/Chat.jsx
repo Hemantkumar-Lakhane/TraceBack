@@ -48,6 +48,50 @@ export const Chat = () => {
   }, [activeConvId]);
 
   useEffect(() => {
+    let stompSub = null;
+    let isCancelled = false;
+
+    if (activeConvId) {
+      chatService.subscribeToChat(activeConvId, (incomingMsg) => {
+        if (!incomingMsg || isCancelled) return;
+        setActiveConv(prev => {
+          if (!prev) return prev;
+          const msgList = prev.messages || [];
+          if (msgList.some(m => m.id === incomingMsg.id)) return prev;
+
+          const isFromMe = incomingMsg.sender?.id === user?.id ||
+                           incomingMsg.senderId === user?.id ||
+                           incomingMsg.isMe;
+
+          const newFormatted = {
+            id: incomingMsg.id || Date.now(),
+            text: incomingMsg.content || incomingMsg.text,
+            content: incomingMsg.content || incomingMsg.text,
+            senderName: incomingMsg.sender?.name || incomingMsg.senderName || (isFromMe ? 'You' : 'Participant'),
+            timestamp: incomingMsg.timestamp || new Date().toISOString(),
+            isMe: isFromMe
+          };
+
+          return {
+            ...prev,
+            messages: [...msgList, newFormatted]
+          };
+        });
+      })?.then?.(sub => {
+        if (isCancelled && sub) sub.unsubscribe();
+        else stompSub = sub;
+      });
+    }
+
+    return () => {
+      isCancelled = true;
+      if (stompSub && typeof stompSub.unsubscribe === 'function') {
+        stompSub.unsubscribe();
+      }
+    };
+  }, [activeConvId, user?.id]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeConv?.messages]);
 
@@ -238,7 +282,9 @@ export const Chat = () => {
             gap: '12px'
           }}>
             {activeConv?.messages?.map((msg) => {
-              const isMe = msg.isMe || msg.senderId === user?.id || msg.senderId === 1;
+              const isMe = msg.isMe || msg.sender?.id === user?.id || msg.senderId === user?.id;
+              const displayText = msg.text || msg.content;
+              const senderDisplayName = isMe ? 'You' : (msg.sender?.name || msg.senderName || 'Participant');
               return (
                 <div
                   key={msg.id}
@@ -251,7 +297,7 @@ export const Chat = () => {
                   }}
                 >
                   <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginBottom: '2px', padding: '0 4px' }}>
-                    {isMe ? 'You' : msg.senderName}
+                    {senderDisplayName}
                   </span>
                   <div
                     style={{
@@ -265,7 +311,7 @@ export const Chat = () => {
                       border: isMe ? 'none' : '1px solid var(--slate-200)'
                     }}
                   >
-                    {msg.text}
+                    {displayText}
                   </div>
                   <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '2px', padding: '0 4px' }}>
                     {msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Now'}

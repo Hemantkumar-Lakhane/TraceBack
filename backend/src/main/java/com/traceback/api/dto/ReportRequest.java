@@ -34,9 +34,11 @@ public class ReportRequest {
 
     public LocalDate getDateLost() { return dateLost; }
     public void setDateLost(LocalDate dateLost) { this.dateLost = dateLost; }
+    public void setDate_lost(LocalDate date_lost) { this.dateLost = date_lost; }
 
     public LocalDate getDateFound() { return dateFound; }
     public void setDateFound(LocalDate dateFound) { this.dateFound = dateFound; }
+    public void setDate_found(LocalDate date_found) { this.dateFound = date_found; }
 
     public MultipartFile getImage() { return image; }
     public void setImage(MultipartFile image) { this.image = image; }

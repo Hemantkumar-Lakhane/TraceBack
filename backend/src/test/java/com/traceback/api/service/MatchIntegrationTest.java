@@ -39,11 +39,23 @@ public class MatchIntegrationTest {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired(required = false)
+    private NotificationRepository notificationRepository;
+
+    @Autowired(required = false)
+    private ClaimRepository claimRepository;
+
+    @Autowired(required = false)
+    private MessageRepository messageRepository;
+
     private User student1;
     private User student2;
 
     @BeforeEach
     void setUp() {
+        if (notificationRepository != null) notificationRepository.deleteAll();
+        if (claimRepository != null) claimRepository.deleteAll();
+        if (messageRepository != null) messageRepository.deleteAll();
         conversationRepository.deleteAll();
         matchRecordRepository.deleteAll();
         foundReportRepository.deleteAll();

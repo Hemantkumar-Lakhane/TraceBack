@@ -54,8 +54,10 @@ To run the application locally, test APIs, or view the documentation, please ref
 ## 📊 Current Development Status
 
 - **Phase 1-4**: COMPLETED (Planning, Design, UI/UX, Database & API Contracts)
-- **Milestone 1**: COMPLETED (Authentication, Infrastructure, MySQL integration)
-- **Milestone 2**: COMPLETED (Reporting & File Handling - APIs built, UI integrated)
-- **Milestone 3**: PENDING (Matching Engine & Action Dashboard)
+- **Phase 5-6**: COMPLETED (Core UI screens across all 3 roles, Spring Boot JPA & Security backend)
+- **Phase 7**: COMPLETED (Real-Time WebSocket STOMP messaging & notifications)
+- **Phase 8**: COMPLETED (MySQL database seeded with realistic campus test data)
+- **Phase 9**: COMPLETED (Comprehensive automated test suite passing: 35/35 tests)
+- **Remaining**: Phase 10 (Containerization/Deployment) & Phase 11 (Final Presentation & Report)
 
-*Note: For a detailed breakdown of manual API verification progress for Milestone 2, please check the `API_TESTING.md` and `CHANGELOG.md` files.*
+*Note: For testing and local execution, refer to `RUNNING_LOCALLY.md` and `DATABASE_SEED.sql`.*

@@ -2,6 +2,8 @@ package com.traceback.api.service;
 
 import com.traceback.api.model.*;
 import com.traceback.api.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +15,16 @@ public class ChatService {
     private final ConversationRepository conversationRepository;
     private final MessageRepository messageRepository;
     private final NotificationRepository notificationRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public ChatService(ConversationRepository conversationRepository,
                        MessageRepository messageRepository,
-                       NotificationRepository notificationRepository) {
+                       NotificationRepository notificationRepository,
+                       @Autowired(required = false) SimpMessagingTemplate messagingTemplate) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.notificationRepository = notificationRepository;
+        this.messagingTemplate = messagingTemplate;
     }
 
     public List<Conversation> getUserConversations(User user) {
@@ -71,7 +76,19 @@ public class ChatService {
             notif.setType("CHAT");
             notif.setMessage("New message from " + sender.getName() + " regarding " + match.getLostReport().getItem().getName());
             notif.setReferenceId(conversation.getId());
-            notificationRepository.save(notif);
+            Notification savedNotif = notificationRepository.save(notif);
+
+            if (messagingTemplate != null) {
+                try {
+                    messagingTemplate.convertAndSend("/topic/notifications/" + receiver.getId(), savedNotif);
+                } catch (Exception ignored) {}
+            }
+        }
+
+        if (messagingTemplate != null) {
+            try {
+                messagingTemplate.convertAndSend("/topic/chat/" + conversationId, savedMessage);
+            } catch (Exception ignored) {}
         }
 
         return savedMessage;

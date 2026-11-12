@@ -62,7 +62,9 @@ public class AdminService {
         stats.put("totalUsers", totalUsers);
         stats.put("totalLost", totalLost);
         stats.put("totalFound", totalFound);
+        stats.put("totalReports", totalLost + totalFound);
         stats.put("totalMatches", totalMatches);
+        stats.put("activeMatches", totalMatches);
         stats.put("totalClaims", totalClaims);
         stats.put("returnRate", totalLost > 0 ? String.format("%.1f%%", ((double) totalMatches / totalLost) * 100) : "0.0%");
         return stats;
