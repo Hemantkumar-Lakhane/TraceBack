@@ -18,6 +18,7 @@ import MatchScoreBadge from '../components/MatchScoreBadge';
 import StatusBadge from '../components/StatusBadge';
 import { useToast } from '../context/ToastContext';
 import { getMatchDetails } from '../api/matchService';
+import { getItemImageUrl } from '../utils/imageUtils';
 
 export const MatchDetails = () => {
   const { id } = useParams();
@@ -146,8 +147,8 @@ export const MatchDetails = () => {
           </div>
 
           <div style={{ height: '150px', backgroundColor: 'var(--slate-100)', borderRadius: '4px', overflow: 'hidden', marginBottom: '0.75rem' }}>
-            {lostItem.image ? (
-              <img src={lostItem.image} alt={lostItem.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {getItemImageUrl(lostItem, true) ? (
+              <img src={getItemImageUrl(lostItem, true)} alt={lostItem.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>No photo</div>
             )}
@@ -191,8 +192,8 @@ export const MatchDetails = () => {
           </div>
 
           <div style={{ height: '150px', backgroundColor: 'var(--slate-100)', borderRadius: '4px', overflow: 'hidden', marginBottom: '0.75rem' }}>
-            {foundItem.image ? (
-              <img src={foundItem.image} alt={foundItem.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {getItemImageUrl(foundItem, true) ? (
+              <img src={getItemImageUrl(foundItem, true)} alt={foundItem.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>No photo</div>
             )}

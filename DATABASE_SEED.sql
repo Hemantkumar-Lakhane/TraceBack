@@ -32,10 +32,10 @@ INSERT INTO users (id, name, email, password, role, created_at) VALUES
 INSERT INTO items (id, category, name, description, color, brand, image_url, created_at) VALUES
 (1, 'ELECTRONICS', 'Space Gray MacBook Pro 14"', '14-inch MacBook Pro M2 with React sticker on lid and minor scratch near the trackpad.', 'Space Gray', 'Apple', '/uploads/demo-macbook.jpg', NOW()),
 (2, 'ELECTRONICS', 'Apple MacBook Pro 14" Space Gray', 'Found on study desk in 2nd floor library near the window. Turned in to Ramanujan Central Security Vault.', 'Space Gray', 'Apple', '/uploads/demo-macbook.jpg', NOW()),
-(3, 'WALLETS_CARDS', 'Navy Blue Leather Wallet', 'Navy blue bi-fold leather wallet containing Student ID IITB-2024-CS104 and campus canteen pass.', 'Navy Blue', 'Titan', NULL, NOW()),
-(4, 'ELECTRONICS', 'Sony WH-1000XM5 Headphones', 'Black wireless over-ear noise-cancelling headphones found on bench near Quad Lawn. Currently secured in Locker B-04.', 'Black', 'Sony', NULL, NOW()),
-(5, 'OTHER', 'Milton Thermosteel Water Bottle 1L', '1L wide mouth silver steel flask with university robotics club sticker.', 'Silver', 'Milton', NULL, NOW()),
-(6, 'OTHER', 'Silver Milton Thermosteel 1L', 'Milton water bottle retrieved from Visvesvaraya Engineering Lab 104.', 'Silver', 'Milton', NULL, NOW());
+(3, 'WALLETS_CARDS', 'Navy Blue Leather Wallet', 'Navy blue bi-fold leather wallet containing Student ID IITB-2024-CS104 and campus canteen pass.', 'Navy Blue', 'Titan', '/uploads/demo-wallet.jpg', NOW()),
+(4, 'ELECTRONICS', 'Sony WH-1000XM5 Headphones', 'Black wireless over-ear noise-cancelling headphones found on bench near Quad Lawn. Currently secured in Locker B-04.', 'Black', 'Sony', '/uploads/demo-headphones.jpg', NOW()),
+(5, 'OTHER', 'Milton Thermosteel Water Bottle 1L', '1L wide mouth silver steel flask with university robotics club sticker.', 'Silver', 'Milton', '/uploads/demo-bottle.jpg', NOW()),
+(6, 'OTHER', 'Silver Milton Thermosteel 1L', 'Milton water bottle retrieved from Visvesvaraya Engineering Lab 104.', 'Silver', 'Milton', '/uploads/demo-bottle.jpg', NOW());
 
 -- 3. LOST REPORTS
 INSERT INTO lost_reports (id, item_id, user_id, location, date_lost, status, created_at) VALUES

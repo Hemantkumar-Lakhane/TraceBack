@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Calendar, ArrowRight, Laptop, CreditCard, Key, Briefcase, Shirt, BookOpen, HelpCircle } from 'lucide-react';
 import { StatusBadge, TypeBadge } from './StatusBadge';
+import { getItemImageUrl } from '../utils/imageUtils';
 
 const getCategoryIcon = (category) => {
   switch (category) {
@@ -18,6 +19,7 @@ const getCategoryIcon = (category) => {
 export const ItemCard = ({ report }) => {
   const item = report.item || {};
   const isLost = report.type === 'LOST';
+  const itemImg = getItemImageUrl(item, true);
 
   return (
     <div className="surface-card" style={{
@@ -39,9 +41,9 @@ export const ItemCard = ({ report }) => {
         justifyContent: 'center',
         overflow: 'hidden'
       }}>
-        {item.image ? (
+        {itemImg ? (
           <img
-            src={item.image}
+            src={itemImg}
             alt={item.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={(e) => {

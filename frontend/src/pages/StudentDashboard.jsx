@@ -21,6 +21,7 @@ import StatusBadge from '../components/StatusBadge';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import reportService from '../api/reportService';
 import matchService from '../api/matchService';
+import { getItemImageUrl } from '../utils/imageUtils';
 
 export const StudentDashboard = () => {
   const { user } = useAuth();
@@ -123,9 +124,18 @@ export const StudentDashboard = () => {
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                <span className="badge badge-matched" style={{
+                <span style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '2px 8px',
+                  borderRadius: '4px',
+                  fontSize: '0.6875rem',
+                  fontWeight: 600,
                   textTransform: 'uppercase',
-                  letterSpacing: '0.04em'
+                  letterSpacing: '0.04em',
+                  backgroundColor: '#eff6ff',
+                  color: '#1d4ed8',
+                  border: '1px solid #bfdbfe'
                 }}>
                   Match Detected
                 </span>
@@ -214,9 +224,8 @@ export const StudentDashboard = () => {
               <button
                 onClick={() => setActiveTab('LOST')}
                 style={{
-                  background: activeTab === 'LOST' ? 'var(--card-bg)' : 'transparent',
-                  color: activeTab === 'LOST' ? 'var(--text-main)' : 'var(--slate-500)',
-                  boxShadow: activeTab === 'LOST' ? 'var(--shadow-sm)' : 'none',
+                  background: activeTab === 'LOST' ? '#ffffff' : 'transparent',
+                  color: activeTab === 'LOST' ? 'var(--slate-900)' : 'var(--slate-600)',
                   border: 'none',
                   borderRadius: '4px',
                   padding: '3px 8px',
@@ -230,9 +239,8 @@ export const StudentDashboard = () => {
               <button
                 onClick={() => setActiveTab('FOUND')}
                 style={{
-                  background: activeTab === 'FOUND' ? 'var(--card-bg)' : 'transparent',
-                  color: activeTab === 'FOUND' ? 'var(--text-main)' : 'var(--slate-500)',
-                  boxShadow: activeTab === 'FOUND' ? 'var(--shadow-sm)' : 'none',
+                  background: activeTab === 'FOUND' ? '#ffffff' : 'transparent',
+                  color: activeTab === 'FOUND' ? 'var(--slate-900)' : 'var(--slate-600)',
                   border: 'none',
                   borderRadius: '4px',
                   padding: '3px 8px',
@@ -277,8 +285,8 @@ export const StudentDashboard = () => {
                         backgroundColor: 'var(--slate-100)',
                         flexShrink: 0
                       }}>
-                        {report.item?.image ? (
-                          <img src={report.item.image} alt={report.item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {getItemImageUrl(report.item, true) ? (
+                          <img src={getItemImageUrl(report.item, true)} alt={report.item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         ) : (
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--slate-400)' }}>
                             <AlertCircle size={16} />

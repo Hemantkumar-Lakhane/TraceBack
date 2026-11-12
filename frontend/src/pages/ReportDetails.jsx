@@ -19,6 +19,7 @@ import Modal from '../components/Modal';
 import { useToast } from '../context/ToastContext';
 import reportService from '../api/reportService';
 import matchService from '../api/matchService';
+import { getItemImageUrl } from '../utils/imageUtils';
 
 export const ReportDetails = () => {
   const { id, type = 'lost' } = useParams();
@@ -59,6 +60,7 @@ export const ReportDetails = () => {
 
   const item = report.item || {};
   const isLost = report.type === 'LOST';
+  const itemImg = getItemImageUrl(item, true);
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -98,11 +100,15 @@ export const ReportDetails = () => {
               border: '1px solid var(--slate-200)',
               position: 'relative'
             }}>
-              {item.image ? (
+              {itemImg ? (
                 <img
-                  src={item.image}
+                  src={itemImg}
                   alt={item.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.style.display = 'none';
+                  }}
                 />
               ) : (
                 <div style={{ textAlign: 'center', color: 'var(--slate-400)' }}>

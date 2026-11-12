@@ -40,8 +40,8 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
           const isCurrent = step.number === currentStep;
 
           let stepColor = 'var(--slate-400)';
-          let stepBg = 'var(--slate-100)';
-          let stepBorder = 'var(--border-color)';
+          let stepBg = '#ffffff';
+          let stepBorder = 'var(--slate-200)';
 
           if (isDone) {
             stepColor = '#ffffff';
@@ -49,8 +49,8 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
             stepBorder = '#059669';
           } else if (isCurrent) {
             stepColor = '#ffffff';
-            stepBg = 'var(--primary)';
-            stepBorder = 'var(--primary)';
+            stepBg = '#0f172a';
+            stepBorder = '#0f172a';
           }
 
           return (
@@ -81,7 +81,7 @@ export const LifecycleTracker = ({ currentStep = 1 }) => {
               <div style={{
                 fontSize: '0.75rem',
                 fontWeight: isCurrent ? 600 : 500,
-                color: isCurrent ? 'var(--slate-900)' : isDone ? 'var(--emerald)' : 'var(--slate-500)'
+                color: isCurrent ? 'var(--slate-900)' : isDone ? 'var(--emerald-dark)' : 'var(--slate-500)'
               }}>
                 {step.label}
               </div>
