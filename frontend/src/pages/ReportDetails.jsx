@@ -7,7 +7,7 @@ import {
   Tag,
   ShieldCheck,
   Share2,
-  Sparkles,
+  GitMerge,
   MessageSquare,
   FileCheck2,
   QrCode,
@@ -203,7 +203,7 @@ export const ReportDetails = () => {
 
               <div style={{ display: 'flex', gap: '8px' }}>
                 <Link to="/matches" className="btn btn-primary btn-sm">
-                  <Sparkles size={14} /> Check AI Matches
+                  <GitMerge size={14} /> View Matches
                 </Link>
                 <Link to="/chat" className="btn btn-secondary btn-sm">
                   <MessageSquare size={14} /> Open Chat

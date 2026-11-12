@@ -9,51 +9,51 @@ export const StatusBadge = ({ status, type }) => {
       case 'OPEN':
         return {
           className: 'badge-open',
-          icon: <Search size={12} />,
-          text: 'Open Report'
+          icon: <Search size={11} />,
+          text: 'Open'
         };
       case 'MATCHED':
         return {
           className: 'badge-matched',
-          icon: <ArrowRightLeft size={12} />,
+          icon: <ArrowRightLeft size={11} />,
           text: 'Matched'
         };
       case 'CLAIM_REQUESTED':
       case 'PENDING':
         return {
           className: 'badge-claim-requested',
-          icon: <Clock size={12} />,
-          text: 'Claim Pending'
+          icon: <Clock size={11} />,
+          text: 'Pending'
         };
       case 'VERIFYING':
         return {
           className: 'badge-verifying',
-          icon: <ShieldCheck size={12} />,
-          text: 'Verifying with Security'
+          icon: <ShieldCheck size={11} />,
+          text: 'In Verification'
         };
       case 'APPROVED':
         return {
           className: 'badge-approved',
-          icon: <CheckCircle2 size={12} />,
-          text: 'Claim Approved'
+          icon: <CheckCircle2 size={11} />,
+          text: 'Approved'
         };
       case 'RETURNED':
       case 'CLOSED':
         return {
           className: 'badge-returned',
-          icon: <CheckCheck size={12} />,
-          text: 'Item Returned'
+          icon: <CheckCheck size={11} />,
+          text: 'Returned'
         };
       case 'REJECTED':
         return {
           className: 'badge-rejected',
-          icon: <XCircle size={12} />,
-          text: 'Claim Rejected'
+          icon: <XCircle size={11} />,
+          text: 'Rejected'
         };
       default:
         return {
           className: 'badge-open',
-          icon: <Clock size={12} />,
+          icon: <Clock size={11} />,
           text: normStatus
         };
     }
@@ -64,7 +64,7 @@ export const StatusBadge = ({ status, type }) => {
   return (
     <span className={`badge ${config.className}`}>
       {config.icon}
-      {config.text}
+      <span>{config.text}</span>
     </span>
   );
 };
@@ -73,7 +73,7 @@ export const TypeBadge = ({ type }) => {
   const isLost = type?.toUpperCase() === 'LOST';
   return (
     <span className={`badge ${isLost ? 'badge-lost' : 'badge-found'}`}>
-      {isLost ? 'LOST ITEM' : 'FOUND ITEM'}
+      {isLost ? 'Lost' : 'Found'}
     </span>
   );
 };

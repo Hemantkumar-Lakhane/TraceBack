@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { FileCheck2, ShieldCheck, ArrowRight, QrCode, Clock, MapPin, Calendar, Sparkles } from 'lucide-react';
+import { FileCheck2, ShieldCheck, ArrowRight, QrCode, Clock, MapPin, Calendar, GitMerge } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import { getMyClaims } from '../api/claimService';
 
@@ -36,7 +36,7 @@ export const MyClaims = () => {
         </div>
 
         <Link to="/matches" className="btn btn-outline btn-sm">
-          <Sparkles size={14} /> View Matches
+          <GitMerge size={14} /> View Matches
         </Link>
       </div>
 

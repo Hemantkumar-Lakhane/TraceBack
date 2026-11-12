@@ -4,7 +4,7 @@ import { useToast } from '../context/ToastContext';
 import {
   UploadCloud,
   X,
-  Sparkles,
+  GitMerge,
   ArrowLeft,
   Calendar,
   MapPin,
@@ -280,22 +280,22 @@ export const ReportLost = () => {
             )}
           </div>
 
-          {/* AI Matching Engine Callout */}
+          {/* Automated Matching Callout */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
-            backgroundColor: '#eff6ff',
-            border: '1px solid #bfdbfe',
-            padding: '12px 16px',
-            borderRadius: '10px',
-            marginBottom: '1.75rem',
+            backgroundColor: 'var(--slate-50)',
+            border: '1px solid var(--slate-200)',
+            padding: '10px 14px',
+            borderRadius: '6px',
+            marginBottom: '1.5rem',
             fontSize: '0.8125rem',
             color: 'var(--slate-700)'
           }}>
-            <Sparkles size={18} color="var(--primary)" style={{ flexShrink: 0 }} />
+            <GitMerge size={16} color="var(--slate-700)" style={{ flexShrink: 0 }} />
             <span>
-              <strong>Automated Matching Engine:</strong> Once submitted, our 40/30/30 algorithm will scan all reported found items and immediately alert you of potential matches.
+              <strong>Automated Matching:</strong> Submissions are immediately scanned across campus found reports based on category, location, and timeframe.
             </span>
           </div>
 

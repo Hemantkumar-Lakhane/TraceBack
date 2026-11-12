@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ArrowRight, ArrowRightLeft, MessageSquare, FileCheck2, CheckCircle2, ShieldCheck, MapPin, Calendar } from 'lucide-react';
+import { GitMerge, ArrowRight, ArrowRightLeft, MessageSquare, FileCheck2, CheckCircle2, MapPin, Calendar } from 'lucide-react';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import { getMyMatches } from '../api/matchService';
 
@@ -24,19 +24,19 @@ export const Matches = () => {
   }, []);
 
   return (
-    <div className="animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+    <div className="animate-fade-in" style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Header */}
-      <div style={{ borderBottom: '1px solid var(--slate-200)', paddingBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ borderBottom: '1px solid var(--slate-200)', paddingBottom: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span className="badge badge-open">AI MATCHING ENGINE</span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>40% Category • 30% Location • 30% Timeline</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
+            <span className="badge badge-open">Automated Matching</span>
+            <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>40% Category • 30% Location • 30% Timestamp</span>
           </div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--slate-900)' }}>
-            My Item Matches
+          <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
+            Item Matches
           </h1>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem' }}>
-            Review potential pairs identified by our automated multi-factor scoring engine
+          <p style={{ color: 'var(--slate-500)', fontSize: '0.8125rem' }}>
+            Potential pairs identified by multi-factor attribute correlation
           </p>
         </div>
 
@@ -46,48 +46,47 @@ export const Matches = () => {
       </div>
 
       {loading ? (
-        <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--slate-400)' }}>
-          Loading AI matches...
+        <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--slate-400)', fontSize: '0.875rem' }}>
+          Loading matches...
         </div>
       ) : matches.length === 0 ? (
-        <div className="surface-card" style={{ padding: '4rem 2rem', textAlign: 'center', borderRadius: '16px' }}>
-          <Sparkles size={48} color="var(--slate-300)" style={{ margin: '0 auto 1rem' }} />
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--slate-800)', marginBottom: '0.5rem' }}>
+        <div className="surface-card" style={{ padding: '3rem 2rem', textAlign: 'center', borderRadius: '6px' }}>
+          <GitMerge size={36} color="var(--slate-300)" style={{ margin: '0 auto 0.75rem' }} />
+          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--slate-800)', marginBottom: '0.35rem' }}>
             No Matches Found Yet
           </h3>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem', maxWidth: '420px', margin: '0 auto 1.5rem' }}>
-            When a campus member or security officer reports an item matching your description, it will automatically appear here with a confidence score.
+          <p style={{ color: 'var(--slate-500)', fontSize: '0.8125rem', maxWidth: '400px', margin: '0 auto 1.25rem' }}>
+            When an item is reported that correlates with your description, it will be listed here with calculated match metrics.
           </p>
-          <Link to="/browse" className="btn btn-primary">
-            Browse All Campus Reports
+          <Link to="/browse" className="btn btn-primary btn-sm">
+            Browse Reports
           </Link>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {matches.map(match => (
             <div
               key={match.id}
               className="surface-card"
               style={{
-                borderRadius: '18px',
-                padding: '1.5rem',
-                border: '1.5px solid #bfdbfe',
-                boxShadow: 'var(--shadow-md)',
+                borderRadius: '6px',
+                padding: '1.25rem',
+                border: '1px solid var(--slate-200)',
                 backgroundColor: '#ffffff'
               }}
             >
               {/* Match Card Top Row: Match Score & Status */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '8px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <MatchScoreBadge score={match.matchScore || 92} breakdown={match.breakdown} />
-                  <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>
-                    Match Record #{match.id} • Generated {new Date(match.createdAt || Date.now()).toLocaleDateString()}
+                  <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
+                    Record #{match.id} • {new Date(match.createdAt || Date.now()).toLocaleDateString()}
                   </span>
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <Link to={`/matches/${match.id}`} className="btn btn-primary btn-sm">
-                    View Side-by-Side Breakdown <ArrowRight size={14} />
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <Link to={`/matches/${match.id}`} className="btn btn-secondary btn-sm">
+                    View Breakdown <ArrowRight size={13} />
                   </Link>
                 </div>
               </div>
@@ -96,24 +95,24 @@ export const Matches = () => {
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
-                gap: '1rem',
+                gap: '0.75rem',
                 alignItems: 'center',
                 backgroundColor: 'var(--slate-50)',
-                padding: '1.25rem',
-                borderRadius: '14px',
+                padding: '1rem',
+                borderRadius: '6px',
                 border: '1px solid var(--slate-200)',
-                marginBottom: '1.25rem'
+                marginBottom: '1rem'
               }}>
                 {/* Left: Your Lost Report */}
-                <div style={{ backgroundColor: '#ffffff', padding: '1rem', borderRadius: '10px', border: '1px solid var(--slate-200)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span className="badge badge-lost" style={{ fontSize: '0.6875rem' }}>Your Lost Report</span>
+                <div style={{ backgroundColor: '#ffffff', padding: '0.875rem', borderRadius: '4px', border: '1px solid var(--slate-200)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span className="badge badge-lost" style={{ fontSize: '0.6875rem' }}>Lost Report</span>
                     <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)' }}>#{match.lostReport?.id}</span>
                   </div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--slate-900)', marginBottom: '4px' }}>
+                  <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)', marginBottom: '3px' }}>
                     {match.lostReport?.item?.name}
                   </h4>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                     <span>Location: {match.lostReport?.location}</span>
                     <span>Date: {new Date(match.lostReport?.dateLost || match.lostReport?.date || Date.now()).toLocaleDateString()}</span>
                     <span>Category: {match.lostReport?.item?.category}</span>
@@ -122,29 +121,28 @@ export const Matches = () => {
 
                 {/* Center Icon */}
                 <div style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '50%',
-                  backgroundColor: 'var(--primary-light)',
-                  color: 'var(--primary)',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '4px',
+                  backgroundColor: 'var(--slate-200)',
+                  color: 'var(--slate-700)',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1px solid #bfdbfe'
+                  justifyContent: 'center'
                 }}>
-                  <ArrowRightLeft size={16} />
+                  <ArrowRightLeft size={14} />
                 </div>
 
                 {/* Right: Found Report */}
-                <div style={{ backgroundColor: '#ffffff', padding: '1rem', borderRadius: '10px', border: '1px solid var(--slate-200)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                    <span className="badge badge-found" style={{ fontSize: '0.6875rem' }}>Found by {match.foundReport?.user?.name || 'Campus Member'}</span>
+                <div style={{ backgroundColor: '#ffffff', padding: '0.875rem', borderRadius: '4px', border: '1px solid var(--slate-200)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                    <span className="badge badge-found" style={{ fontSize: '0.6875rem' }}>Found Report</span>
                     <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)' }}>#{match.foundReport?.id}</span>
                   </div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--slate-900)', marginBottom: '4px' }}>
+                  <h4 style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)', marginBottom: '3px' }}>
                     {match.foundReport?.item?.name}
                   </h4>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)', display: 'flex', flexDirection: 'column', gap: '2px' }}>
                     <span>Location: {match.foundReport?.location}</span>
                     <span>Date: {new Date(match.foundReport?.dateFound || match.foundReport?.date || Date.now()).toLocaleDateString()}</span>
                     <span>Category: {match.foundReport?.item?.category}</span>
@@ -153,17 +151,17 @@ export const Matches = () => {
               </div>
 
               {/* Action Buttons Row */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8125rem', color: 'var(--emerald-dark)', fontWeight: 600 }}>
-                  <CheckCircle2 size={16} /> Category matched (40/40) • Same Location Building (28/30)
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--slate-600)', fontWeight: 500 }}>
+                  <CheckCircle2 size={14} color="var(--emerald)" /> Category matched (40/40) • Location building (28/30)
                 </div>
 
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <Link to="/chat" className="btn btn-secondary btn-sm" style={{ gap: '6px' }}>
-                    <MessageSquare size={14} /> Message Finder
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <Link to="/chat" className="btn btn-secondary btn-sm" style={{ gap: '5px' }}>
+                    <MessageSquare size={13} /> Message Finder
                   </Link>
-                  <Link to={`/claims/new/${match.id}`} className="btn btn-primary btn-sm" style={{ gap: '6px' }}>
-                    <FileCheck2 size={14} /> Claim This Item
+                  <Link to={`/claims/new/${match.id}`} className="btn btn-primary btn-sm" style={{ gap: '5px' }}>
+                    <FileCheck2 size={13} /> Claim Item
                   </Link>
                 </div>
               </div>

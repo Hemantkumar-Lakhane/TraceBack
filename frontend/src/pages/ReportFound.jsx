@@ -5,7 +5,6 @@ import { useToast } from '../context/ToastContext';
 import {
   UploadCloud,
   X,
-  Sparkles,
   ArrowLeft,
   Calendar,
   MapPin,

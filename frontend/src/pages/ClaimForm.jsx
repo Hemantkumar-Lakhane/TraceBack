@@ -10,7 +10,6 @@ import {
   UploadCloud,
   CheckCircle2,
   Lock,
-  Sparkles,
   Info
 } from 'lucide-react';
 import claimService from '../api/claimService';
@@ -72,17 +71,17 @@ export const ClaimForm = () => {
         </Link>
       </div>
 
-      <div className="surface-card" style={{ padding: '2rem', borderRadius: '18px', borderTop: '4px solid var(--primary)' }}>
-        <div style={{ marginBottom: '1.75rem', borderBottom: '1px solid var(--slate-100)', paddingBottom: '1rem' }}>
+      <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '6px', borderTop: '3px solid #0f172a' }}>
+        <div style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--slate-100)', paddingBottom: '0.75rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span className="badge badge-open">OWNERSHIP VERIFICATION CLAIM</span>
+            <span className="badge badge-open">Ownership Verification</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>Match #{matchId}</span>
           </div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--slate-900)' }}>
-            Submit Official Ownership Verification
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--slate-900)' }}>
+            Submit Ownership Claim
           </h2>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem' }}>
-            To prevent false claims and protect students, Campus Security verifies unique identifiers before releasing deposited items.
+          <p style={{ color: 'var(--slate-500)', fontSize: '0.8125rem' }}>
+            Provide identifying details so Campus Security can verify your ownership before releasing deposited property.
           </p>
         </div>
 
@@ -247,17 +246,17 @@ export const ClaimForm = () => {
             </label>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-            <Link to={`/matches/${matchId}`} className="btn btn-secondary">
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+            <Link to={`/matches/${matchId}`} className="btn btn-secondary btn-sm">
               Cancel
             </Link>
             <button
               type="submit"
-              className="btn btn-primary btn-lg"
+              className="btn btn-primary btn-sm"
               disabled={submitting}
-              style={{ minWidth: '200px' }}
+              style={{ minWidth: '160px' }}
             >
-              {submitting ? 'Submitting Claim...' : 'Submit Official Claim'}
+              {submitting ? 'Submitting...' : 'Submit Claim'}
             </button>
           </div>
         </form>

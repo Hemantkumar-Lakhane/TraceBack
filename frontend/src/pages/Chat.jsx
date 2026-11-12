@@ -4,7 +4,7 @@ import { useToast } from '../context/ToastContext';
 import { Link } from 'react-router-dom';
 import {
   Send,
-  Sparkles,
+  GitMerge,
   Paperclip,
   ShieldCheck,
   AlertTriangle,
@@ -146,7 +146,7 @@ export const Chat = () => {
         </div>
 
         <Link to="/matches" className="btn btn-outline btn-sm">
-          <Sparkles size={14} /> Back to Matches
+          <GitMerge size={14} /> Back to Matches
         </Link>
       </div>
 
@@ -154,8 +154,8 @@ export const Chat = () => {
       <div className="surface-card" style={{
         flex: 1,
         display: 'grid',
-        gridTemplateColumns: 'minmax(260px, 320px) 1fr',
-        borderRadius: '16px',
+        gridTemplateColumns: 'minmax(240px, 300px) 1fr',
+        borderRadius: '6px',
         overflow: 'hidden',
         border: '1px solid var(--slate-200)',
         boxShadow: 'var(--shadow-md)'
@@ -327,8 +327,8 @@ export const Chat = () => {
             <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', alignSelf: 'center', whiteSpace: 'nowrap' }}>Quick replies:</span>
             {[
               "Where is it stored right now?",
-              "Does it have an Octocat sticker on the lid?",
-              "I just submitted an official verification claim!"
+              "Does it have an identifying mark or sticker?",
+              "I just submitted an ownership verification claim."
             ].map((prompt, i) => (
               <button
                 key={i}

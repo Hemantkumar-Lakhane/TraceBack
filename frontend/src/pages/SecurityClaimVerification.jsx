@@ -8,7 +8,6 @@ import {
   User,
   MapPin,
   Calendar,
-  Sparkles,
   Archive,
   AlertTriangle,
   FileCheck2,

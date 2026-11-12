@@ -5,13 +5,13 @@ import { StatusBadge, TypeBadge } from './StatusBadge';
 
 const getCategoryIcon = (category) => {
   switch (category) {
-    case 'ELECTRONICS': return <Laptop size={28} color="var(--primary)" />;
-    case 'WALLETS_CARDS': return <CreditCard size={28} color="#b45309" />;
-    case 'KEYS': return <Key size={28} color="#047857" />;
-    case 'BAGS_BACKPACKS': return <Briefcase size={28} color="#6366f1" />;
-    case 'CLOTHING_ACCESSORIES': return <Shirt size={28} color="#b91c1c" />;
-    case 'BOOKS_STATIONERY': return <BookOpen size={28} color="#475569" />;
-    default: return <HelpCircle size={28} color="var(--slate-500)" />;
+    case 'ELECTRONICS': return <Laptop size={24} color="var(--slate-600)" />;
+    case 'WALLETS_CARDS': return <CreditCard size={24} color="var(--slate-600)" />;
+    case 'KEYS': return <Key size={24} color="var(--slate-600)" />;
+    case 'BAGS_BACKPACKS': return <Briefcase size={24} color="var(--slate-600)" />;
+    case 'CLOTHING_ACCESSORIES': return <Shirt size={24} color="var(--slate-600)" />;
+    case 'BOOKS_STATIONERY': return <BookOpen size={24} color="var(--slate-600)" />;
+    default: return <HelpCircle size={24} color="var(--slate-500)" />;
   }
 };
 
@@ -24,14 +24,14 @@ export const ItemCard = ({ report }) => {
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      borderRadius: '14px',
+      borderRadius: '6px',
       border: '1px solid var(--slate-200)',
-      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-      height: '100%'
+      height: '100%',
+      backgroundColor: '#ffffff'
     }}>
       {/* Image Thumbnail / Fallback Header */}
       <div style={{
-        height: '170px',
+        height: '150px',
         backgroundColor: 'var(--slate-100)',
         position: 'relative',
         display: 'flex',
@@ -54,31 +54,31 @@ export const ItemCard = ({ report }) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '8px',
+            gap: '6px',
             color: 'var(--slate-400)'
           }}>
             {getCategoryIcon(item.category)}
-            <span style={{ fontSize: '0.75rem', fontWeight: 600 }}>{item.category || 'Item'}</span>
+            <span style={{ fontSize: '0.6875rem', fontWeight: 500 }}>{item.category || 'Item'}</span>
           </div>
         )}
 
-        <div style={{ position: 'absolute', top: '10px', left: '10px', display: 'flex', gap: '6px' }}>
+        <div style={{ position: 'absolute', top: '8px', left: '8px', display: 'flex', gap: '4px' }}>
           <TypeBadge type={report.type} />
         </div>
 
-        <div style={{ position: 'absolute', top: '10px', right: '10px' }}>
+        <div style={{ position: 'absolute', top: '8px', right: '8px' }}>
           <StatusBadge status={report.status} />
         </div>
       </div>
 
       {/* Card Content */}
-      <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
+      <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between' }}>
         <div>
           <h4 style={{
-            fontSize: '1.05rem',
-            fontWeight: 700,
+            fontSize: '0.9375rem',
+            fontWeight: 600,
             color: 'var(--slate-900)',
-            marginBottom: '6px',
+            marginBottom: '4px',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
@@ -87,42 +87,36 @@ export const ItemCard = ({ report }) => {
           </h4>
 
           <p style={{
-            fontSize: '0.8125rem',
-            color: 'var(--slate-600)',
-            marginBottom: '12px',
+            fontSize: '0.75rem',
+            color: 'var(--slate-500)',
+            marginBottom: '10px',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
-            minHeight: '2.5rem'
+            minHeight: '2.2rem',
+            lineHeight: 1.4
           }}>
             {item.description || 'No detailed description provided.'}
           </p>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.75rem', color: 'var(--slate-500)', marginBottom: '14px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <MapPin size={13} color="var(--primary)" />
-              <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                {report.location || 'Campus'}
-              </span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', fontSize: '0.6875rem', color: 'var(--slate-500)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <MapPin size={11} />
+              <span>{report.location}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Calendar size={13} color="var(--slate-400)" />
-              <span>
-                {report.date ? new Date(report.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recently'}
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <Calendar size={11} />
+              <span>{new Date(report.date || Date.now()).toLocaleDateString()}</span>
             </div>
           </div>
         </div>
 
-        <div style={{ borderTop: '1px solid var(--slate-100)', paddingTop: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>
-            ID: #{report.id}
-          </span>
+        <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid var(--slate-100)', display: 'flex', justifyContent: 'flex-end' }}>
           <Link
             to={`/reports/${report.type?.toLowerCase() || 'lost'}/${report.id}`}
-            className="btn btn-outline btn-sm"
-            style={{ gap: '4px', fontSize: '0.75rem', padding: '4px 10px' }}
+            className="btn btn-ghost btn-sm"
+            style={{ fontSize: '0.75rem', padding: '3px 8px' }}
           >
             Details <ArrowRight size={12} />
           </Link>

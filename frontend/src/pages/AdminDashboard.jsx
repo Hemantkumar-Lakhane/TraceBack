@@ -5,7 +5,7 @@ import {
   BarChart3,
   Users,
   ShieldAlert,
-  Sparkles,
+  GitMerge,
   TrendingUp,
   FileText,
   CheckCircle2,
@@ -49,73 +49,71 @@ export const AdminDashboard = () => {
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span className="badge" style={{ backgroundColor: '#eef2ff', color: '#4f46e5', border: '1px solid #c7d2fe' }}>
-              CAMPUS ADMINISTRATION PORTAL
-            </span>
+            <span className="badge badge-open">Administration</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Administrator: {user?.name || 'Dean Sarah'}</span>
           </div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--slate-900)' }}>
-            System Platform Overview & Health
+          <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
+            System Platform Overview
           </h1>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem' }}>
-            High-level metrics, user directory controls, and campus lost & found analytics
+          <p style={{ color: 'var(--slate-500)', fontSize: '0.8125rem' }}>
+            High-level metrics, user directory controls, and campus recovery analytics
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
           <Link to="/admin/users" className="btn btn-secondary btn-sm" style={{ gap: '6px' }}>
-            <Users size={16} /> Manage Users
+            <Users size={14} /> Manage Users
           </Link>
           <Link to="/admin/moderation" className="btn btn-outline btn-sm" style={{ gap: '6px' }}>
-            <ShieldAlert size={16} /> Moderation Queue
+            <ShieldAlert size={14} /> Moderation Queue
           </Link>
         </div>
       </div>
 
       {/* KPI Stats Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-        <div className="surface-card" style={{ padding: '1.5rem', borderTop: '4px solid var(--primary)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 700 }}>
-            <span>TOTAL REGISTERED USERS</span>
-            <Users size={20} color="var(--primary)" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
+            <span>REGISTERED USERS</span>
+            <Users size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--slate-900)', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             {stats?.totalUsers || 1482}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--emerald-dark)', fontWeight: 600 }}>↑ +48 this week</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--emerald)' }}>+48 this week</span>
         </div>
 
-        <div className="surface-card" style={{ padding: '1.5rem', borderTop: '4px solid var(--emerald)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 700 }}>
-            <span>CAMPUS RECOVERY RATE</span>
-            <TrendingUp size={20} color="var(--emerald)" />
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
+            <span>RECOVERY RATE</span>
+            <TrendingUp size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--emerald)', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             {stats?.returnRate || '82.2%'}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Avg turnaround: 14.5 hrs</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--slate-500)' }}>Avg return: 14.5 hrs</span>
         </div>
 
-        <div className="surface-card" style={{ padding: '1.5rem', borderTop: '4px solid #6366f1' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 700 }}>
-            <span>TOTAL AI MATCHES</span>
-            <Sparkles size={20} color="#6366f1" />
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
+            <span>MATCHED PAIRS</span>
+            <GitMerge size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: '#4338ca', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             {stats?.totalMatches || 298}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>40/30/30 Engine Accuracy 94%</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--slate-500)' }}>Automated attribute matching</span>
         </div>
 
-        <div className="surface-card" style={{ padding: '1.5rem', borderTop: '4px solid var(--rose)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 700 }}>
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
             <span>MODERATION QUEUE</span>
-            <ShieldAlert size={20} color="var(--rose)" />
+            <ShieldAlert size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--rose-dark)', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             1
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--rose-dark)' }}>1 flagged spam report</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--rose)' }}>1 flagged report</span>
         </div>
       </div>
 

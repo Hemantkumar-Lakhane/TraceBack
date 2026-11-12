@@ -55,76 +55,76 @@ export const SecurityDashboard = () => {
       }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <span className="badge badge-matched">CAMPUS POLICE & SECURITY DESK</span>
+            <span className="badge badge-matched">Security Operations</span>
             <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Badge: {user?.badgeNumber || 'SEC-409'}</span>
           </div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--slate-900)' }}>
-            Security Operations & Verification Hub
+          <h1 style={{ fontSize: '1.375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
+            Security Operations Hub
           </h1>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem' }}>
-            Station: <strong>Central Security Desk (Student Union Hall)</strong>
+          <p style={{ color: 'var(--slate-500)', fontSize: '0.8125rem' }}>
+            Station: Central Security Desk (Student Union Hall)
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <Link to="/security/report/found" className="btn btn-success" style={{ gap: '6px' }}>
-            <PlusCircle size={16} /> Log Handed-Over Item
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Link to="/security/report/found" className="btn btn-primary btn-sm" style={{ gap: '6px' }}>
+            <PlusCircle size={14} /> Log Turned-In Item
           </Link>
-          <Link to="/security/inventory" className="btn btn-outline" style={{ gap: '6px' }}>
-            <Archive size={16} /> Vault Inventory
+          <Link to="/security/inventory" className="btn btn-secondary btn-sm" style={{ gap: '6px' }}>
+            <Archive size={14} /> Custody Inventory
           </Link>
         </div>
       </div>
 
       {/* Quick Metrics */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
-        <div className="surface-card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--amber)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 600 }}>
-            <span>PENDING CLAIM AUDITS</span>
-            <Clock size={18} color="var(--amber)" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem' }}>
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
+            <span>PENDING CLAIMS</span>
+            <Clock size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--amber-dark)', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             {pendingClaims.filter(c => c.status === 'PENDING').length}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Requires physical proof check</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--slate-500)' }}>Requires verification</span>
         </div>
 
-        <div className="surface-card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--primary)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 600 }}>
-            <span>VAULT CUSTODY ITEMS</span>
-            <Archive size={18} color="var(--primary)" />
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
+            <span>CUSTODY ITEMS</span>
+            <Archive size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--slate-900)', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             {vaultItems.length}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Currently in locker storage</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--slate-500)' }}>In locker storage</span>
         </div>
 
-        <div className="surface-card" style={{ padding: '1.25rem', borderLeft: '4px solid var(--emerald)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.8125rem', fontWeight: 600 }}>
+        <div className="surface-card" style={{ padding: '1rem 1.25rem', borderRadius: '6px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--slate-500)', fontSize: '0.75rem', fontWeight: 600 }}>
             <span>RETURNS COMPLETED</span>
-            <CheckCheck size={18} color="var(--emerald)" />
+            <CheckCheck size={16} color="var(--slate-400)" />
           </div>
-          <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--emerald)', marginTop: '8px' }}>
+          <div style={{ fontSize: '1.5rem', fontWeight: 600, color: 'var(--slate-900)', marginTop: '4px' }}>
             {returnedItems.length + 14}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>Handed over to verified owners</span>
+          <span style={{ fontSize: '0.6875rem', color: 'var(--emerald)' }}>Verified & released</span>
         </div>
       </div>
 
-      {/* Main Action Section: Urgent Claim Verification Queue */}
-      <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '16px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+      {/* Main Action Section: Claim Verification Queue */}
+      <div className="surface-card" style={{ padding: '1.25rem', borderRadius: '6px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
           <div>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--slate-900)' }}>
-              Action Required: Pending Ownership Claims
+            <h3 style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
+              Pending Ownership Claims
             </h3>
-            <span style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>
-              Cross-reference student submitted secret markings against physical locker custody
+            <span style={{ fontSize: '0.6875rem', color: 'var(--slate-500)' }}>
+              Cross-reference student submitted markings against physical custody
             </span>
           </div>
           <Link to="/security/claims" className="btn btn-outline btn-sm">
-            View All Claims Table →
+            View All Claims →
           </Link>
         </div>
 

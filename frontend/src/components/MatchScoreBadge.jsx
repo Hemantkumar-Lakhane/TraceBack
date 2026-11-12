@@ -1,37 +1,47 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 
 export const MatchScoreBadge = ({ score = 0, breakdown }) => {
-  let badgeBg = '#ecfdf5';
-  let badgeColor = '#047857';
-  let badgeBorder = '#a7f3d0';
+  let badgeBg = '#f1f5f9';
+  let badgeColor = '#334155';
+  let badgeBorder = '#e2e8f0';
 
-  if (score < 60) {
-    badgeBg = '#fffbeb';
-    badgeColor = '#b45309';
-    badgeBorder = '#fde68a';
-  } else if (score >= 85) {
+  if (score >= 80) {
     badgeBg = '#eff6ff';
     badgeColor = '#1d4ed8';
-    badgeBorder = '#bfdbfe';
+    badgeBorder = '#dbeafe';
+  } else if (score >= 60) {
+    badgeBg = '#f0fdf4';
+    badgeColor = '#166534';
+    badgeBorder = '#dcfce7';
+  } else if (score > 0) {
+    badgeBg = '#fffbeb';
+    badgeColor = '#92400e';
+    badgeBorder = '#fef3c7';
   }
 
   return (
-    <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px' }}>
+    <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', gap: '3px' }}>
       <div style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '6px',
-        padding: '4px 10px',
+        gap: '5px',
+        padding: '2px 8px',
         backgroundColor: badgeBg,
         color: badgeColor,
         border: `1px solid ${badgeBorder}`,
-        borderRadius: '20px',
-        fontSize: '0.8125rem',
-        fontWeight: 700
+        borderRadius: '4px',
+        fontSize: '0.75rem',
+        fontWeight: 600,
+        letterSpacing: '0.01em'
       }}>
-        <Sparkles size={14} />
-        <span>{score}% Match Confidence</span>
+        <span style={{
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          backgroundColor: badgeColor,
+          display: 'inline-block'
+        }} />
+        <span>{score}% Match</span>
       </div>
 
       {breakdown && (

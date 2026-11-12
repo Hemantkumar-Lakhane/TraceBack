@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Bell, CheckCheck, Sparkles, MessageSquare, ShieldCheck, ArrowRight, Trash2 } from 'lucide-react';
+import { Bell, CheckCheck, GitMerge, MessageSquare, ShieldCheck, ArrowRight, Trash2 } from 'lucide-react';
 import notificationService from '../api/notificationService';
 import { useToast } from '../context/ToastContext';
 
@@ -43,10 +43,10 @@ export const Notifications = () => {
 
   const getIcon = (type) => {
     switch (type) {
-      case 'MATCH': return <Sparkles size={18} color="var(--primary)" />;
-      case 'CHAT': return <MessageSquare size={18} color="var(--emerald)" />;
-      case 'CLAIM': return <ShieldCheck size={18} color="var(--amber-dark)" />;
-      default: return <Bell size={18} color="var(--slate-500)" />;
+      case 'MATCH': return <GitMerge size={16} color="var(--slate-700)" />;
+      case 'CHAT': return <MessageSquare size={16} color="var(--slate-700)" />;
+      case 'CLAIM': return <ShieldCheck size={16} color="var(--slate-700)" />;
+      default: return <Bell size={16} color="var(--slate-500)" />;
     }
   };
 

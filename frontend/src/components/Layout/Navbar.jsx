@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Search, Bell, Menu, User, LogOut, Shield, Settings, CheckCheck, ExternalLink } from 'lucide-react';
+import { Search, Bell, Menu, User, LogOut, Shield, Award, UserCheck } from 'lucide-react';
 import notificationService from '../../api/notificationService';
 
 export const Navbar = ({ onToggleSidebar }) => {
-  const { user, logout } = useAuth();
+  const { user, logout, loginAs } = useAuth();
   const navigate = useNavigate();
   
   const [notifications, setNotifications] = useState([]);
@@ -50,21 +50,30 @@ export const Navbar = ({ onToggleSidebar }) => {
     setNotifications(updated);
   };
 
+  const handleSwitchRole = (role) => {
+    loginAs(role);
+    setShowUserDropdown(false);
+    if (role === 'SECURITY') navigate('/security');
+    else if (role === 'ADMIN') navigate('/admin');
+    else navigate('/dashboard');
+  };
+
   return (
-    <header className="surface-glass" style={{
+    <header style={{
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      height: '68px',
+      height: '56px',
+      backgroundColor: '#ffffff',
       borderBottom: '1px solid var(--slate-200)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      padding: '0 1.5rem',
+      padding: '0 1.25rem',
       gap: '1rem'
     }}>
       {/* Left section: Hamburger (mobile) + Brand logo */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <button
           onClick={onToggleSidebar}
           style={{
@@ -72,50 +81,49 @@ export const Navbar = ({ onToggleSidebar }) => {
             border: 'none',
             cursor: 'pointer',
             padding: '6px',
-            color: 'var(--slate-700)',
+            color: 'var(--slate-600)',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
+            borderRadius: '4px'
           }}
           aria-label="Toggle navigation"
         >
-          <Menu size={22} />
+          <Menu size={20} />
         </button>
 
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
           <div style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #2563eb, #1e40af)',
+            width: '28px',
+            height: '28px',
+            borderRadius: '6px',
+            background: '#0f172a',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontWeight: 800,
-            fontSize: '1.1rem',
-            boxShadow: '0 2px 8px rgba(37, 99, 235, 0.35)'
+            fontWeight: 700,
+            fontSize: '0.875rem'
           }}>
             TB
           </div>
           <span style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 800,
-            fontSize: '1.25rem',
-            color: 'var(--slate-900)',
+            fontWeight: 700,
+            fontSize: '1.0625rem',
+            color: '#0f172a',
             letterSpacing: '-0.02em'
           }}>
-            Trace<span style={{ color: 'var(--primary)' }}>Back</span>
+            TraceBack
           </span>
         </Link>
       </div>
 
-      {/* Middle: Global Campus Search Bar */}
-      <form onSubmit={handleSearchSubmit} style={{ flex: 1, maxWidth: '480px', position: 'relative' }}>
+      {/* Middle: Global Search Bar */}
+      <form onSubmit={handleSearchSubmit} style={{ flex: 1, maxWidth: '420px', position: 'relative' }}>
         <Search
-          size={16}
+          size={14}
           style={{
             position: 'absolute',
-            left: '12px',
+            left: '10px',
             top: '50%',
             transform: 'translateY(-50%)',
             color: 'var(--slate-400)'
@@ -123,32 +131,24 @@ export const Navbar = ({ onToggleSidebar }) => {
         />
         <input
           type="text"
-          placeholder="Search lost or found items (e.g. MacBook, Wallet, Keys, Hall B)..."
+          placeholder="Search items, locations, reports..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           style={{
             width: '100%',
-            padding: '0.5rem 1rem 0.5rem 2.25rem',
-            backgroundColor: 'var(--slate-100)',
-            border: '1px solid var(--slate-200)',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '0.875rem',
+            padding: '0.4rem 0.75rem 0.4rem 2rem',
+            backgroundColor: '#ffffff',
+            border: '1px solid var(--slate-300)',
+            borderRadius: '6px',
+            fontSize: '0.8125rem',
             outline: 'none',
-            transition: 'all 0.2s ease'
-          }}
-          onFocus={(e) => {
-            e.target.style.backgroundColor = '#ffffff';
-            e.target.style.borderColor = 'var(--primary)';
-          }}
-          onBlur={(e) => {
-            e.target.style.backgroundColor = 'var(--slate-100)';
-            e.target.style.borderColor = 'var(--slate-200)';
+            color: 'var(--slate-900)'
           }}
         />
       </form>
 
       {/* Right Controls: Notifications & Profile */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         {/* Notifications Dropdown */}
         <div style={{ position: 'relative' }} ref={notifRef}>
           <button
@@ -156,28 +156,28 @@ export const Navbar = ({ onToggleSidebar }) => {
             style={{
               background: showNotifDropdown ? 'var(--slate-100)' : 'transparent',
               border: 'none',
-              borderRadius: '50%',
-              width: '38px',
-              height: '38px',
+              borderRadius: '6px',
+              width: '34px',
+              height: '34px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--slate-700)',
+              color: 'var(--slate-600)',
               cursor: 'pointer',
               position: 'relative'
             }}
           >
-            <Bell size={20} />
+            <Bell size={18} />
             {unreadCount > 0 && (
               <span style={{
                 position: 'absolute',
                 top: '6px',
                 right: '6px',
-                width: '10px',
-                height: '10px',
+                width: '8px',
+                height: '8px',
                 backgroundColor: 'var(--rose)',
                 borderRadius: '50%',
-                border: '2px solid #ffffff'
+                border: '1.5px solid #ffffff'
               }} />
             )}
           </button>
@@ -185,45 +185,45 @@ export const Navbar = ({ onToggleSidebar }) => {
           {showNotifDropdown && (
             <div className="surface-card animate-fade-in" style={{
               position: 'absolute',
-              top: '46px',
+              top: '40px',
               right: '0',
-              width: '340px',
+              width: '320px',
               backgroundColor: '#ffffff',
-              borderRadius: '14px',
-              boxShadow: 'var(--shadow-xl)',
+              borderRadius: '8px',
+              boxShadow: 'var(--shadow-lg)',
               border: '1px solid var(--slate-200)',
               overflow: 'hidden',
               zIndex: 1000
             }}>
               <div style={{
-                padding: '12px 16px',
+                padding: '10px 14px',
                 borderBottom: '1px solid var(--slate-100)',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
-                <span style={{ fontWeight: 700, fontSize: '0.9375rem' }}>Notifications</span>
+                <span style={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--slate-900)' }}>Notifications</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={handleMarkAllRead}
                     style={{
                       background: 'none',
                       border: 'none',
-                      color: 'var(--primary)',
+                      color: 'var(--accent)',
                       fontSize: '0.75rem',
-                      fontWeight: 600,
+                      fontWeight: 500,
                       cursor: 'pointer'
                     }}
                   >
-                    Mark all as read
+                    Mark read
                   </button>
                 )}
               </div>
 
-              <div style={{ maxHeight: '280px', overflowY: 'auto' }}>
+              <div style={{ maxHeight: '260px', overflowY: 'auto' }}>
                 {notifications.length === 0 ? (
-                  <div style={{ padding: '24px', textAlign: 'center', color: 'var(--slate-400)', fontSize: '0.875rem' }}>
-                    No notifications right now
+                  <div style={{ padding: '20px', textAlign: 'center', color: 'var(--slate-400)', fontSize: '0.8125rem' }}>
+                    No notifications
                   </div>
                 ) : (
                   notifications.map(n => (
@@ -233,19 +233,19 @@ export const Navbar = ({ onToggleSidebar }) => {
                       onClick={() => setShowNotifDropdown(false)}
                       style={{
                         display: 'block',
-                        padding: '10px 16px',
+                        padding: '10px 14px',
                         borderBottom: '1px solid var(--slate-100)',
-                        backgroundColor: n.read ? 'transparent' : 'var(--primary-light)',
+                        backgroundColor: n.read ? 'transparent' : 'var(--slate-50)',
                         textDecoration: 'none'
                       }}
                     >
-                      <div style={{ fontSize: '0.8125rem', fontWeight: n.read ? 600 : 700, color: 'var(--slate-900)' }}>
+                      <div style={{ fontSize: '0.8125rem', fontWeight: n.read ? 500 : 600, color: 'var(--slate-900)' }}>
                         {n.title}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--slate-600)', marginTop: '2px' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
                         {n.message}
                       </div>
-                      <div style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '4px' }}>
+                      <div style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', marginTop: '3px' }}>
                         {new Date(n.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </Link>
@@ -253,9 +253,9 @@ export const Navbar = ({ onToggleSidebar }) => {
                 )}
               </div>
 
-              <div style={{ padding: '8px 16px', background: 'var(--slate-50)', textAlign: 'center', borderTop: '1px solid var(--slate-100)' }}>
-                <Link to="/notifications" onClick={() => setShowNotifDropdown(false)} style={{ fontSize: '0.75rem', fontWeight: 600 }}>
-                  View All Notifications →
+              <div style={{ padding: '8px 14px', background: 'var(--slate-50)', textAlign: 'center', borderTop: '1px solid var(--slate-100)' }}>
+                <Link to="/notifications" onClick={() => setShowNotifDropdown(false)} style={{ fontSize: '0.75rem', fontWeight: 500, color: 'var(--slate-700)' }}>
+                  View All Notifications
                 </Link>
               </div>
             </div>
@@ -268,31 +268,34 @@ export const Navbar = ({ onToggleSidebar }) => {
             onClick={() => setShowUserDropdown(!showUserDropdown)}
             style={{
               background: 'transparent',
-              border: 'none',
+              border: '1px solid var(--slate-200)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '4px 8px',
-              borderRadius: 'var(--radius-full)'
+              padding: '3px 8px 3px 4px',
+              borderRadius: '6px'
             }}
           >
-            <img
-              src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"}
-              alt={user?.name || "User"}
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                border: '2px solid var(--slate-200)'
-              }}
-            />
-            <div style={{ textAlign: 'left', display: 'none', sm: 'block' }}>
-              <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--slate-900)' }}>
+            <div style={{
+              width: '26px',
+              height: '26px',
+              borderRadius: '4px',
+              backgroundColor: 'var(--slate-100)',
+              color: 'var(--slate-700)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 600,
+              fontSize: '0.75rem'
+            }}>
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--slate-900)', lineHeight: 1.1 }}>
                 {user?.name || "User"}
               </div>
-              <div style={{ fontSize: '0.6875rem', color: 'var(--primary)', fontWeight: 600 }}>
+              <div style={{ fontSize: '0.6875rem', color: 'var(--slate-500)', fontWeight: 500 }}>
                 {user?.role || "STUDENT"}
               </div>
             </div>
@@ -301,38 +304,96 @@ export const Navbar = ({ onToggleSidebar }) => {
           {showUserDropdown && (
             <div className="surface-card animate-fade-in" style={{
               position: 'absolute',
-              top: '46px',
+              top: '40px',
               right: '0',
-              width: '220px',
+              width: '240px',
               backgroundColor: '#ffffff',
-              borderRadius: '12px',
-              boxShadow: 'var(--shadow-xl)',
+              borderRadius: '8px',
+              boxShadow: 'var(--shadow-lg)',
               border: '1px solid var(--slate-200)',
               overflow: 'hidden',
               zIndex: 1000
             }}>
-              <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--slate-100)' }}>
-                <p style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--slate-900)' }}>{user?.name}</p>
+              <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--slate-100)' }}>
+                <p style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--slate-900)' }}>{user?.name}</p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--slate-500)', wordBreak: 'break-all' }}>{user?.email}</p>
                 <span className="badge badge-open" style={{ marginTop: '6px' }}>{user?.role}</span>
               </div>
 
-              <div style={{ padding: '6px' }}>
+              {/* Role Switcher in User Menu */}
+              <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--slate-100)', backgroundColor: 'var(--slate-50)' }}>
+                <div style={{ fontSize: '0.6875rem', fontWeight: 600, color: 'var(--slate-500)', marginBottom: '4px' }}>
+                  SWITCH ACCOUNT VIEW:
+                </div>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                  <button
+                    onClick={() => handleSwitchRole('STUDENT')}
+                    style={{
+                      flex: 1,
+                      padding: '4px',
+                      fontSize: '0.6875rem',
+                      fontWeight: 500,
+                      border: '1px solid var(--slate-200)',
+                      borderRadius: '4px',
+                      backgroundColor: user?.role === 'STUDENT' ? '#0f172a' : '#ffffff',
+                      color: user?.role === 'STUDENT' ? '#ffffff' : 'var(--slate-700)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Student
+                  </button>
+                  <button
+                    onClick={() => handleSwitchRole('SECURITY')}
+                    style={{
+                      flex: 1,
+                      padding: '4px',
+                      fontSize: '0.6875rem',
+                      fontWeight: 500,
+                      border: '1px solid var(--slate-200)',
+                      borderRadius: '4px',
+                      backgroundColor: user?.role === 'SECURITY' ? '#0f172a' : '#ffffff',
+                      color: user?.role === 'SECURITY' ? '#ffffff' : 'var(--slate-700)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Security
+                  </button>
+                  <button
+                    onClick={() => handleSwitchRole('ADMIN')}
+                    style={{
+                      flex: 1,
+                      padding: '4px',
+                      fontSize: '0.6875rem',
+                      fontWeight: 500,
+                      border: '1px solid var(--slate-200)',
+                      borderRadius: '4px',
+                      backgroundColor: user?.role === 'ADMIN' ? '#0f172a' : '#ffffff',
+                      color: user?.role === 'ADMIN' ? '#ffffff' : 'var(--slate-700)',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Admin
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ padding: '4px' }}>
                 <Link
                   to="/profile"
                   onClick={() => setShowUserDropdown(false)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '8px 12px',
+                    gap: '8px',
+                    padding: '8px 10px',
                     fontSize: '0.8125rem',
                     color: 'var(--slate-700)',
-                    borderRadius: '6px'
+                    borderRadius: '4px',
+                    textDecoration: 'none'
                   }}
                   className="btn-ghost"
                 >
-                  <User size={16} /> My Profile
+                  <User size={15} /> Account Settings
                 </Link>
 
                 <button
@@ -345,18 +406,19 @@ export const Navbar = ({ onToggleSidebar }) => {
                     width: '100%',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px',
-                    padding: '8px 12px',
+                    gap: '8px',
+                    padding: '8px 10px',
                     fontSize: '0.8125rem',
-                    color: 'var(--rose-dark)',
+                    color: 'var(--rose)',
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    borderRadius: '6px',
+                    borderRadius: '4px',
                     textAlign: 'left'
                   }}
+                  className="btn-ghost"
                 >
-                  <LogOut size={16} /> Logout
+                  <LogOut size={15} /> Sign Out
                 </button>
               </div>
             </div>

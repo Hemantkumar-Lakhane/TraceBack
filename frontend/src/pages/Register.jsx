@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Mail, Lock, BookOpen, ArrowRight, ShieldCheck, AlertCircle, Database, Cloud } from 'lucide-react';
+import { User, Mail, Lock, Phone, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 
 export const Register = () => {
-  const { register, isSupabase } = useAuth();
+  const { register } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [studentId, setStudentId] = useState('');
   const [department, setDepartment] = useState('Computer Science');
-  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -23,11 +24,19 @@ export const Register = () => {
     setLoading(true);
 
     try {
-      await register(name, email, password, { studentId, department });
-      toast.success('Registration successful! Please sign in with your credentials.');
-      navigate('/login');
+      await register({
+        name,
+        email,
+        password,
+        studentId,
+        department,
+        phone,
+        role: 'STUDENT'
+      });
+      toast.success('Registration successful! Welcome to TraceBack.');
+      navigate('/dashboard');
     } catch (err) {
-      setErrorMsg(err.message || 'Registration failed. Please check your information.');
+      setErrorMsg(err.message || 'Registration failed. Please try again.');
       toast.error(err.message || 'Registration failed.');
     } finally {
       setLoading(false);
@@ -41,51 +50,46 @@ export const Register = () => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '2rem 1rem',
-      background: 'radial-gradient(circle at top, #eff6ff 0%, #f8fafc 100%)'
+      padding: '2rem 1rem'
     }}>
-      <div style={{ width: '100%', maxWidth: '480px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
-          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
+      <div style={{ width: '100%', maxWidth: '460px' }}>
+        {/* Brand header */}
+        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '0.5rem', textDecoration: 'none' }}>
             <div style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #2563eb, #1e40af)',
+              width: '32px',
+              height: '32px',
+              borderRadius: '6px',
+              background: '#0f172a',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: 'white',
-              fontWeight: 800,
-              fontSize: '1.25rem',
-              boxShadow: '0 4px 10px rgba(37, 99, 235, 0.3)'
+              fontWeight: 700,
+              fontSize: '0.9375rem'
             }}>
               TB
             </div>
-            <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.5rem', color: 'var(--slate-900)' }}>
-              Trace<span style={{ color: 'var(--primary)' }}>Back</span>
+            <span style={{ fontWeight: 700, fontSize: '1.25rem', color: '#0f172a', letterSpacing: '-0.02em' }}>
+              TraceBack
             </span>
           </Link>
-          <p style={{ color: 'var(--slate-600)', fontSize: '0.875rem' }}>
-            Student Portal Account Registration
+          <p style={{ color: 'var(--slate-500)', fontSize: '0.875rem' }}>
+            Student Account Registration
           </p>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '6px', fontSize: '0.75rem', color: 'var(--slate-500)', background: 'var(--slate-100)', padding: '2px 8px', borderRadius: '12px' }}>
-            {isSupabase ? <Cloud size={12} color="var(--primary)" /> : <Database size={12} color="var(--emerald)" />}
-            <span>Backend: <strong>{isSupabase ? 'Supabase Auth' : 'Spring Boot REST + MySQL'}</strong></span>
-          </div>
         </div>
 
-        <div className="surface-card" style={{ padding: '2rem', borderRadius: '18px', boxShadow: 'var(--shadow-lg)' }}>
+        <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '8px', backgroundColor: '#ffffff' }}>
           {errorMsg && (
             <div style={{
               display: 'flex',
               alignItems: 'flex-start',
               gap: '10px',
-              padding: '10px 14px',
+              padding: '10px 12px',
               backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              borderRadius: '8px',
-              color: 'var(--rose-dark)',
+              border: '1px solid #fee2e2',
+              borderRadius: '6px',
+              color: 'var(--rose)',
               fontSize: '0.8125rem',
               marginBottom: '1.25rem'
             }}>
@@ -98,12 +102,12 @@ export const Register = () => {
             <div className="form-group">
               <label className="form-label" htmlFor="fullName">Full Name *</label>
               <div style={{ position: 'relative' }}>
-                <User size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
+                <User size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                 <input
                   id="fullName"
                   type="text"
                   className="form-input"
-                  style={{ paddingLeft: '2.25rem' }}
+                  style={{ paddingLeft: '2.1rem' }}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Alex Johnson"
@@ -112,7 +116,7 @@ export const Register = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <div className="form-group">
                 <label className="form-label" htmlFor="stuId">Student ID</label>
                 <input
@@ -143,35 +147,52 @@ export const Register = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label" htmlFor="campusEmail">Campus Email *</label>
+              <label className="form-label" htmlFor="regEmail">Campus Email Address *</label>
               <div style={{ position: 'relative' }}>
-                <Mail size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
+                <Mail size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                 <input
-                  id="campusEmail"
+                  id="regEmail"
                   type="email"
                   className="form-input"
-                  style={{ paddingLeft: '2.25rem' }}
+                  style={{ paddingLeft: '2.1rem' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@campus.edu"
+                  placeholder="student.name@campus.edu"
                   required
                 />
               </div>
             </div>
 
-            <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-              <label className="form-label" htmlFor="regPassword">Create Password *</label>
+            <div className="form-group">
+              <label className="form-label" htmlFor="regPhone">Contact Phone Number</label>
               <div style={{ position: 'relative' }}>
-                <Lock size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
+                <Phone size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
+                <input
+                  id="regPhone"
+                  type="tel"
+                  className="form-input"
+                  style={{ paddingLeft: '2.1rem' }}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+1 (555) 019-2834"
+                />
+              </div>
+            </div>
+
+            <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+              <label className="form-label" htmlFor="regPassword">Password *</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={16} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--slate-400)' }} />
                 <input
                   id="regPassword"
                   type="password"
                   className="form-input"
-                  style={{ paddingLeft: '2.25rem' }}
+                  style={{ paddingLeft: '2.1rem' }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 6 characters"
+                  placeholder="Minimum 8 characters"
                   required
+                  minLength={6}
                 />
               </div>
             </div>
@@ -179,17 +200,17 @@ export const Register = () => {
             <button
               type="submit"
               className="btn btn-primary"
-              style={{ width: '100%', padding: '0.75rem', fontSize: '0.9375rem' }}
+              style={{ width: '100%', padding: '0.625rem', fontSize: '0.875rem' }}
               disabled={loading}
             >
-              {loading ? 'Creating Account in Database...' : 'Complete Real Registration'} <ArrowRight size={16} />
+              {loading ? 'Creating account...' : 'Create Account'} <ArrowRight size={15} />
             </button>
           </form>
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--slate-600)' }}>
+        <div style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.8125rem', color: 'var(--slate-600)' }}>
           Already have an account?{' '}
-          <Link to="/login" style={{ fontWeight: 700 }}>
+          <Link to="/login" style={{ fontWeight: 600 }}>
             Sign In
           </Link>
         </div>
