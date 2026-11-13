@@ -707,3 +707,304 @@ a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--slate-400);
 }
+
+/* ==========================================================================
+   Mobile & Smartphone Responsive Design System (320px - 768px)
+   ========================================================================== */
+
+/* Main layout padding on mobile devices */
+.app-layout-main {
+  width: 100%;
+  max-width: 1240px;
+  padding: 2rem 2.5rem 3.5rem;
+  box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+  .app-layout-main {
+    padding: 1.5rem 1.25rem 3rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-layout-main {
+    padding: 0.85rem 0.75rem 2rem;
+  }
+}
+
+/* Navbar responsive adjustments */
+@media (max-width: 768px) {
+  .nav-search-form {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-user-text {
+    display: none !important;
+  }
+}
+
+/* Chat Layout: WhatsApp/Telegram-style Mobile Screen Switcher */
+.chat-layout-frame {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  background-color: var(--card-bg);
+}
+
+.chat-left-pane {
+  border-right: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.chat-right-pane {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  position: relative;
+}
+
+.chat-mobile-back-btn {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .chat-layout-frame {
+    display: flex !important;
+    flex-direction: column !important;
+    height: calc(100dvh - 120px) !important;
+    max-height: calc(100dvh - 120px) !important;
+  }
+
+  .chat-layout-frame.mobile-show-list .chat-left-pane {
+    display: flex !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-right: none !important;
+  }
+
+  .chat-layout-frame.mobile-show-list .chat-right-pane {
+    display: none !important;
+  }
+
+  .chat-layout-frame.mobile-show-room .chat-left-pane {
+    display: none !important;
+  }
+
+  .chat-layout-frame.mobile-show-room .chat-right-pane {
+    display: flex !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .chat-mobile-back-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: var(--slate-100);
+    color: var(--slate-700);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+}
+
+/* Two-column dashboard and analytics grids collapse on mobile */
+.student-dash-grid,
+.admin-two-col-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .student-dash-grid,
+  .admin-two-col-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Match comparison side-by-side grid */
+.match-comparison-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .match-comparison-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+    text-align: center;
+  }
+
+  .match-comparison-grid > div:nth-child(2) {
+    margin: 0 auto;
+    transform: rotate(90deg);
+  }
+}
+
+/* Claim lifecycle steps grid */
+.claim-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .claim-steps-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 6px !important;
+  }
+}
+
+/* Landing page hero action buttons */
+@media (max-width: 540px) {
+  .hero-action-buttons {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .hero-action-buttons .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+
+/* Table responsiveness */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+.table-responsive::-webkit-scrollbar-track {
+  background: var(--slate-100);
+  border-radius: 3px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--slate-300);
+  border-radius: 3px;
+}
+
+/* ==========================================================================
+   Comprehensive Smartphone & Mobile Device Optimizations
+   ========================================================================== */
+.sidebar-backdrop {
+  display: none;
+}
+@media (max-width: 1024px) {
+  .sidebar-backdrop {
+    display: block !important;
+  }
+}
+
+/* Navbar responsiveness */
+@media (max-width: 640px) {
+  .navbar-header {
+    padding: 0 0.75rem !important;
+    gap: 0.5rem !important;
+  }
+}
+@media (max-width: 380px) {
+  .navbar-header {
+    padding: 0 0.5rem !important;
+    gap: 0.25rem !important;
+  }
+}
+
+/* Match Details 2-column side-by-side grid */
+.match-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .match-details-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+}
+
+/* Report Details Image & Info Grid */
+.report-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+}
+@media (max-width: 640px) {
+  .report-details-img-box {
+    height: 220px !important;
+  }
+}
+
+/* Form Action Buttons (Cancel / Submit) on phones */
+.form-actions-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .form-actions-row {
+    flex-direction: column-reverse !important;
+    width: 100% !important;
+  }
+  .form-actions-row .btn {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 42px !important;
+  }
+}
+
+/* Modal mobile adaptation */
+@media (max-width: 640px) {
+  .modal-header {
+    padding: 1rem !important;
+  }
+  .modal-body {
+    padding: 1rem !important;
+  }
+  .modal-two-col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* General Mobile Form and Touch target polish */
+@media (max-width: 640px) {
+  .surface-card {
+    padding: 1rem 0.85rem !important;
+  }
+
+  /* Prevent auto-zoom on iOS inputs */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="search"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}

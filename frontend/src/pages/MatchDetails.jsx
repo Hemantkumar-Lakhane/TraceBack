@@ -138,7 +138,7 @@ export const MatchDetails = () => {
       </div>
 
       {/* Side-by-Side Comparison Matrix */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+      <div className="match-details-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
         {/* Left Column: Lost Item */}
         <div className="surface-card" style={{ padding: '1.25rem', borderRadius: '6px', borderTop: '3px solid var(--slate-400)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>

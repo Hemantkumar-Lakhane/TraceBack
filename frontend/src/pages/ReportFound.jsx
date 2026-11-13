@@ -289,7 +289,7 @@ export const ReportFound = () => {
             )}
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+          <div className="form-actions-row" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
             <Link to={user?.role === 'SECURITY' ? '/security' : '/dashboard'} className="btn btn-secondary">
               Cancel
             </Link>

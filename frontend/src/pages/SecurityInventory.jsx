@@ -53,7 +53,7 @@ export const SecurityInventory = () => {
       {/* Inventory Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
         gap: '1.25rem'
       }}>
         {filtered.map(report => (

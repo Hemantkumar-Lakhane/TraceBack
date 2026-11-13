@@ -92,11 +92,7 @@ export const Matches = () => {
               </div>
 
               {/* Side-by-Side Comparison Container */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
-                gap: '0.75rem',
-                alignItems: 'center',
+              <div className="match-comparison-grid" style={{
                 backgroundColor: 'var(--slate-50)',
                 padding: '1rem',
                 borderRadius: '6px',

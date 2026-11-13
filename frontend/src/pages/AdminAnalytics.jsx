@@ -133,7 +133,7 @@ export const AdminAnalytics = () => {
       </div>
 
       {/* Detailed Analytics Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.25rem' }}>
+      <div className="admin-two-col-grid">
         {/* Category Breakdown */}
         <div className="surface-card" style={{ padding: '1.5rem', borderRadius: '8px' }}>
           <h3 style={{ fontSize: '0.9375rem', fontWeight: 700, marginBottom: '1.25rem', color: 'var(--text-main)' }}>

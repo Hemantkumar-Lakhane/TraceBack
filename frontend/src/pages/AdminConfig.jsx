@@ -133,7 +133,7 @@ export const AdminConfig = () => {
             <Sliders size={16} color="var(--accent, #2563eb)" /> Automated Matching Engine Sensitivity
           </h3>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          <div className="admin-two-col-grid">
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8125rem', marginBottom: '6px' }}>
                 <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>Minimum Match Score Threshold</span>

@@ -86,10 +86,10 @@ export const ReportDetails = () => {
 
       {/* Main Grid: Photo / Gallery Left & Item Details Right */}
       <div className="surface-card" style={{ padding: '2rem', borderRadius: '18px', overflow: 'hidden' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div className="report-details-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: '1.5rem' }}>
           {/* Left: Image */}
           <div>
-            <div style={{
+            <div className="report-details-img-box" style={{
               width: '100%',
               height: '320px',
               backgroundColor: 'var(--slate-100)',

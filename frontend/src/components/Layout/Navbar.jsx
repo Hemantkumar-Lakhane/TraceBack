@@ -76,7 +76,7 @@ export const Navbar = ({ onToggleSidebar }) => {
   };
 
   return (
-    <header style={{
+    <header className="navbar-header" style={{
       position: 'sticky',
       top: 0,
       zIndex: 100,
@@ -87,7 +87,7 @@ export const Navbar = ({ onToggleSidebar }) => {
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '0 1.25rem',
-      gap: '1rem',
+      gap: '0.75rem',
       transition: 'background-color 0.2s ease, border-color 0.2s ease'
     }}>
       {/* Left section: Hamburger (mobile) + Brand logo */}
@@ -115,7 +115,7 @@ export const Navbar = ({ onToggleSidebar }) => {
       </div>
 
       {/* Middle: Global Search Bar */}
-      <form onSubmit={handleSearchSubmit} style={{ flex: 1, maxWidth: '420px', position: 'relative' }}>
+      <form className="nav-search-form" onSubmit={handleSearchSubmit} style={{ flex: 1, maxWidth: '420px', position: 'relative' }}>
         <Search
           size={14}
           style={{
@@ -252,7 +252,7 @@ export const Navbar = ({ onToggleSidebar }) => {
               position: 'absolute',
               top: '40px',
               right: '0',
-              width: '320px',
+              width: 'min(320px, calc(100vw - 24px))',
               backgroundColor: 'var(--card-bg)',
               borderRadius: '8px',
               boxShadow: 'var(--shadow-xl)',
@@ -363,7 +363,7 @@ export const Navbar = ({ onToggleSidebar }) => {
             }}>
               {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </div>
-            <div style={{ textAlign: 'left' }}>
+            <div className="nav-user-text" style={{ textAlign: 'left' }}>
               <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--slate-900)', lineHeight: 1.1 }}>
                 {user?.name || "User"}
               </div>
@@ -378,7 +378,7 @@ export const Navbar = ({ onToggleSidebar }) => {
               position: 'absolute',
               top: '40px',
               right: '0',
-              width: '240px',
+              width: 'min(240px, calc(100vw - 24px))',
               backgroundColor: 'var(--card-bg)',
               borderRadius: '8px',
               boxShadow: 'var(--shadow-xl)',

@@ -135,7 +135,7 @@ export const ClaimDetails = () => {
           Verification Lifecycle Status
         </h4>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', position: 'relative' }}>
+        <div className="claim-steps-grid" style={{ position: 'relative' }}>
           {[
             { step: 1, title: "1. Submitted", desc: "Answers Logged", done: currentStep >= 1 },
             { step: 2, title: "2. Security Review", desc: "Locker Verification", done: currentStep >= 2, active: currentStep === 2 },

@@ -231,7 +231,7 @@ export const BrowseReports = () => {
       ) : viewMode === 'grid' ? (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
           gap: '1.25rem'
         }}>
           {reports.map(r => (
@@ -239,7 +239,7 @@ export const BrowseReports = () => {
           ))}
         </div>
       ) : (
-        <div className="surface-card" style={{ borderRadius: '14px', overflow: 'hidden' }}>
+        <div className="surface-card table-responsive" style={{ borderRadius: '14px', overflow: 'hidden' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
             <thead>
               <tr style={{ backgroundColor: 'var(--slate-50)', borderBottom: '1px solid var(--slate-200)', textAlign: 'left', color: 'var(--slate-500)' }}>

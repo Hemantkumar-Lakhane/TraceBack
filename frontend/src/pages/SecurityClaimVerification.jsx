@@ -112,7 +112,7 @@ export const SecurityClaimVerification = () => {
       </div>
 
       {/* Split Screen: Left (Student Claim Proof) vs Right (Vault Storage Record) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem' }}>
+      <div className="admin-two-col-grid" style={{ gap: '1.5rem' }}>
         {/* Left Side: Student Claim Evidence */}
         <div className="surface-card" style={{ padding: '1.75rem', borderRadius: '16px', borderTop: '4px solid var(--primary)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>

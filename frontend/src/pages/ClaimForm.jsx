@@ -472,7 +472,7 @@ export const ClaimForm = () => {
           </div>
 
           {/* Action CTAs */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <div className="form-actions-row" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
             <Link to={`/matches/${matchId}`} className="btn btn-secondary" style={{ padding: '0.625rem 1.25rem' }}>
               Cancel
             </Link>

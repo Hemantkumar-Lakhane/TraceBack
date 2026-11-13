@@ -186,7 +186,8 @@
    3D Perspective Interactive Cards
    ========================================================================== */
 .parent-3d {
-  width: 320px;
+  width: min(320px, 100%);
+  max-width: 100%;
   perspective: 1000px;
 }
 

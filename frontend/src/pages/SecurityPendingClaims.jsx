@@ -94,7 +94,8 @@ export const SecurityPendingClaims = () => {
 
       {/* Claims Table */}
       <div className="surface-card" style={{ borderRadius: '16px', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+        <div className="table-responsive">
+          <table style={{ width: '100%', minWidth: '650px', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
           <thead>
             <tr style={{ backgroundColor: 'var(--slate-50)', borderBottom: '1px solid var(--slate-200)', textAlign: 'left', color: 'var(--slate-500)' }}>
               <th style={{ padding: '12px 16px' }}>Claim ID</th>
@@ -143,6 +144,7 @@ export const SecurityPendingClaims = () => {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

@@ -43,7 +43,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '550px' }) 
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div style={{
+        <div className="modal-header" style={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -71,7 +71,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = '550px' }) 
           </button>
         </div>
 
-        <div style={{ padding: '1.5rem', overflowY: 'auto' }}>
+        <div className="modal-body" style={{ padding: '1.5rem', overflowY: 'auto' }}>
           {children}
         </div>
       </div>

@@ -172,7 +172,7 @@ export const Landing = () => {
           </div>
 
           {/* Action CTAs */}
-          <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+          <div className="hero-action-buttons" style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.5rem' }}>
             <Link to="/report/lost" className="btn btn-primary" style={{ padding: '0.75rem 1.6rem', fontSize: '0.9375rem', fontWeight: 600 }}>
               <PlusCircle size={16} /> Report Lost Item
             </Link>

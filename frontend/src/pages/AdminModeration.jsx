@@ -165,7 +165,7 @@ export const AdminModeration = () => {
                 gap: '1rem'
               }}
             >
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', flex: 1, minWidth: '280px' }}>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', flex: 1, minWidth: 'min(240px, 100%)' }}>
                 <div style={{
                   width: '38px',
                   height: '38px',

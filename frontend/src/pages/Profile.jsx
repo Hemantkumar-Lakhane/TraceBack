@@ -373,7 +373,7 @@ export const Profile = () => {
               </div>
 
               {/* Student ID & Dept in 2 columns */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className="modal-two-col" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div className="form-group" style={{ margin: 0 }}>
                   <label className="form-label" style={{ fontSize: '0.75rem' }}>PRN / Badge ID</label>
                   <input

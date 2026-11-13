@@ -9,6 +9,7 @@ import {
   Paperclip,
   ShieldCheck,
   ArrowRight,
+  ArrowLeft,
   User,
   CheckCheck,
   Smile,
@@ -39,6 +40,7 @@ export const Chat = () => {
   const [inputText, setInputText] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showMobileList, setShowMobileList] = useState(false);
 
   const messagesEndRef = useRef(null);
   const chatScrollContainerRef = useRef(null);
@@ -284,26 +286,9 @@ export const Chat = () => {
       </div>
 
       {/* Main WhatsApp-Style Frame */}
-      <div className="surface-card" style={{
-        flex: 1,
-        minHeight: 0,
-        display: 'grid',
-        gridTemplateColumns: '320px 1fr',
-        borderRadius: '10px',
-        overflow: 'hidden',
-        border: '1px solid var(--border-color)',
-        boxShadow: 'var(--shadow-md)',
-        backgroundColor: 'var(--card-bg)'
-      }}>
+      <div className={`surface-card chat-layout-frame ${showMobileList ? 'mobile-show-list' : 'mobile-show-room'}`}>
         {/* Left Pane: Conversation Threads */}
-        <div style={{
-          borderRight: '1px solid var(--border-color)',
-          backgroundColor: 'var(--card-bg)',
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          minHeight: 0
-        }}>
+        <div className="chat-left-pane">
           {/* Top of Left Pane: User Header & Search */}
           <div style={{
             padding: '12px 14px',
@@ -362,7 +347,10 @@ export const Chat = () => {
                 return (
                   <div
                     key={c.id}
-                    onClick={() => setActiveConvId(c.id)}
+                    onClick={() => {
+                      setActiveConvId(c.id);
+                      setShowMobileList(false);
+                    }}
                     style={{
                       padding: '12px 14px',
                       borderBottom: '1px solid var(--border-color)',
@@ -454,17 +442,10 @@ export const Chat = () => {
         </div>
 
         {/* Right Pane: WhatsApp Chat Room Canvas */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: chatCanvasBg,
-          height: '100%',
-          minHeight: 0,
-          position: 'relative'
-        }}>
+        <div className="chat-right-pane" style={{ backgroundColor: chatCanvasBg }}>
           {/* WhatsApp Room Header */}
           <div style={{
-            padding: '10px 18px',
+            padding: '10px 14px',
             backgroundColor: 'var(--card-bg)',
             borderBottom: '1px solid var(--border-color)',
             display: 'flex',
@@ -473,7 +454,16 @@ export const Chat = () => {
             flexShrink: 0,
             zIndex: 10
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Mobile Back to List Button */}
+              <button
+                onClick={() => setShowMobileList(true)}
+                className="chat-mobile-back-btn"
+                title="Back to conversation list"
+              >
+                <ArrowLeft size={18} />
+              </button>
+
               <div style={{ position: 'relative' }}>
                 <img
                   src={activeConv?.otherParticipant?.avatar || getCampusAvatar(activeConv?.otherParticipant?.name, activeConv?.otherParticipant?.role)}

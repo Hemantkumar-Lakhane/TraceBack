@@ -295,7 +295,7 @@ export const ReportLost = () => {
             </span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+          <div className="form-actions-row" style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
             <Link to="/dashboard" className="btn btn-secondary">
               Cancel
             </Link>

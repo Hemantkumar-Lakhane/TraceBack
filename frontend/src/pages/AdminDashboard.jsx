@@ -224,7 +224,7 @@ export const AdminDashboard = () => {
       </div>
 
       {/* Main Grid: Campus Hotspots & Live Infrastructure Telemetry */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.25rem' }}>
+      <div className="admin-two-col-grid">
         {/* Campus Lost Item Hotspots */}
         <div className="surface-card" style={{ padding: '1.5rem', borderRadius: '8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>

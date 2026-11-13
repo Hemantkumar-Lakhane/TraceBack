@@ -73,13 +73,13 @@ export const Sidebar = ({ isOpen, onClose }) => {
       {isOpen && (
         <div
           onClick={onClose}
+          className="sidebar-backdrop"
           style={{
             position: 'fixed',
             inset: 0,
             backgroundColor: 'rgba(15, 23, 42, 0.4)',
             backdropFilter: 'blur(3px)',
-            zIndex: 90,
-            display: window.innerWidth <= 1024 ? 'block' : 'none'
+            zIndex: 90
           }}
         />
       )}

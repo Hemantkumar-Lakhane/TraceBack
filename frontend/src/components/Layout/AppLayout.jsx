@@ -49,23 +49,21 @@ export const AppLayout = () => {
         />
 
         {/* Content Wrapper perfectly balanced without right-shift */}
-        <div style={{
-          flex: 1,
-          marginLeft: sidebarOpen && isDesktop ? '260px' : '0',
-          width: sidebarOpen && isDesktop ? 'calc(100% - 260px)' : '100%',
-          transition: 'margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          minWidth: 0,
-          boxSizing: 'border-box'
-        }}>
-          <main style={{
-            width: '100%',
-            maxWidth: '1240px',
-            padding: '2rem 2.5rem 3.5rem',
+        <div
+          className="app-layout-content"
+          style={{
+            flex: 1,
+            marginLeft: sidebarOpen && isDesktop ? '260px' : '0',
+            width: sidebarOpen && isDesktop ? 'calc(100% - 260px)' : '100%',
+            transition: 'margin-left 0.25s cubic-bezier(0.16, 1, 0.3, 1), width 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            minWidth: 0,
             boxSizing: 'border-box'
-          }}>
+          }}
+        >
+          <main className="app-layout-main">
             <Outlet />
           </main>
         </div>

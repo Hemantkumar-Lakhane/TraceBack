@@ -202,7 +202,7 @@ export const StudentDashboard = () => {
       </div>
 
       {/* Main Two-Column Section: My Reports vs Recent Campus Feed */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '1.25rem', alignItems: 'start' }}>
+      <div className="student-dash-grid">
         {/* Left: My Reported Items */}
         <div className="surface-card" style={{ padding: '1.25rem', borderRadius: '8px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>

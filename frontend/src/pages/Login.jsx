@@ -145,11 +145,12 @@ export const Login = () => {
               Quick fill credentials for review:
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(140px, 100%), 1fr))', gap: '6px' }}>
               <button
                 type="button"
                 onClick={() => handleFillDemo('STUDENT')}
                 className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.75rem', padding: '6px 4px', whiteSpace: 'normal', textAlign: 'center' }}
                 title="Aarav Sharma - PRN: 12110104 (Lost item owner)"
               >
                 Aarav (PRN 12110104)
@@ -158,6 +159,7 @@ export const Login = () => {
                 type="button"
                 onClick={() => handleFillDemo('ROHAN')}
                 className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.75rem', padding: '6px 4px', whiteSpace: 'normal', textAlign: 'center' }}
                 title="Rohan Verma - PRN: 12110208 (Item finder)"
               >
                 Rohan (PRN 12110208)
@@ -166,6 +168,7 @@ export const Login = () => {
                 type="button"
                 onClick={() => handleFillDemo('SECURITY')}
                 className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.75rem', padding: '6px 4px', whiteSpace: 'normal', textAlign: 'center' }}
                 title="Inspector Rajesh Kumar - Central Security Desk"
               >
                 Rajesh (Security)
@@ -174,6 +177,7 @@ export const Login = () => {
                 type="button"
                 onClick={() => handleFillDemo('ADMIN')}
                 className="btn btn-secondary btn-sm"
+                style={{ fontSize: '0.75rem', padding: '6px 4px', whiteSpace: 'normal', textAlign: 'center' }}
                 title="Prof. Priya Nair - Dean Student Affairs"
               >
                 Priya (Admin)
