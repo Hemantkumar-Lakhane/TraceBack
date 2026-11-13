@@ -81,3 +81,4 @@ describe('QA Test Suite: Admin Panel Production Grade Capabilities', () => {
     assert.strictEqual(returnRate, '0.0%');
   });
 });
+

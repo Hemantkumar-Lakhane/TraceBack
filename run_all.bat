@@ -7,6 +7,13 @@ echo.
 
 set SCRIPT_DIR=%~dp0
 
+if not exist "%SCRIPT_DIR%backend\.env" (
+    echo [NOTICE] backend\.env not found. Creating from .env.example...
+    copy "%SCRIPT_DIR%backend\.env.example" "%SCRIPT_DIR%backend\.env"
+    echo Please verify your MySQL credentials in backend\.env if needed.
+    echo.
+)
+
 echo Starting Spring Boot Backend...
 start "TraceBack Backend (Spring Boot)" cmd /k "cd /d %SCRIPT_DIR%backend && mvnw.cmd spring-boot:run"
 
@@ -16,12 +23,12 @@ start "TraceBack Frontend (Vite)" cmd /k "cd /d %SCRIPT_DIR%frontend && npm run 
 echo.
 echo Both servers are starting up in separate windows!
 echo.
-echo   App ^& Dev Endpoints:
+echo   App & Dev Endpoints:
 echo    - Frontend UI:        http://localhost:5173
 echo    - Backend Base:       http://localhost:8080
 echo    - API Base URL:       http://localhost:8080/api
 echo.
-echo   API Documentation ^& Testing:
+echo   API Documentation & Testing:
 echo    - Swagger UI:         http://localhost:8080/swagger-ui/index.html
 echo    - OpenAPI Docs JSON:  http://localhost:8080/v3/api-docs
 echo    - Uploaded Files:     http://localhost:8080/uploads/
