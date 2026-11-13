@@ -178,8 +178,9 @@ export const AuthProvider = ({ children }) => {
 
     // 2. Real Spring Boot Backend MySQL Registration (/api/auth/register)
     try {
-      const response = await api.post('/api/auth/register', { name, email, password });
-      return response.data;
+      await api.post('/api/auth/register', { name, email, password });
+      // Automatically log in the user with the new credentials immediately!
+      return await login(email, password);
     } catch (err) {
       if (err.response) {
         const msg = err.response.data?.message || (err.response.status === 409 ? 'Email already registered' : 'Registration failed');

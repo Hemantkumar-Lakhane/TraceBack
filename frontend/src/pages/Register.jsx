@@ -78,7 +78,7 @@ export const Register = () => {
               display: 'flex',
               alignItems: 'flex-start',
               gap: '10px',
-              padding: '10px 12px',
+              padding: '12px 14px',
               backgroundColor: '#fef2f2',
               border: '1px solid #fee2e2',
               borderRadius: '6px',
@@ -87,7 +87,20 @@ export const Register = () => {
               marginBottom: '1.25rem'
             }}>
               <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
-              <div>{errorMsg}</div>
+              <div style={{ flex: 1 }}>
+                <div>{errorMsg}</div>
+                {errorMsg.toLowerCase().includes('already') && (
+                  <div style={{ marginTop: '8px' }}>
+                    <Link
+                      to={`/login?email=${encodeURIComponent(email)}`}
+                      className="btn btn-primary btn-sm"
+                      style={{ fontSize: '0.75rem', padding: '4px 10px', display: 'inline-flex' }}
+                    >
+                      Sign in with this account →
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
