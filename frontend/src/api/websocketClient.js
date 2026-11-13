@@ -6,7 +6,8 @@ if (typeof window !== 'undefined' && !window.global) {
   window.global = window;
 }
 
-const WS_URL = 'http://localhost:8080/ws';
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:8080';
+const WS_URL = `${API_BASE.replace(/\/$/, '')}/ws`;
 
 class WebSocketManager {
   constructor() {
