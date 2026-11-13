@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -19,7 +19,9 @@ import {
   HelpCircle,
   PhoneCall,
   Sun,
-  Moon
+  Moon,
+  Menu,
+  X
 } from 'lucide-react';
 import LifecycleTracker from '../components/LifecycleTracker';
 import TraceBackLogo from '../components/TraceBackLogo';
@@ -29,11 +31,21 @@ import '../LandingAnimations.css';
 export const Landing = () => {
   const { loginAs } = useAuth();
   const { isDark, isLuxury, toggleTheme, togglePalette } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div style={{ backgroundColor: 'var(--bg-color)', color: 'var(--text-main)', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{
+      backgroundColor: 'var(--bg-color)',
+      color: 'var(--text-main)',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+      maxWidth: '100vw',
+      overflowX: 'hidden'
+    }}>
       {/* Top Header */}
-      <header style={{
+      <header className="landing-header" style={{
         position: 'sticky',
         top: 0,
         zIndex: 100,
@@ -44,15 +56,16 @@ export const Landing = () => {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 2rem',
-        transition: 'background-color 0.2s ease, border-color 0.2s ease'
+        transition: 'background-color 0.2s ease, border-color 0.2s ease',
+        boxSizing: 'border-box'
       }}>
         {/* Brand Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
           <TraceBackLogo size={32} showWordmark={true} />
         </Link>
 
-        {/* Center Links */}
-        <nav style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+        {/* Center Links (Desktop only) */}
+        <nav className="landing-nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
           <Link to="/browse" style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--slate-600)', textDecoration: 'none' }}>
             Browse Items
           </Link>
@@ -68,10 +81,11 @@ export const Landing = () => {
         </nav>
 
         {/* Right Auth Action Buttons & Theme Toggle */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div className="landing-auth-desktop" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* Color Palette Swatch Pill */}
           <button
             onClick={togglePalette}
+            className="landing-swatch-btn"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -114,14 +128,69 @@ export const Landing = () => {
           >
             {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="var(--slate-600)" />}
           </button>
+
           <Link to="/login" className="btn btn-secondary btn-sm">
             <LogIn size={14} /> Sign In
           </Link>
-          <Link to="/register" className="btn btn-primary btn-sm">
+
+          <Link to="/register" className="btn btn-primary btn-sm landing-register-btn-desktop">
             <UserPlus size={14} /> Register
           </Link>
+
+          {/* Mobile Hamburger Toggle Button */}
+          <button
+            onClick={() => setMobileMenuOpen(prev => !prev)}
+            className="landing-mobile-menu-btn"
+            aria-label="Toggle mobile menu"
+          >
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
       </header>
+
+      {/* Mobile Drawer Dropdown Sheet */}
+      {mobileMenuOpen && (
+        <div className="animate-fade-in" style={{
+          position: 'fixed',
+          top: '60px',
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'var(--surface-glass)',
+          backdropFilter: 'blur(12px)',
+          zIndex: 99,
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '1.5rem',
+          gap: '1rem',
+          borderBottom: '1px solid var(--border-color)',
+          overflowY: 'auto'
+        }}>
+          <Link to="/browse" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)', padding: '0.5rem 0' }}>
+            Browse Items
+          </Link>
+          <a href="#featured-cases" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)', padding: '0.5rem 0' }}>
+            Live Recoveries
+          </a>
+          <a href="#pipeline" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)', padding: '0.5rem 0' }}>
+            Verification Process
+          </a>
+          <a href="#portals" onClick={() => setMobileMenuOpen(false)} style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-main)', padding: '0.5rem 0' }}>
+            Campus Portals
+          </a>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.5rem 0' }} />
+          <button
+            onClick={() => { togglePalette(); setMobileMenuOpen(false); }}
+            className="btn btn-secondary"
+            style={{ justifyContent: 'center', gap: '8px' }}
+          >
+            Switch Palette Theme
+          </button>
+          <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ justifyContent: 'center' }}>
+            <UserPlus size={16} /> Register Student Account
+          </Link>
+        </div>
+      )}
 
       {/* Hero Section with Institutional Campus Dot Mesh Banner */}
       <section className="campus-hero-banner">
@@ -316,7 +385,7 @@ export const Landing = () => {
 
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))',
             gap: '1.5rem'
           }}>
             {/* Student Portal Card */}

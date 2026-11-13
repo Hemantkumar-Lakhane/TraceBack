@@ -36,7 +36,7 @@ export const LifecycleTracker = ({ currentStep = 3, showHeader = false }) => {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(120px, 100%), 1fr))',
         gap: '0.75rem',
         alignItems: 'center'
       }}>
