@@ -243,7 +243,7 @@ export const MOCK_CONVERSATIONS = [
         senderName: "Rohan Verma",
         text: "Namaste Aarav! I found a MacBook Air on desk #14 in the 3rd floor Central Library reading hall.",
         timestamp: "2026-09-24T16:10:00Z",
-        isMe: false
+        status: "READ"
       },
       {
         id: 2,
@@ -251,7 +251,7 @@ export const MOCK_CONVERSATIONS = [
         senderName: "Aarav Sharma",
         text: "Hello Rohan! Oh thank you so much! Does it have a GitHub sticker on the top shell?",
         timestamp: "2026-09-24T16:15:00Z",
-        isMe: true
+        status: "READ"
       },
       {
         id: 3,
@@ -259,7 +259,7 @@ export const MOCK_CONVERSATIONS = [
         senderName: "Rohan Verma",
         text: "Yes, exactly! It has the black and white Octocat sticker.",
         timestamp: "2026-09-24T16:18:00Z",
-        isMe: false
+        status: "READ"
       },
       {
         id: 4,
@@ -267,7 +267,7 @@ export const MOCK_CONVERSATIONS = [
         senderName: "Aarav Sharma",
         text: "That is 100% mine! Should we meet up or did you hand it over to campus security?",
         timestamp: "2026-09-24T16:22:00Z",
-        isMe: true
+        status: "READ"
       },
       {
         id: 5,
@@ -275,7 +275,7 @@ export const MOCK_CONVERSATIONS = [
         senderName: "Rohan Verma",
         text: "I deposited it at VIT Pune Central Security Office Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
         timestamp: "2026-09-24T16:45:00Z",
-        isMe: false
+        status: "READ"
       }
     ]
   },

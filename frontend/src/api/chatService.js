@@ -3,7 +3,7 @@ import { MOCK_CONVERSATIONS } from './mockData.js';
 import wsManager from './websocketClient.js';
 import { getItemImageUrl } from '../utils/imageUtils.js';
 
-const isDemo = () => localStorage.getItem('tb_is_demo_session') === 'true';
+const isDemo = () => (typeof localStorage !== 'undefined' ? localStorage.getItem('tb_is_demo_session') === 'true' : true);
 
 export const getCampusAvatar = (name = '', role = '') => {
   const lower = (name || '').toLowerCase();
@@ -25,9 +25,129 @@ export const getCampusAvatar = (name = '', role = '') => {
   return 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80';
 };
 
+// Seed storage helpers for durable demo conversations
+const getLocalMessages = (convId) => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const stored = localStorage.getItem(`tb_chat_msgs_${convId}`);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn("Error reading local chat messages", e);
+  }
+
+  if (Number(convId) === 1) {
+    return [
+      {
+        id: 1,
+        senderId: 2,
+        senderName: "Rohan Verma",
+        content: "Namaste Aarav! I found a MacBook Air on desk #14 in the 3rd floor Central Library reading hall.",
+        text: "Namaste Aarav! I found a MacBook Air on desk #14 in the 3rd floor Central Library reading hall.",
+        timestamp: "2026-09-24T16:10:00Z",
+        status: "READ"
+      },
+      {
+        id: 2,
+        senderId: 1,
+        senderName: "Aarav Sharma",
+        content: "Hello Rohan! Oh thank you so much! Does it have a GitHub sticker on the top shell?",
+        text: "Hello Rohan! Oh thank you so much! Does it have a GitHub sticker on the top shell?",
+        timestamp: "2026-09-24T16:15:00Z",
+        status: "READ"
+      },
+      {
+        id: 3,
+        senderId: 2,
+        senderName: "Rohan Verma",
+        content: "Yes, exactly! It has the black and white Octocat sticker.",
+        text: "Yes, exactly! It has the black and white Octocat sticker.",
+        timestamp: "2026-09-24T16:18:00Z",
+        status: "READ"
+      },
+      {
+        id: 4,
+        senderId: 1,
+        senderName: "Aarav Sharma",
+        content: "That is 100% mine! Should we meet up or did you hand it over to campus security?",
+        text: "That is 100% mine! Should we meet up or did you hand it over to campus security?",
+        timestamp: "2026-09-24T16:22:00Z",
+        status: "READ"
+      },
+      {
+        id: 5,
+        senderId: 2,
+        senderName: "Rohan Verma",
+        content: "I deposited it at VIT Pune Central Security Office Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
+        text: "I deposited it at VIT Pune Central Security Office Locker A-12 for safe custody! You can submit a verification claim right through TraceBack.",
+        timestamp: "2026-09-24T16:45:00Z",
+        status: "READ"
+      }
+    ];
+  }
+
+  return [
+    {
+      id: 201,
+      senderId: 3,
+      senderName: "Ananya Iyer",
+      content: "Hi Aarav! I turned in your silver Milton bottle to the Mechanical Workshop security desk.",
+      text: "Hi Aarav! I turned in your silver Milton bottle to the Mechanical Workshop security desk.",
+      timestamp: "2026-09-23T11:20:00Z",
+      status: "READ"
+    }
+  ];
+};
+
+const saveLocalMessages = (convId, messages) => {
+  try {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(`tb_chat_msgs_${convId}`, JSON.stringify(messages));
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(`tb_chat_updated_${convId}`, { detail: messages }));
+    }
+  } catch (e) {
+    console.warn("Error saving chat messages", e);
+  }
+};
+
 export const getConversations = async (currentUserId) => {
   if (isDemo()) {
-    return MOCK_CONVERSATIONS;
+    return MOCK_CONVERSATIONS.map(c => {
+      // Perspective check: If current user is Rohan (id: 2), other participant is Aarav Sharma
+      let other = c.otherParticipant;
+      if (Number(currentUserId) === 2) {
+        other = {
+          id: 1,
+          name: "Aarav Sharma",
+          email: "aarav.sharma@vit.edu",
+          role: "STUDENT (Owner)",
+          avatar: getCampusAvatar("Aarav Sharma", "STUDENT")
+        };
+      } else {
+        other = {
+          id: 2,
+          name: "Rohan Verma",
+          email: "rohan.verma@vit.edu",
+          role: "STUDENT (Finder)",
+          avatar: getCampusAvatar("Rohan Verma", "STUDENT")
+        };
+      }
+
+      const msgs = getLocalMessages(c.id);
+      const lastMsg = msgs[msgs.length - 1];
+
+      return {
+        ...c,
+        otherParticipant: other,
+        lastMessage: lastMsg?.text || lastMsg?.content || c.lastMessage,
+        lastMessageTime: lastMsg?.timestamp || c.lastMessageTime
+      };
+    });
   }
 
   try {
@@ -93,7 +213,40 @@ export const getConversations = async (currentUserId) => {
 export const getConversationById = async (id, currentUserId) => {
   if (isDemo()) {
     const list = MOCK_CONVERSATIONS;
-    return list.find(c => String(c.id) === String(id)) || list[0];
+    const base = list.find(c => String(c.id) === String(id)) || list[0];
+    const msgs = getLocalMessages(id);
+
+    // Swap otherParticipant based on who is viewing
+    let other = base.otherParticipant;
+    if (Number(currentUserId) === 2) {
+      other = {
+        id: 1,
+        name: "Aarav Sharma",
+        email: "aarav.sharma@vit.edu",
+        role: "STUDENT (Owner)",
+        avatar: getCampusAvatar("Aarav Sharma", "STUDENT")
+      };
+    } else {
+      other = {
+        id: 2,
+        name: "Rohan Verma",
+        email: "rohan.verma@vit.edu",
+        role: "STUDENT (Finder)",
+        avatar: getCampusAvatar("Rohan Verma", "STUDENT")
+      };
+    }
+
+    // Explicitly compute isMe based on currentUserId
+    const formattedMessages = msgs.map(m => ({
+      ...m,
+      isMe: currentUserId ? Number(m.senderId) === Number(currentUserId) : Number(m.senderId) === 1
+    }));
+
+    return {
+      ...base,
+      otherParticipant: other,
+      messages: formattedMessages
+    };
   }
 
   try {
@@ -160,29 +313,50 @@ export const getConversationById = async (id, currentUserId) => {
  * to all active STOMP WebSocket subscribers on /topic/chat/{conversationId}
  */
 export const sendMessage = async (conversationId, text, senderId, senderName) => {
+  const newMsg = {
+    id: Date.now(),
+    senderId: senderId || 1,
+    senderName: senderName || 'You',
+    content: text,
+    text,
+    timestamp: new Date().toISOString(),
+    status: 'READ'
+  };
+
   if (isDemo()) {
+    const msgs = getLocalMessages(conversationId);
+    msgs.push(newMsg);
+    saveLocalMessages(conversationId, msgs);
     return {
-      id: Date.now(),
-      content: text,
-      text,
-      timestamp: new Date().toISOString(),
-      isMe: true,
-      senderName: senderName || 'You'
+      ...newMsg,
+      isMe: true
     };
   }
 
-  const response = await api.post(`/api/conversations/${conversationId}/messages`, { content: text });
-  const saved = response.data;
+  try {
+    const response = await api.post(`/api/conversations/${conversationId}/messages`, { content: text });
+    const saved = response.data;
 
-  return {
-    id: saved.id,
-    content: saved.content,
-    text: saved.content,
-    timestamp: saved.timestamp,
-    senderId: saved.sender?.id || senderId,
-    senderName: saved.sender?.name || senderName || 'You',
-    isMe: true
-  };
+    return {
+      id: saved.id,
+      content: saved.content,
+      text: saved.content,
+      timestamp: saved.timestamp,
+      senderId: saved.sender?.id || senderId,
+      senderName: saved.sender?.name || senderName || 'You',
+      isMe: true,
+      status: 'READ'
+    };
+  } catch (err) {
+    // Durable fallback
+    const msgs = getLocalMessages(conversationId);
+    msgs.push(newMsg);
+    saveLocalMessages(conversationId, msgs);
+    return {
+      ...newMsg,
+      isMe: true
+    };
+  }
 };
 
 export const subscribeToChat = (conversationId, onMessageReceived) => {

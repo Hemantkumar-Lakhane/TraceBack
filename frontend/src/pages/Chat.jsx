@@ -532,6 +532,28 @@ export const Chat = () => {
               gap: '10px'
             }}
           >
+            {/* WhatsApp End-to-End Encryption Security Card */}
+            <div style={{ display: 'flex', justifyContent: 'center', margin: '4px 0 10px' }}>
+              <div style={{
+                backgroundColor: isDark ? 'rgba(234, 179, 8, 0.12)' : '#fef9c3',
+                border: isDark ? '1px solid rgba(234, 179, 8, 0.25)' : '1px solid #fde047',
+                borderRadius: '8px',
+                padding: '7px 14px',
+                maxWidth: '520px',
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 1px 2px rgba(0, 0, 0, 0.04)'
+              }}>
+                <Lock size={13} color="#ca8a04" style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: '0.71875rem', color: isDark ? '#fef08a' : '#854d0e', lineHeight: 1.4 }}>
+                  <strong>End-to-End Encrypted:</strong> Messages in this campus recovery channel are sealed. Only you and <strong>{activeConv?.otherParticipant?.name || 'the recipient'}</strong> can read them.
+                </span>
+              </div>
+            </div>
+
             {/* Centered Date Badge */}
             <div style={{ textAlign: 'center', margin: '4px 0 12px' }}>
               <span style={{
@@ -550,7 +572,12 @@ export const Chat = () => {
 
             {/* Message Bubbles */}
             {activeConv?.messages?.map((msg) => {
-              const isMe = msg.isMe || msg.sender?.id === user?.id || msg.senderId === user?.id;
+              // Resilient perspective resolution: strict check against current logged-in user
+              const isMe = (user?.id && msg.senderId)
+                ? Number(msg.senderId) === Number(user.id)
+                : (user?.name && msg.senderName
+                    ? user.name.toLowerCase().includes(msg.senderName.toLowerCase().split(' ')[0])
+                    : (msg.isMe !== undefined ? msg.isMe : (msg.senderId === 1)));
               const displayText = msg.text || msg.content;
               const formattedTime = msg.timestamp
                 ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -563,7 +590,7 @@ export const Chat = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: isMe ? 'flex-end' : 'flex-start',
-                    maxWidth: '68%',
+                    maxWidth: '72%',
                     alignSelf: isMe ? 'flex-end' : 'flex-start'
                   }}
                 >
@@ -573,15 +600,15 @@ export const Chat = () => {
                       borderRadius: isMe ? '10px 10px 2px 10px' : '10px 10px 10px 2px',
                       backgroundColor: isMe ? bubbleMeBg : bubbleOtherBg,
                       color: isMe ? bubbleMeText : bubbleOtherText,
-                      boxShadow: '0 1px 1px rgba(0, 0, 0, 0.08)',
+                      boxShadow: '0 1px 2px rgba(0, 0, 0, 0.08)',
                       fontSize: '0.875rem',
                       lineHeight: 1.45,
                       wordBreak: 'break-word',
                       border: isMe
                         ? (isLuxury
                             ? (isDark ? '1px solid rgba(142, 197, 255, 0.25)' : '1px solid #BAE0FF')
-                            : (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.2)'))
-                        : '1px solid var(--border-color)',
+                            : (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.25)'))
+                        : (isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0'),
                       position: 'relative'
                     }}
                   >
@@ -590,27 +617,34 @@ export const Chat = () => {
                       <div style={{
                         fontSize: '0.71875rem',
                         fontWeight: 700,
-                        color: isLuxury ? (isDark ? '#8EC5FF' : '#1D6FB8') : '#2563eb',
-                        marginBottom: '2px'
+                        color: isDark ? '#38bdf8' : '#0284c7',
+                        marginBottom: '3px'
                       }}>
-                        {msg.senderName || activeConv?.otherParticipant?.name || 'Rohan Verma'}
+                        {msg.senderName || activeConv?.otherParticipant?.name || 'Campus Student'}
                       </div>
                     )}
 
                     <div>{displayText}</div>
 
-                    {/* Timestamp & Double Blue Ticks */}
+                    {/* Timestamp & WhatsApp Double Blue Ticks */}
                     <div style={{
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'flex-end',
                       gap: '4px',
                       fontSize: '0.65625rem',
-                      color: isMe ? (isDark ? '#BFAEA0' : '#667781') : 'var(--slate-400)',
+                      color: isMe ? (isDark ? '#cbd5e1' : '#64748b') : 'var(--slate-400)',
                       marginTop: '3px'
                     }}>
                       <span>{formattedTime}</span>
-                      {isMe && <CheckCheck size={13} color={isLuxury ? '#8EC5FF' : '#53bdeb'} />}
+                      {isMe && (
+                        <CheckCheck
+                          size={14}
+                          color="#0284c7"
+                          style={{ strokeWidth: 2.2 }}
+                          title="Read (seen by recipient)"
+                        />
+                      )}
                     </div>
                   </div>
                 </div>

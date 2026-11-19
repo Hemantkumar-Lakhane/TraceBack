@@ -180,6 +180,32 @@ describe('TraceBack Comprehensive E2E System & Edge Case QA Suite', () => {
     assert.ok(priyaAvatar.startsWith('https://'), 'Avatar must be a valid HTTPS image URL');
   });
 
+  test('TC-CHAT-04: Perspective Symmetry - Rohan views chat with Aarav on left and Rohan on right', async () => {
+    const convForRohan = await chatService.getConversationById(1, 2); // 2 = Rohan
+    assert.strictEqual(convForRohan.otherParticipant.name, 'Aarav Sharma', 'For Rohan, other participant must be Aarav');
+    
+    // First message was sent by Rohan (id: 2) -> isMe must be true (right side)
+    const msg1 = convForRohan.messages.find(m => m.id === 1);
+    assert.strictEqual(msg1.isMe, true, 'Rohan message viewed by Rohan must be on the right (isMe: true)');
+
+    // Second message was sent by Aarav (id: 1) -> isMe must be false (left side)
+    const msg2 = convForRohan.messages.find(m => m.id === 2);
+    assert.strictEqual(msg2.isMe, false, 'Aarav message viewed by Rohan must be on the left (isMe: false)');
+  });
+
+  test('TC-CHAT-05: Perspective Symmetry - Aarav views chat with Rohan on left and Aarav on right', async () => {
+    const convForAarav = await chatService.getConversationById(1, 1); // 1 = Aarav
+    assert.strictEqual(convForAarav.otherParticipant.name, 'Rohan Verma', 'For Aarav, other participant must be Rohan');
+
+    // First message was sent by Rohan (id: 2) -> isMe must be false (left side)
+    const msg1 = convForAarav.messages.find(m => m.id === 1);
+    assert.strictEqual(msg1.isMe, false, 'Rohan message viewed by Aarav must be on the left (isMe: false)');
+
+    // Second message was sent by Aarav (id: 1) -> isMe must be true (right side)
+    const msg2 = convForAarav.messages.find(m => m.id === 2);
+    assert.strictEqual(msg2.isMe, true, 'Aarav message viewed by Aarav must be on the right (isMe: true)');
+  });
+
   // ==========================================
   // DOMAIN 7: Search & Discovery Engine
   // ==========================================
