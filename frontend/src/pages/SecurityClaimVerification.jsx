@@ -5,19 +5,20 @@ import {
   CheckCircle2,
   XCircle,
   ArrowLeft,
+  ArrowRight,
   User,
   MapPin,
   Calendar,
   Archive,
   AlertTriangle,
   FileCheck2,
-  Lock
+  Lock,
+  Clock
 } from 'lucide-react';
 import MatchScoreBadge from '../components/MatchScoreBadge';
 import StatusBadge from '../components/StatusBadge';
 import Modal from '../components/Modal';
 import { useToast } from '../context/ToastContext';
-import { MOCK_CLAIMS, MOCK_REPORTS } from '../api/mockData';
 import claimService from '../api/claimService';
 
 export const SecurityClaimVerification = () => {
@@ -25,7 +26,8 @@ export const SecurityClaimVerification = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const [claim, setClaim] = useState(MOCK_CLAIMS[0]);
+  const [claim, setClaim] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [checklist, setChecklist] = useState({
     idVerified: false,
     secretMarksMatched: false,
@@ -38,15 +40,34 @@ export const SecurityClaimVerification = () => {
   const [rejectReason, setRejectReason] = useState('');
   const [processing, setProcessing] = useState(false);
 
+  useEffect(() => {
+    const loadClaim = async () => {
+      setLoading(true);
+      try {
+        const data = await claimService.getClaimById(id);
+        if (data) setClaim(data);
+      } catch (e) {
+        console.error("Failed to load claim", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadClaim();
+  }, [id]);
+
   const allChecked = checklist.idVerified && checklist.secretMarksMatched && checklist.ownerSignature;
 
   const handleApprove = async () => {
     setProcessing(true);
     try {
-      await claimService.updateClaimStatus(claim.id, 'APPROVED', 'Verified by Inspector Rajesh Kumar. Student presented valid university ID and unlocked device.');
+      const updated = await claimService.updateClaimStatus(
+        claim.id,
+        'APPROVED',
+        'Verified by Inspector Rajesh Kumar. Student presented valid university ID and unlocked device.'
+      );
       toast.success("Claim APPROVED! Handover voucher confirmed and case marked as RETURNED.");
       setShowApproveModal(false);
-      setClaim(prev => ({ ...prev, status: 'APPROVED' }));
+      setClaim(prev => ({ ...prev, ...updated, status: 'APPROVED' }));
     } catch (err) {
       toast.error("Failed to approve claim.");
     } finally {
@@ -61,16 +82,26 @@ export const SecurityClaimVerification = () => {
     }
     setProcessing(true);
     try {
-      await claimService.updateClaimStatus(claim.id, 'REJECTED', rejectReason);
+      const updated = await claimService.updateClaimStatus(claim.id, 'REJECTED', rejectReason);
       toast.warning("Claim rejected with notice sent to student.");
       setShowRejectModal(false);
-      setClaim(prev => ({ ...prev, status: 'REJECTED' }));
+      setClaim(prev => ({ ...prev, ...updated, status: 'REJECTED' }));
     } catch (err) {
       toast.error("Failed to reject claim.");
     } finally {
       setProcessing(false);
     }
   };
+
+  if (loading || !claim) {
+    return (
+      <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--slate-500)' }}>
+        Loading claim verification audit file...
+      </div>
+    );
+  }
+
+  const isResolved = claim.status === 'APPROVED' || claim.status === 'REJECTED';
 
   return (
     <div className="animate-fade-in" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -91,25 +122,91 @@ export const SecurityClaimVerification = () => {
           </p>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button
-            onClick={() => setShowRejectModal(true)}
-            className="btn btn-danger btn-sm"
-            disabled={claim.status === 'APPROVED' || claim.status === 'REJECTED'}
-            style={{ gap: '6px' }}
-          >
-            <XCircle size={16} /> Reject Claim
-          </button>
-          <button
-            onClick={() => setShowApproveModal(true)}
-            className="btn btn-success"
-            disabled={claim.status === 'APPROVED' || claim.status === 'REJECTED' || !allChecked}
-            style={{ gap: '6px' }}
-          >
-            <CheckCircle2 size={16} /> Approve & Mark Returned
-          </button>
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          {!isResolved ? (
+            <>
+              <button
+                onClick={() => setShowRejectModal(true)}
+                className="btn btn-danger btn-sm"
+                style={{ gap: '6px' }}
+              >
+                <XCircle size={16} /> Reject Claim
+              </button>
+              <button
+                onClick={() => setShowApproveModal(true)}
+                className="btn btn-success"
+                disabled={!allChecked}
+                style={{ gap: '6px' }}
+              >
+                <CheckCircle2 size={16} /> Approve & Mark Returned
+              </button>
+            </>
+          ) : (
+            <Link to="/security/claims" className="btn btn-secondary" style={{ gap: '6px' }}>
+              <ArrowLeft size={16} /> Return to Pending Queue
+            </Link>
+          )}
         </div>
       </div>
+
+      {/* Transactional Audit Resolution Banner */}
+      {claim.status === 'REJECTED' && (
+        <div className="animate-fade-in" style={{
+          padding: '1rem 1.25rem',
+          backgroundColor: 'rgba(239, 68, 68, 0.08)',
+          border: '1px solid rgba(239, 68, 68, 0.25)',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <XCircle size={22} color="var(--rose)" />
+            <div>
+              <div style={{ fontWeight: 700, color: 'var(--rose)', fontSize: '0.9375rem' }}>
+                Claim Verification Audit Closed (Rejected)
+              </div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--slate-600)' }}>
+                This claim has been processed and removed from active pending review. An institutional notice was issued to claimant {claim.claimant?.name || 'student'}.
+              </div>
+            </div>
+          </div>
+          <Link to="/security/claims" className="btn btn-secondary btn-sm" style={{ gap: '6px' }}>
+            View Updated Queue <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
+
+      {claim.status === 'APPROVED' && (
+        <div className="animate-fade-in" style={{
+          padding: '1rem 1.25rem',
+          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+          border: '1px solid rgba(16, 185, 129, 0.25)',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <CheckCircle2 size={22} color="var(--emerald)" />
+            <div>
+              <div style={{ fontWeight: 700, color: 'var(--emerald)', fontSize: '0.9375rem' }}>
+                Physical Handover Completed & Verified
+              </div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--slate-600)' }}>
+                Item custody released to {claim.claimant?.name || 'claimant'}. Physical locker custody has been updated to RETURNED.
+              </div>
+            </div>
+          </div>
+          <Link to="/security/claims" className="btn btn-primary btn-sm" style={{ gap: '6px' }}>
+            View Updated Queue <ArrowRight size={14} />
+          </Link>
+        </div>
+      )}
 
       {/* Split Screen: Left (Student Claim Proof) vs Right (Vault Storage Record) */}
       <div className="admin-two-col-grid" style={{ gap: '1.5rem' }}>

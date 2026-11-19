@@ -1,29 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Search, Filter, ArrowRight, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { ShieldCheck, Search, Filter, ArrowRight, CheckCircle2, Clock, XCircle, CheckCheck } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 import MatchScoreBadge from '../components/MatchScoreBadge';
-import { getPendingClaims } from '../api/claimService';
+import claimService from '../api/claimService';
 
 export const SecurityPendingClaims = () => {
   const [claims, setClaims] = useState([]);
   const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('ALL');
+  const [statusFilter, setStatusFilter] = useState('PENDING');
   const [loading, setLoading] = useState(true);
 
+  const fetchClaims = async () => {
+    setLoading(true);
+    try {
+      const data = await claimService.getAllClaims();
+      setClaims(data || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchClaims = async () => {
-      setLoading(true);
-      try {
-        const data = await getPendingClaims();
-        setClaims(data || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchClaims();
+    window.addEventListener('tb_claims_updated', fetchClaims);
+    return () => window.removeEventListener('tb_claims_updated', fetchClaims);
   }, []);
 
   const filtered = claims.filter(c => {
@@ -71,7 +74,7 @@ export const SecurityPendingClaims = () => {
         </div>
 
         <div style={{ display: 'flex', gap: '8px' }}>
-          {['ALL', 'PENDING', 'APPROVED', 'RETURNED'].map(s => (
+          {['PENDING', 'APPROVED', 'REJECTED', 'ALL'].map(s => (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
@@ -114,7 +117,19 @@ export const SecurityPendingClaims = () => {
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', color: 'var(--slate-400)' }}>No claims found.</td>
+                <td colSpan="7" style={{ padding: '3.5rem 1rem', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', color: 'var(--slate-500)' }}>
+                    <CheckCheck size={36} color="var(--emerald)" />
+                    <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--slate-800)' }}>
+                      {statusFilter === 'PENDING' ? 'No Pending Claims Awaiting Verification' : 'No claims found'}
+                    </div>
+                    <div style={{ fontSize: '0.8125rem', color: 'var(--slate-500)', maxWidth: '420px' }}>
+                      {statusFilter === 'PENDING'
+                        ? 'All student claims have been verified and processed. Check ALL or APPROVED tabs to view historical audit logs.'
+                        : 'No claim audit records match the current filter criteria.'}
+                    </div>
+                  </div>
+                </td>
               </tr>
             ) : (
               filtered.map(claim => (

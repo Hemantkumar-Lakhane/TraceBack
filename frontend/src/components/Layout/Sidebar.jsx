@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { CAMPUS_CONFIG } from '../../config/campusConfig';
+import claimService from '../../api/claimService';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -25,12 +26,33 @@ import {
 export const Sidebar = ({ isOpen, onClose }) => {
   const { user } = useAuth();
   const role = user?.role || 'STUDENT';
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    const updateCount = async () => {
+      try {
+        const pending = await claimService.getPendingClaims();
+        setPendingCount(Array.isArray(pending) ? pending.length : 0);
+      } catch (e) {
+        setPendingCount(0);
+      }
+    };
+
+    updateCount();
+    window.addEventListener('tb_claims_updated', updateCount);
+    return () => window.removeEventListener('tb_claims_updated', updateCount);
+  }, []);
 
   const getNavLinks = () => {
     if (role === 'SECURITY') {
       return [
         { to: '/security', label: 'Security Dashboard', icon: <LayoutDashboard size={17} /> },
-        { to: '/security/claims', label: 'Pending Verifications', icon: <ShieldCheck size={17} />, badge: '1 Action' },
+        {
+          to: '/security/claims',
+          label: 'Pending Verifications',
+          icon: <ShieldCheck size={17} />,
+          badge: pendingCount > 0 ? `${pendingCount} Action` : null
+        },
         { to: '/security/report/found', label: 'Log Handed-Over Item', icon: <PlusCircle size={17} /> },
         { to: '/security/inventory', label: 'Locker Vault Custody', icon: <Archive size={17} /> },
         { to: '/browse', label: 'Search Campus Database', icon: <Search size={17} /> },
