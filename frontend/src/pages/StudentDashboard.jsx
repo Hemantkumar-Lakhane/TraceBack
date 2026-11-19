@@ -163,12 +163,23 @@ export const StudentDashboard = () => {
                   Correlation Score: <strong style={{ color: 'var(--slate-900)' }}>{pendingMatch.matchScore || 92}%</strong>
                 </span>
               </div>
-              <h3 style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
-                Match Found for your {pendingMatch.lostReport?.item?.name || 'MacBook Air'}
-              </h3>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginTop: '2px' }}>
-                A matching item was reported at <strong>{pendingMatch.foundReport?.location || 'Central Library (Building 1)'}</strong>. Verify details via verification chat to initiate recovery.
-              </p>
+              {(() => {
+                const isFinder = pendingMatch.foundReport?.userId === user?.id || (user?.email && pendingMatch.foundReport?.user?.email === user?.email) || user?.name?.includes('Rohan');
+                return (
+                  <>
+                    <h3 style={{ fontSize: '0.9375rem', fontWeight: 600, color: 'var(--slate-900)' }}>
+                      {isFinder
+                        ? `Owner Matched for turned-in ${pendingMatch.foundReport?.item?.name || pendingMatch.lostReport?.item?.name || 'MacBook Air'}`
+                        : `Match Found for your ${pendingMatch.lostReport?.item?.name || 'MacBook Air'}`}
+                    </h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'var(--slate-600)', marginTop: '2px' }}>
+                      {isFinder
+                        ? <>A matching claim was filed by an owner for the item reported at <strong>{pendingMatch.foundReport?.location || 'Central Library (Building 1)'}</strong>. Verify identity details via verification chat.</>
+                        : <>A matching item was reported at <strong>{pendingMatch.foundReport?.location || 'Central Library (Building 1)'}</strong>. Verify details via verification chat to initiate recovery.</>}
+                    </p>
+                  </>
+                );
+              })()}
             </div>
           </div>
 
