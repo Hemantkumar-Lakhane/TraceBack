@@ -18,12 +18,18 @@
 
 The system connects students across all engineering branches (including Computer, AIML, AIDS, IT, Mechanical, and Electronics) directly with **Building 1 Central Security Desk (Ground Floor, Main Gate 1)**.
 
-### 🌐 Live Production Deployments
+### 🌐 Live Production Deployments & Official Submission Docs
 
+- **Live Frontend (Vercel)**: [https://trace-back-six.vercel.app](https://trace-back-six.vercel.app)
 - **Live Backend API**: [https://traceback-oh5a.onrender.com](https://traceback-oh5a.onrender.com)
 - **Interactive Swagger OpenAPI Docs**: [https://traceback-oh5a.onrender.com/swagger-ui/index.html](https://traceback-oh5a.onrender.com/swagger-ui/index.html)
-- **Live Frontend (Vercel)**: [https://trace-back-six.vercel.app](https://trace-back-six.vercel.app)
 - **Local Dev Server**: `http://localhost:5173` (Frontend) & `http://localhost:8080` (Backend)
+
+#### 📄 Academic Submission Documents:
+- 📕 **Formal CNT Project Report (PDF)**: [`docs/TraceBack_CNT_Final_Report.pdf`](docs/TraceBack_CNT_Final_Report.pdf) *(9-Page Publication-Quality Report with 5-Layer OSI Mapping, FSM, and Viva Prep)*
+- 📘 **Comprehensive CNT Project Dossier (Markdown)**: [`docs/CNT_COURSE_PROJECT_REPORT.md`](docs/CNT_COURSE_PROJECT_REPORT.md)
+- 📙 **REST API & STOMP Channels Specification**: [`API_SPECIFICATION.md`](API_SPECIFICATION.md)
+- 📗 **Local & Cloud Running Instructions**: [`RUNNING_LOCALLY.md`](RUNNING_LOCALLY.md)
 
 ---
 
