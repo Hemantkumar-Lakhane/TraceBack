@@ -3,7 +3,8 @@ import assert from 'node:assert';
 import claimService from '../src/api/claimService.js';
 import reportService from '../src/api/reportService.js';
 import matchService from '../src/api/matchService.js';
-import { MOCK_CLAIMS, MOCK_REPORTS, MOCK_MATCHES, DEMO_USERS } from '../src/api/mockData.js';
+import chatService, { getCampusAvatar } from '../src/api/chatService.js';
+import { MOCK_CLAIMS, MOCK_REPORTS, MOCK_MATCHES, DEMO_USERS, MOCK_CONVERSATIONS } from '../src/api/mockData.js';
 
 describe('TraceBack Comprehensive E2E System & Edge Case QA Suite', () => {
 
@@ -142,6 +143,84 @@ describe('TraceBack Comprehensive E2E System & Edge Case QA Suite', () => {
     assert.strictEqual(DEMO_USERS.security.email, 'rajesh.kumar@vit.edu');
     assert.strictEqual(DEMO_USERS.security.badgeNumber, 'SEC-409');
     assert.strictEqual(DEMO_USERS.admin.email, 'priya.nair@vit.edu');
+  });
+
+  // ==========================================
+  // DOMAIN 6: Chat Subsystem & Message Dispatch
+  // ==========================================
+  test('TC-CHAT-01: Chat service fetches active conversations and normalizes metadata', async () => {
+    const convs = await chatService.getConversations();
+    assert.ok(Array.isArray(convs), 'Conversations must be an array');
+    assert.ok(convs.length > 0, 'Must have at least one active conversation');
+
+    const first = convs[0];
+    assert.ok(first.id, 'Conversation must have an id');
+    assert.ok(first.itemName, 'Conversation must reference an item');
+    assert.ok(first.otherParticipant, 'Conversation must identify other participant');
+  });
+
+  test('TC-CHAT-02: Sending chat message persists text, timestamp, and sender role', async () => {
+    const testText = 'Hello Rohan! I submitted physical proof to Campus Security Desk at Building 1.';
+    const sent = await chatService.sendMessage(1, testText, 1, 'Aarav Sharma');
+
+    assert.ok(sent.id, 'Sent message must have unique id');
+    assert.strictEqual(sent.text, testText);
+    assert.strictEqual(sent.isMe, true);
+    assert.strictEqual(sent.senderName, 'Aarav Sharma');
+    assert.ok(sent.timestamp, 'Timestamp must be generated');
+  });
+
+  test('TC-CHAT-03: Campus avatar resolver maps correctly based on names and roles', () => {
+    const rohanAvatar = getCampusAvatar('Rohan Verma', 'STUDENT');
+    const rajeshAvatar = getCampusAvatar('Inspector Rajesh', 'SECURITY');
+    const priyaAvatar = getCampusAvatar('Priya Nair', 'ADMIN');
+
+    assert.ok(rohanAvatar.startsWith('https://'), 'Avatar must be a valid HTTPS image URL');
+    assert.ok(rajeshAvatar.startsWith('https://'), 'Avatar must be a valid HTTPS image URL');
+    assert.ok(priyaAvatar.startsWith('https://'), 'Avatar must be a valid HTTPS image URL');
+  });
+
+  // ==========================================
+  // DOMAIN 7: Search & Discovery Engine
+  // ==========================================
+  test('TC-SEARCH-01: Searching reports matches titles, descriptions, and locations', async () => {
+    const macbookMatches = await reportService.getReports({ search: 'MacBook' });
+    assert.ok(Array.isArray(macbookMatches));
+    assert.ok(macbookMatches.length > 0, 'Must find reports matching MacBook');
+    assert.ok(macbookMatches.some(r => r.item?.name?.toLowerCase().includes('macbook')));
+
+    const walletMatches = await reportService.getReports({ search: 'Wallet' });
+    assert.ok(Array.isArray(walletMatches));
+    assert.ok(walletMatches.length > 0, 'Must find reports matching Wallet');
+  });
+
+  test('TC-SEARCH-02: Searching with nonexistent keywords returns safe empty array', async () => {
+    const noMatches = await reportService.getReports({ search: 'NonExistentQuantumWidget999' });
+    assert.ok(Array.isArray(noMatches));
+    assert.strictEqual(noMatches.length, 0, 'Non-existent item should return empty array');
+  });
+
+  // ==========================================
+  // DOMAIN 8: Cross-Tab Reactive Synchronization
+  // ==========================================
+  test('TC-SYNC-01: Updating claim triggers window custom event tb_claims_updated', async () => {
+    let eventReceived = false;
+    let eventDetail = null;
+
+    globalThis.window.dispatchEvent = (event) => {
+      if (event.type === 'tb_claims_updated') {
+        eventReceived = true;
+        eventDetail = event.detail;
+      }
+      return true;
+    };
+
+    await claimService.updateClaimStatus(501, 'REJECTED', 'Test sync rejection');
+
+    assert.strictEqual(eventReceived, true, 'tb_claims_updated event must be dispatched');
+    assert.ok(Array.isArray(eventDetail), 'Event detail must contain updated claims array');
+    const rejectedInDetail = eventDetail.find(c => c.id === 501);
+    assert.strictEqual(rejectedInDetail?.status, 'REJECTED');
   });
 
 });
