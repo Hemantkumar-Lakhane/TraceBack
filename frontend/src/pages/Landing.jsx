@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import LifecycleTracker from '../components/LifecycleTracker';
 import TraceBackLogo from '../components/TraceBackLogo';
+import MeadowRiseFooter from '@/components/ui/meadow-rise-footer';
 import { CAMPUS_CONFIG } from '../config/campusConfig';
 import '../LandingAnimations.css';
 
@@ -563,39 +564,18 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Symmetrical Footer */}
-      <footer style={{
-        backgroundColor: 'var(--navbar-bg)',
-        borderTop: '1px solid var(--border-color)',
-        padding: '2rem 1.5rem',
-        fontSize: '0.8125rem',
-        color: 'var(--slate-500)',
-        transition: 'background-color 0.2s ease, border-color 0.2s ease'
-      }}>
-        <div style={{
-          maxWidth: '1100px',
-          margin: '0 auto',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <TraceBackLogo size={24} showWordmark={true} />
-          </div>
-
-          <div>
-            TraceBack Campus Recovery Network • Vishwakarma Institute of Technology, Pune
-          </div>
-
-          <div style={{ display: 'flex', gap: '1.25rem' }}>
-            <Link to="/browse" style={{ color: 'var(--slate-500)', textDecoration: 'none' }}>Directory</Link>
-            <Link to="/login" style={{ color: 'var(--slate-500)', textDecoration: 'none' }}>Sign In</Link>
-            <Link to="/register" style={{ color: 'var(--slate-500)', textDecoration: 'none' }}>Register</Link>
-          </div>
-        </div>
-      </footer>
+      {/* Interactive Canvas Meadow Rise Footer */}
+      <MeadowRiseFooter
+        name="TraceBack"
+        brandHref="/"
+        heading="Recover what is *rightfully yours*&#10;across VIT Pune."
+        subheading="Official item custody, deterministic matching, and secure verification at Building 1 Central Security Desk."
+        cta={{ label: "Report or Browse Items", href: "/browse" }}
+        tagline="Empowering VIT Pune students with verified, privacy-preserving campus recovery."
+        preset="golden"
+        height="840px"
+        heroHeight="clamp(380px, 50svh, 540px)"
+      />
     </div>
   );
 };
