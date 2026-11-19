@@ -56,7 +56,9 @@ export const Landing = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 2rem',
+        padding: '0 clamp(0.75rem, 3vw, 2rem)',
+        width: '100%',
+        maxWidth: '100vw',
         transition: 'background-color 0.2s ease, border-color 0.2s ease',
         boxSizing: 'border-box'
       }}>
@@ -130,7 +132,7 @@ export const Landing = () => {
             {isDark ? <Sun size={17} color="#fbbf24" /> : <Moon size={17} color="var(--slate-600)" />}
           </button>
 
-          <Link to="/login" className="btn btn-secondary btn-sm">
+          <Link to="/login" className="btn btn-secondary btn-sm landing-signin-btn-desktop">
             <LogIn size={14} /> Sign In
           </Link>
 
@@ -180,6 +182,12 @@ export const Landing = () => {
             Campus Portals
           </a>
           <hr style={{ border: 'none', borderTop: '1px solid var(--border-color)', margin: '0.5rem 0' }} />
+          <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="btn btn-secondary" style={{ justifyContent: 'center', gap: '8px' }}>
+            <LogIn size={16} /> Sign In to Portal
+          </Link>
+          <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ justifyContent: 'center', gap: '8px' }}>
+            <UserPlus size={16} /> Register Student Account
+          </Link>
           <button
             onClick={() => { togglePalette(); setMobileMenuOpen(false); }}
             className="btn btn-secondary"
@@ -187,9 +195,6 @@ export const Landing = () => {
           >
             Switch Palette Theme
           </button>
-          <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary" style={{ justifyContent: 'center' }}>
-            <UserPlus size={16} /> Register Student Account
-          </Link>
         </div>
       )}
 
@@ -199,17 +204,19 @@ export const Landing = () => {
           {/* Official Verification Badge */}
           <div className="hero-badge">
             <span className="hero-badge-dot"></span>
-            Official University Lost &amp; Found Infrastructure
+            Official Campus Lost &amp; Found
           </div>
 
           <h1 style={{
-            fontSize: 'clamp(2.25rem, 5vw, 3.5rem)',
+            fontSize: 'clamp(1.5rem, 5vw, 3rem)',
             fontWeight: 800,
             color: 'var(--slate-900)',
             lineHeight: 1.18,
             letterSpacing: '-0.025em',
             margin: '0 auto 1.25rem',
-            maxWidth: '850px'
+            maxWidth: '850px',
+            wordBreak: 'break-word',
+            width: '100%'
           }}>
             Campus Item Recovery Platform
           </h1>

@@ -207,25 +207,25 @@ const PRESETS: MeadowPaletteMap = {
     line: "rgba(246, 239, 224, 0.16)",
   },
   moonlit: {
-    sky: ["#0B0F19", "#1A2234"],
-    haze: "#1F293D",
+    sky: ["#000000", "#0A0A0A"],
+    haze: "#121212",
     glow: "#8EC5FF",
     hills: [
-      ["#2D3748", "#1E2633"],
-      ["#253040", "#19202B"],
-      ["#1E2734", "#131A23"],
-      ["#171E28", "#0E131A"],
-      ["#11161F", "#0A0D12"],
-      ["#0C0E14", "#06080B"],
+      ["#222222", "#181818"],
+      ["#1C1C1C", "#131313"],
+      ["#171717", "#0E0E0E"],
+      ["#121212", "#090909"],
+      ["#0D0D0D", "#060606"],
+      ["#080808", "#020202"],
     ],
-    ground: "#06080B",
-    ink: "#F8FAFC",
-    sub: "#CBD5E1",
+    ground: "#000000",
+    ink: "#FFFFFF",
+    sub: "#A1A1AA",
     pill: "#8EC5FF",
-    pillInk: "#06080B",
-    text: "#F8FAFC",
-    muted: "#CBD5E1",
-    line: "rgba(255, 255, 255, 0.18)",
+    pillInk: "#000000",
+    text: "#FFFFFF",
+    muted: "#A1A1AA",
+    line: "rgba(255, 255, 255, 0.15)",
     night: true,
   },
 }
@@ -234,28 +234,24 @@ const DEFAULT_COLUMNS: MeadowColumn[] = [
   {
     title: "Campus Recovery",
     links: [
-      { label: "Report Lost Property", href: "/report-lost" },
-      { label: "Report Found Property", href: "/report-found" },
-      { label: "Browse Campus Vault", href: "/browse" },
-      { label: "Correlation Engine", href: "/#pipeline" }
+      { label: "Report Lost Item", href: "/report/lost" },
+      { label: "Report Found Item", href: "/report/found" },
+      { label: "Browse Items", href: "/browse" }
     ]
   },
   {
-    title: "Official Custody",
+    title: "Official Security",
     links: [
       { label: "Building 1 Security Desk", href: "/security" },
-      { label: "Custody Lockers", href: "/#portals" },
-      { label: "Administrative Console", href: "/login" },
       { label: "Helpline: +91 20 2420 2180", href: "tel:+912024202180" }
     ]
   },
   {
     title: "Student Portals",
     links: [
-      { label: "Student PRN Login", href: "/login" },
+      { label: "Student Login (PRN)", href: "/login" },
       { label: "New PRN Registration", href: "/register" },
-      { label: "Staff Verification Login", href: "/login" },
-      { label: "Course Project GitHub", href: "https://github.com/Hemantkumar-Lakhane/TraceBack" }
+      { label: "Student Dashboard", href: "/dashboard" }
     ]
   },
 ]
@@ -770,26 +766,17 @@ const SOCIAL_ICONS = {
   ),
 }
 
-function PetalMark() {
+function RadarBeaconMark() {
   return (
-    <svg className="mrf-mark" viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
-      <circle className="mrf-draw" cx="16" cy="16" r="14.6" pathLength={1} style={{ "--d": 1250 } as React.CSSProperties} />
-      <g className="mrf-petals">
-        {[0, 1, 2, 3, 4, 5, 6, 7].map((k) => (
-          <ellipse
-            key={k}
-            className="mrf-draw"
-            cx="16"
-            cy="10.4"
-            rx="2.9"
-            ry="5.6"
-            pathLength={1}
-            transform={"rotate(" + k * 45 + " 16 16)"}
-            style={{ "--d": 1330 + k * 55 } as React.CSSProperties}
-          />
-        ))}
-      </g>
-      <circle className="mrf-draw" cx="16" cy="16" r="2.2" pathLength={1} style={{ "--d": 1800 } as React.CSSProperties} />
+    <svg className="mrf-mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" style={{ overflow: 'visible' }}>
+      <rect x="2" y="2" width="28" height="28" rx="8" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 2" opacity="0.6" />
+      <circle cx="16" cy="16" r="5" fill="none" stroke="currentColor" strokeWidth="1.2" opacity="0.8" />
+      <circle cx="16" cy="16" r="2.5" fill="currentColor" />
+      <line x1="16" y1="2" x2="16" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="16" y1="27" x2="16" y2="30" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="2" y1="16" x2="5" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <line x1="27" y1="16" x2="30" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   )
 }
@@ -809,7 +796,9 @@ const MRF_CSS = `
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 100vw;
   overflow: hidden;
+  overflow-x: hidden;
   background: var(--mrf-ground);
   color: var(--mrf-text);
   font-family: var(--mrf-sans);
@@ -834,14 +823,15 @@ const MRF_CSS = `
 .mrf-hero {
   position: relative;
   z-index: 2;
-  height: var(--mrf-hero);
+  min-height: var(--mrf-hero);
+  height: auto;
   flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: clamp(64px, 13%, 132px) 20px 0;
+  padding: clamp(48px, 7vw, 80px) 20px 44px;
   text-align: center;
-  transform: translate3d(0, calc((1 - var(--mrf-k, 1)) * 56px), 0);
+  transform: translate3d(0, calc((1 - var(--mrf-k, 1)) * 40px), 0);
 }
 .mrf-h {
   margin: 0;
@@ -892,7 +882,12 @@ const MRF_CSS = `
   transform: none;
   filter: none;
 }
-.mrf-cta-wrap { margin-top: clamp(20px, 2.6vw, 30px); }
+.mrf-cta-wrap {
+  margin-top: clamp(18px, 2.4vw, 28px);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 5;
+}
 .mrf-cta {
   --mx: 0px;
   --my: 0px;
@@ -1798,7 +1793,7 @@ export default function MeadowRiseFooter({
           <div className="mrf-grid">
             <div className="mrf-brand">
               <a className="mrf-logo mrf-r" href={brandHref} style={{ "--d": 1250 } as React.CSSProperties}>
-                {logo ?? <PetalMark />}
+                {logo ?? <RadarBeaconMark />}
                 <span>{name}</span>
               </a>
               {tagline ? (

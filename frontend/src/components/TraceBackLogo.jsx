@@ -1,130 +1,138 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext';
 
-export const TraceBackLogo = ({ size = 32, showWordmark = true, light }) => {
+export const TraceBackLogo = ({ size = 34, showWordmark = true, light }) => {
   let isDarkMode = false;
-  let isLuxury = true;
+  let isLuxury = false;
   try {
     const themeContext = useTheme();
     isDarkMode = themeContext?.isDark;
-    isLuxury = themeContext?.isLuxury ?? true;
+    isLuxury = themeContext?.isLuxury ?? false;
   } catch (e) {
-    // Fallback if outside provider
     isDarkMode = false;
-    isLuxury = true;
+    isLuxury = false;
   }
 
-  // Allow explicit override if passed as prop
   const darkModeActive = light !== undefined ? light : isDarkMode;
 
-  // Dynamic Theme Gradients
-  const gradStop1 = isLuxury ? '#26160F' : '#1e3a8a';
-  const gradStop2 = isLuxury ? '#3B2418' : '#2563eb';
-  const gradStop3 = isLuxury ? '#4E3222' : '#0284c7';
-  const sweepStop = isLuxury ? '#8EC5FF' : '#38bdf8';
-  const accentColor = isLuxury ? '#8EC5FF' : (darkModeActive ? '#38bdf8' : '#2563eb');
-  const glowColor = isLuxury ? (darkModeActive ? '#8EC5FF' : '#3B2418') : '#2563eb';
+  // Modern Accent Colors
+  const primaryBrand = darkModeActive ? '#8EC5FF' : '#3B2418';
+  const pulseAccent = darkModeActive ? '#60A5FA' : '#C28B5B';
+  const ringColor = darkModeActive ? 'rgba(142, 197, 255, 0.35)' : 'rgba(59, 36, 24, 0.25)';
+  const beaconBg = darkModeActive ? '#121214' : '#3B2418';
 
   return (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', userSelect: 'none' }}>
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '11px', userSelect: 'none' }}>
       <svg
         width={size}
         height={size}
-        viewBox="0 0 48 48"
+        viewBox="0 0 44 44"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ flexShrink: 0 }}
+        style={{ flexShrink: 0, overflow: 'visible' }}
       >
-        <defs>
-          {/* Multi-stop Dynamic Theme Gradient Base */}
-          <linearGradient id="tbBaseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={gradStop1} />
-            <stop offset="45%" stopColor={gradStop2} />
-            <stop offset="100%" stopColor={gradStop3} />
-          </linearGradient>
+        <style>
+          {`
+            @keyframes tbRadarSweep {
+              from { transform: rotate(0deg); }
+              to { transform: rotate(360deg); }
+            }
+            @keyframes tbBeaconPulse {
+              0% { r: 6px; opacity: 0.9; }
+              50% { r: 16px; opacity: 0.2; }
+              100% { r: 20px; opacity: 0; }
+            }
+            @keyframes tbCoreGlow {
+              0%, 100% { transform: scale(1); opacity: 1; }
+              50% { transform: scale(1.12); opacity: 0.85; }
+            }
+            .tb-radar-sweep {
+              transform-origin: 22px 22px;
+              animation: tbRadarSweep 7s linear infinite;
+            }
+            .tb-pulse-ring {
+              animation: tbBeaconPulse 2.8s cubic-bezier(0.2, 0.8, 0.4, 1) infinite;
+            }
+            .tb-core-dot {
+              transform-origin: 22px 22px;
+              animation: tbCoreGlow 2.8s ease-in-out infinite;
+            }
+          `}
+        </style>
 
-          {/* Luminous Inner Arc Sweep */}
-          <linearGradient id="tbSweepGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={sweepStop} />
-            <stop offset="100%" stopColor="#ffffff" />
-          </linearGradient>
-
-          {/* Glowing Drop Shadow */}
-          <filter id="tbGlowFilter" x="-15%" y="-15%" width="130%" height="130%">
-            <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor={glowColor} floodOpacity="0.25" />
-          </filter>
-        </defs>
-
-        {/* Vibrant Gradient Base Squircle */}
+        {/* Outer Squircle Container with Soft Shadow */}
         <rect
-          width="48"
-          height="48"
+          x="1"
+          y="1"
+          width="42"
+          height="42"
           rx="12"
-          fill="url(#tbBaseGrad)"
-          filter="url(#tbGlowFilter)"
-        />
-        <rect
-          x="0.75"
-          y="0.75"
-          width="46.5"
-          height="46.5"
-          rx="11.25"
-          stroke={accentColor}
-          strokeOpacity="0.45"
-          fill="none"
+          fill={beaconBg}
+          stroke={ringColor}
+          strokeWidth="1.5"
         />
 
-        {/* Radar Concentric Calibration Ring */}
+        {/* Concentric Search Radar Rings */}
+        <circle cx="22" cy="22" r="15" stroke={ringColor} strokeWidth="1" strokeDasharray="3 3" />
+        <circle cx="22" cy="22" r="10" stroke={ringColor} strokeWidth="1" />
+
+        {/* Animated Expanding Recovery Pulse Wave */}
         <circle
-          cx="24"
-          cy="24"
-          r="16"
+          className="tb-pulse-ring"
+          cx="22"
+          cy="22"
+          r="6"
           fill="none"
-          stroke={accentColor}
-          strokeOpacity="0.3"
-          strokeWidth="1"
-          strokeDasharray="2 3"
+          stroke={pulseAccent}
+          strokeWidth="1.75"
         />
 
-        {/* Outer Circular Radar Sweep Arc */}
-        <path
-          d="M12 24 C12 17.37 17.37 12 24 12 C30.63 12 36 17.37 36 24 C36 27.5 34.5 30.6 32.1 32.8"
-          stroke="url(#tbSweepGrad)"
-          strokeWidth="3.5"
-          strokeLinecap="round"
-        />
+        {/* Rotating Radar Search Beam */}
+        <g className="tb-radar-sweep">
+          <path
+            d="M22 22 L22 7 A15 15 0 0 1 35 15 Z"
+            fill="url(#radarBeamGradient)"
+            opacity="0.38"
+          />
+          <line x1="22" y1="22" x2="22" y2="7" stroke={pulseAccent} strokeWidth="1.75" strokeLinecap="round" />
+        </g>
 
-        {/* Directional Return Pointer Arrow */}
-        <path d="M14 16 L21 13 L18 20 Z" fill="#ffffff" />
+        {/* Target Reticle Crosshairs */}
+        <line x1="22" y1="3" x2="22" y2="6" stroke={pulseAccent} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="22" y1="38" x2="22" y2="41" stroke={pulseAccent} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="3" y1="22" x2="6" y2="22" stroke={pulseAccent} strokeWidth="1.5" strokeLinecap="round" />
+        <line x1="38" y1="22" x2="41" y2="22" stroke={pulseAccent} strokeWidth="1.5" strokeLinecap="round" />
 
-        {/* Beacon Center Pulse & Core */}
-        <circle cx="24" cy="24" r="5" fill="#ffffff" fillOpacity="0.25" />
-        <circle cx="24" cy="24" r="3.2" fill="#ffffff" />
-        <circle cx="24" cy="24" r="1.5" fill={isLuxury ? '#3B2418' : '#2563eb'} />
+        {/* Central Verified Location Core Pin */}
+        <circle cx="22" cy="22" r="4.5" fill={darkModeActive ? '#8EC5FF' : '#FFFFFF'} />
+        <circle className="tb-core-dot" cx="22" cy="22" r="2.5" fill={darkModeActive ? '#0A0A0A' : '#C28B5B'} />
 
-        {/* Return Anchor Pin Point */}
-        <path d="M24 35 L24 28" stroke="#ffffff" strokeWidth="3" strokeLinecap="round" />
-        <circle cx="24" cy="35" r="2.2" fill={accentColor} />
+        <defs>
+          <radialGradient id="radarBeamGradient" cx="22" cy="22" r="15" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor={pulseAccent} stopOpacity="0.7" />
+            <stop offset="100%" stopColor={pulseAccent} stopOpacity="0" />
+          </radialGradient>
+        </defs>
       </svg>
 
       {showWordmark && (
         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.15 }}>
           <span style={{
-            fontFamily: 'var(--font-display)',
+            fontFamily: 'var(--font-display, inherit)',
             fontWeight: 700,
             fontSize: size >= 36 ? '1.25rem' : '1.125rem',
             letterSpacing: '-0.025em',
-            color: darkModeActive ? '#F5EFE6' : 'var(--text-main)'
+            color: darkModeActive ? '#FFFFFF' : '#1C0D06'
           }}>
-            Trace<span style={{ color: isLuxury ? (darkModeActive ? '#8EC5FF' : '#1D6FB8') : (darkModeActive ? '#38bdf8' : '#2563eb') }}>Back</span>
+            Trace<span style={{ color: darkModeActive ? '#8EC5FF' : '#B45309' }}>Back</span>
           </span>
-          <span style={{
+          <span className="tb-logo-sub" style={{
             fontSize: '0.625rem',
             fontWeight: 600,
-            letterSpacing: '0.06em',
+            letterSpacing: '0.08em',
             textTransform: 'uppercase',
-            color: darkModeActive ? '#BFAEA0' : 'var(--text-muted)',
-            marginTop: '1px'
+            color: darkModeActive ? '#A1A1AA' : '#6B584C',
+            marginTop: '2px'
           }}>
             Campus Recovery Network
           </span>

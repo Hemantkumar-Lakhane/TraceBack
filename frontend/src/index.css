@@ -111,12 +111,14 @@
 }
 
 /* ==========================================================================
-   Dark Theme Design System - Luxury Roasted Espresso + Baby Blue
+   Dark Theme Design System - Pure True Real Black + Baby Blue Accent
    ========================================================================== */
 :root.dark,
 [data-theme="dark"],
 :root.dark[data-palette="luxury"],
-[data-theme="dark"][data-palette="luxury"] {
+[data-theme="dark"][data-palette="luxury"],
+:root.dark[data-palette="classic"],
+[data-theme="dark"][data-palette="classic"] {
   --primary: #8EC5FF;
   --primary-hover: #A8D4FF;
   --primary-light: rgba(142, 197, 255, 0.16);
@@ -125,34 +127,34 @@
   --accent-light: rgba(142, 197, 255, 0.14);
   --baby-blue: #8EC5FF;
 
-  --bg-color: #160F0B;
-  --card-bg: #221711;
-  --sidebar-bg: #1B120D;
-  --navbar-bg: #1B120D;
-  --surface-glass: rgba(27, 18, 13, 0.95);
-  --border-color: #38281F;
-  --border-hover: #4F382B;
-  --input-bg: #1B120D;
-  --input-border: #3D2C22;
+  --bg-color: #0A0A0A;
+  --card-bg: #141414;
+  --sidebar-bg: #0F0F0F;
+  --navbar-bg: #0F0F0F;
+  --surface-glass: rgba(15, 15, 15, 0.95);
+  --border-color: #262626;
+  --border-hover: #3F3F46;
+  --input-bg: #161616;
+  --input-border: #2E2E32;
 
-  --text-main: #F5EFE6;
-  --text-muted: #BFAEA0;
+  --text-main: #FFFFFF;
+  --text-muted: #A1A1AA;
 
-  --slate-50: #1B120D;
-  --slate-100: #251A13;
-  --slate-200: #332319;
-  --slate-300: #443024;
-  --slate-400: #8E7A6B;
-  --slate-500: #A89586;
-  --slate-600: #D5C6B7;
-  --slate-700: #E6DACD;
-  --slate-800: #F2E8DA;
+  --slate-50: #141414;
+  --slate-100: #1C1C1E;
+  --slate-200: #27272A;
+  --slate-300: #3F3F46;
+  --slate-400: #71717A;
+  --slate-500: #A1A1AA;
+  --slate-600: #D4D4D8;
+  --slate-700: #E4E4E7;
+  --slate-800: #F4F4F5;
   --slate-900: #FFFFFF;
 
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 2px 6px -1px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 6px 16px -2px rgba(0, 0, 0, 0.55);
-  --shadow-xl: 0 14px 28px -4px rgba(0, 0, 0, 0.65);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.6);
+  --shadow-md: 0 4px 8px -1px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 10px 20px -2px rgba(0, 0, 0, 0.8);
+  --shadow-xl: 0 16px 32px -4px rgba(0, 0, 0, 0.9);
 }
 
 /* Classic Dark Theme Fallback */
@@ -204,6 +206,19 @@ body,
   max-width: 100vw;
   overflow-x: hidden;
   position: relative;
+}
+
+html, body, #root {
+  overflow-x: hidden !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 body {

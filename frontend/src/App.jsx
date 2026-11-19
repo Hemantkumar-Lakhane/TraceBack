@@ -72,6 +72,7 @@ function App() {
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/chat/:id" element={<Chat />} />
                 <Route path="/claims" element={<MyClaims />} />
+                <Route path="/my-claims" element={<Navigate to="/claims" replace />} />
                 <Route path="/claims/new/:matchId" element={<ClaimForm />} />
                 <Route path="/claims/:id" element={<ClaimDetails />} />
               </Route>
