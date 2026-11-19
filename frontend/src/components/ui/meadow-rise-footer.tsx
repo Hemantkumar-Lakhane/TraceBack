@@ -32,7 +32,7 @@ export interface MeadowPalette {
   night?: boolean
 }
 
-export type MeadowTheme = "meadow" | "golden" | "moonlit"
+export type MeadowTheme = "meadow" | "golden" | "moonlit" | "traceback"
 
 export type MeadowPreset = "auto" | MeadowTheme
 
@@ -139,9 +139,31 @@ interface MeadowPaletteMap {
   meadow: MeadowPalette
   golden: MeadowPalette
   moonlit: MeadowPalette
+  traceback: MeadowPalette
 }
 
 const PRESETS: MeadowPaletteMap = {
+  traceback: {
+    sky: ["#FAF5EF", "#EDE3D7"],
+    haze: "#E4D6C6",
+    glow: "#FFEBD4",
+    hills: [
+      ["#CDB8A5", "#B89F89"],
+      ["#B39276", "#9E7B5D"],
+      ["#986F4E", "#835938"],
+      ["#7B4F30", "#653C1F"],
+      ["#5A331B", "#462310"],
+      ["#3B1F10", "#231107"],
+    ],
+    ground: "#1C0D06",
+    ink: "#1C0D06",
+    sub: "#4A2E1E",
+    pill: "#3B2418",
+    pillInk: "#FFFFFF",
+    text: "#FFFFFF",
+    muted: "#D8C7B8",
+    line: "rgba(255, 255, 255, 0.18)",
+  },
   meadow: {
     sky: ["#f4f4ef", "#e9ece3"],
     haze: "#e3e7dc",
@@ -185,33 +207,57 @@ const PRESETS: MeadowPaletteMap = {
     line: "rgba(246, 239, 224, 0.16)",
   },
   moonlit: {
-    sky: ["#121a26", "#27324a"],
-    haze: "#2a3549",
-    glow: "#c9d8ff",
+    sky: ["#0B0F19", "#1A2234"],
+    haze: "#1F293D",
+    glow: "#8EC5FF",
     hills: [
-      ["#3b4859", "#2e3a4a"],
-      ["#33443f", "#253432"],
-      ["#2d3f33", "#1f2d25"],
-      ["#26382b", "#19281e"],
-      ["#1e2e22", "#132017"],
-      ["#162319", "#0c150f"],
+      ["#2D3748", "#1E2633"],
+      ["#253040", "#19202B"],
+      ["#1E2734", "#131A23"],
+      ["#171E28", "#0E131A"],
+      ["#11161F", "#0A0D12"],
+      ["#0C0E14", "#06080B"],
     ],
-    ground: "#0d1510",
-    ink: "#eef0e8",
-    sub: "#b4bdb0",
-    pill: "#eef0e8",
-    pillInk: "#0d1510",
-    text: "#e7ebe1",
-    muted: "#8d9a8a",
-    line: "rgba(231, 235, 225, 0.13)",
+    ground: "#06080B",
+    ink: "#F8FAFC",
+    sub: "#CBD5E1",
+    pill: "#8EC5FF",
+    pillInk: "#06080B",
+    text: "#F8FAFC",
+    muted: "#CBD5E1",
+    line: "rgba(255, 255, 255, 0.18)",
     night: true,
   },
 }
 
 const DEFAULT_COLUMNS: MeadowColumn[] = [
-  { title: "Navigate", links: [{ label: "Home", href: "/" }, { label: "Browse Items", href: "/browse" }, { label: "Live Custody", href: "/security" }] },
-  { title: "Campus", links: [{ label: "Building 1 Security", href: "/security" }, { label: "Help & FAQ", href: "/#faq" }] },
-  { title: "Account", links: [{ label: "Student Login", href: "/login" }, { label: "Register PRN", href: "/register" }] },
+  {
+    title: "Campus Recovery",
+    links: [
+      { label: "Report Lost Property", href: "/report-lost" },
+      { label: "Report Found Property", href: "/report-found" },
+      { label: "Browse Campus Vault", href: "/browse" },
+      { label: "Correlation Engine", href: "/#pipeline" }
+    ]
+  },
+  {
+    title: "Official Custody",
+    links: [
+      { label: "Building 1 Security Desk", href: "/security" },
+      { label: "Custody Lockers", href: "/#portals" },
+      { label: "Administrative Console", href: "/login" },
+      { label: "Helpline: +91 20 2420 2180", href: "tel:+912024202180" }
+    ]
+  },
+  {
+    title: "Student Portals",
+    links: [
+      { label: "Student PRN Login", href: "/login" },
+      { label: "New PRN Registration", href: "/register" },
+      { label: "Staff Verification Login", href: "/login" },
+      { label: "Course Project GitHub", href: "https://github.com/Hemantkumar-Lakhane/TraceBack" }
+    ]
+  },
 ]
 
 const DEFAULT_SOCIALS: MeadowSocial[] = [
@@ -221,7 +267,11 @@ const DEFAULT_SOCIALS: MeadowSocial[] = [
   { icon: "x", href: "https://x.com" },
 ]
 
-const DEFAULT_LEGAL: MeadowLink[] = [{ label: "Privacy Policy", href: "#" }, { label: "Terms of Use", href: "#" }]
+const DEFAULT_LEGAL: MeadowLink[] = [
+  { label: "VIT Pune Campus Policy", href: "#" },
+  { label: "Student Honor Code", href: "#" },
+  { label: "Custody Protocols", href: "#" }
+]
 
 interface MeadowSocialNameMap {
   linkedin: string
@@ -239,8 +289,8 @@ const SOCIAL_NAMES: MeadowSocialNameMap = {
   youtube: "YouTube",
 }
 
-const SANS_STACK = '"Inter Tight", "Inter", "Inter Variable", "Geist", "Helvetica Neue", Arial, system-ui, sans-serif'
-const SERIF_STACK = '"Instrument Serif", "Cormorant Garamond", "Playfair Display", "Iowan Old Style", "Palatino Linotype", Georgia, serif'
+const SANS_STACK = 'inherit, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+const SERIF_STACK = 'Georgia, "Times New Roman", serif'
 
 // #region scene
 export function mrfRng(seed: number) {
@@ -795,62 +845,53 @@ const MRF_CSS = `
 }
 .mrf-h {
   margin: 0;
-  max-width: 15ch;
+  max-width: 22ch;
   font-family: var(--mrf-sans);
-  font-weight: 450;
-  font-size: clamp(38px, 6.3vw, 92px);
-  line-height: 1.02;
-  letter-spacing: -0.042em;
+  font-weight: 700;
+  font-size: clamp(32px, 4.5vw, 60px);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
   color: var(--mrf-ink);
   text-wrap: balance;
 }
 .mrf-line { display: block; white-space: normal; }
 .mrf-w {
   display: inline-block;
-  overflow: hidden;
-  padding: 0.04em 0.06em 0.16em;
-  margin: -0.04em -0.06em -0.16em;
+  overflow: visible;
+  padding: 0.04em 0.06em 0.12em;
+  margin: -0.04em -0.06em -0.12em;
   vertical-align: top;
 }
 .mrf-wi {
   display: inline-block;
-  transform: translate3d(0, 108%, 0) rotate(4deg);
-  transform-origin: 0 100%;
-  transition: transform 1150ms cubic-bezier(.16, 1, .3, 1);
-  transition-delay: calc(var(--d, 0) * 1ms);
+  transform: none;
+  opacity: 1;
 }
 .mrf-acc .mrf-wi {
   font-family: var(--mrf-serif);
   font-style: italic;
-  font-weight: 400;
-  font-size: 1.07em;
-  letter-spacing: -0.02em;
+  font-weight: 600;
+  font-size: 1.05em;
+  letter-spacing: -0.01em;
   padding-right: 0.04em;
-  transform: translate3d(-0.08em, 0, 0) skewX(-10deg);
-  clip-path: inset(-20% 100% -30% -5%);
-  filter: blur(6px);
-  opacity: 0.2;
-  transition: clip-path 1400ms cubic-bezier(.65, 0, .25, 1), transform 1600ms cubic-bezier(.16, 1, .3, 1), filter 1100ms ease, opacity 900ms ease;
-  transition-delay: calc(var(--d, 0) * 1ms);
+  color: var(--mrf-ink);
+  opacity: 1;
+  filter: none;
+  clip-path: none;
 }
-.mrf-in .mrf-wi { transform: none; }
-.mrf-in .mrf-acc .mrf-wi { clip-path: inset(-20% -10% -30% -5%); filter: blur(0); opacity: 1; }
 .mrf-sub {
-  margin: clamp(16px, 2.2vw, 26px) 0 0;
-  max-width: 44ch;
-  font-size: clamp(13px, 1.1vw, 15px);
-  line-height: 1.5;
-  letter-spacing: -0.005em;
+  margin: clamp(14px, 1.8vw, 22px) 0 0;
+  max-width: 55ch;
+  font-size: clamp(14px, 1.15vw, 16px);
+  line-height: 1.55;
+  font-weight: 500;
   color: var(--mrf-sub);
 }
 .mrf-r {
-  opacity: 0;
-  transform: translate3d(0, 14px, 0);
-  filter: blur(4px);
-  transition: opacity 900ms ease, transform 1100ms cubic-bezier(.16, 1, .3, 1), filter 900ms ease;
-  transition-delay: calc(var(--d, 0) * 1ms);
+  opacity: 1;
+  transform: none;
+  filter: none;
 }
-.mrf-in .mrf-r { opacity: 1; transform: none; filter: blur(0); }
 .mrf-cta-wrap { margin-top: clamp(20px, 2.6vw, 30px); }
 .mrf-cta {
   --mx: 0px;
@@ -1220,7 +1261,7 @@ export default function MeadowRiseFooter({
   socials = DEFAULT_SOCIALS,
   copyright,
   legal = DEFAULT_LEGAL,
-  preset = "golden",
+  preset = "auto",
   palette,
   seed = 3,
   mist = 0.55,
@@ -1247,7 +1288,7 @@ export default function MeadowRiseFooter({
   const [message, setMessage] = React.useState("")
   const inputId = "mrf-email-" + React.useId().replace(/:/g, "")
 
-  const base = preset === "auto" ? (dark ? PRESETS.moonlit : PRESETS.meadow) : PRESETS[preset] || PRESETS.meadow
+  const base = preset === "auto" ? (dark ? PRESETS.moonlit : PRESETS.traceback) : PRESETS[preset] || PRESETS.traceback
   const colors: MeadowPalette = { ...base, ...(palette || {}) }
   const hills = colors.hills && colors.hills.length >= 2 ? colors.hills : base.hills
 
@@ -1487,10 +1528,10 @@ export default function MeadowRiseFooter({
 
       const par = o.scrollParallax && !reduced ? 1 - k : 0
       const mistOn = o.mist > 0
-      for (let i = 0; i < (dt < 0 ? 0 : n); i++) {
+      for (let i = 0; i < n; i++) {
         const L = layers[i]
         if (!L) continue
-        const e = dt < 0 ? 0 : mrfEase((dt - 150 - i * 120) / 1700)
+        const e = dt < 0 ? 1 : mrfEase((dt - 150 - i * 120) / 1700)
         const rise = (1 - e) * H * (0.2 + 0.07 * i)
         const sy = par * (10 + i * 22)
         const lx = -px * (2 + i * 5)
@@ -1502,7 +1543,7 @@ export default function MeadowRiseFooter({
           const speed = (i === 1 ? 7 : 11) * o.drift
           const off = reduced ? 0 : ((now * speed) / 1000) % bw
           const y = H * specs[i + 1].base - bh * 0.62 + rise * 0.6 + sy
-          ctx.globalAlpha = o.mist * (i === 1 ? 0.9 : 0.65) * (dt < 0 ? 0 : mrfSmooth(900, 2600, dt))
+          ctx.globalAlpha = o.mist * (i === 1 ? 0.9 : 0.65) * (dt < 0 ? 0.8 : mrfSmooth(900, 2600, dt))
           ctx.drawImage(mistC, -off + lx * 1.4, y, bw, bh)
           ctx.drawImage(mistC, bw - off + lx * 1.4, y, bw, bh)
           ctx.globalAlpha = 1
@@ -1517,7 +1558,8 @@ export default function MeadowRiseFooter({
       ctx.fillRect(0, 0, W, SH)
       ctx.globalCompositeOperation = "source-over"
 
-      const fog = dt < 0 ? 1 : 1 - mrfSmooth(100, 2100, dt)
+      // Fog is kept 0 so landscape and text are immediately visible without delay
+      const fog = 0
       if (fog > 0) {
         const f = ctx.createLinearGradient(0, 0, 0, SH)
         f.addColorStop(0, css(sky0, fog))
@@ -1538,9 +1580,9 @@ export default function MeadowRiseFooter({
       raf = 0
       const o = opts.current
       const busy = building < n
-      if (busy) work(revealAt.current === null ? 14 : visible ? 8 : 6)
-      if (revealAt.current === null && seenAt !== null && building >= n && (reduced || now - seenAt > 650)) {
-        revealAt.current = reduced ? -1e9 : now
+      if (busy) work(30)
+      if (revealAt.current === null) {
+        revealAt.current = now
         setInView(true)
       }
       if (!visible) {

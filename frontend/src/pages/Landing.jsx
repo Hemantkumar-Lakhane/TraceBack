@@ -482,97 +482,15 @@ export const Landing = () => {
         </div>
       </section>
 
-      {/* Support & Helpline Toolbar with User-Requested Social Tooltips */}
-      <section style={{
-        backgroundColor: isDark ? '#160F0B' : (isLuxury ? '#26160F' : '#0f172a'),
-        color: '#ffffff',
-        padding: '3.5rem 1.5rem',
-        borderTop: '1px solid var(--border-color)'
-      }}>
-        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center' }}>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem', color: '#FFFFFF' }}>
-            Campus Safety & Helpdesk Channels
-          </h3>
-          <p style={{ color: isLuxury ? '#D3C4B2' : '#CBD5E1', fontSize: '0.875rem', marginBottom: '2rem' }}>
-            Instant custody inquiries, physical locker appointments, or student assistance.
-          </p>
-
-          {/* User Requested Animated Example-2 Social / Action Links */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <ul className="example-2" style={{ flexDirection: 'row', padding: 0, margin: 0 }}>
-              {/* Telegram Support Channel */}
-              <li className="icon-content">
-                <a
-                  href="https://telegram.org/"
-                  aria-label="Telegram"
-                  data-social="telegram"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <div className="filled"></div>
-                  <svg version="1.1" viewBox="0 0 100 100">
-                    <path
-                      d="M95,9.9c-1.3-1.1-3.4-1.2-7-0.1c0,0,0,0,0,0c-2.5,0.8-24.7,9.2-44.3,17.3c-17.6,7.3-31.9,13.7-33.6,14.5  c-1.9,0.6-6,2.4-6.2,5.2c-0.1,1.8,1.4,3.4,4.3,4.7c3.1,1.6,16.8,6.2,19.7,7.1c1,3.4,6.9,23.3,7.2,24.5c0.4,1.8,1.6,2.8,2.2,3.2  c0.1,0.1,0.3,0.3,0.5,0.4c0.3,0.2,0.7,0.3,1.2,0.3c0.7,0,1.5-0.3,2.2-0.8c3.7-3,10.1-9.7,11.9-11.6c7.9,6.2,16.5,13.1,17.3,13.9  c0,0,0.1,0.1,0.1,0.1c1.9,1.6,3.9,2.5,5.7,2.5c0.6,0,1.2-0.1,1.8-0.3c2.1-0.7,3.6-2.7,4.1-5.4c0-0.1,0.1-0.5,0.3-1.2  c3.4-14.8,6.1-27.8,8.3-38.7c2.1-10.7,3.8-21.2,4.8-26.8c0.2-1.4,0.4-2.5,0.5-3.2C96.3,13.5,96.5,11.2,95,9.9z"
-                      fill="currentColor"
-                    ></path>
-                  </svg>
-                </a>
-                <div className="tooltip">Help Desk</div>
-              </li>
-
-              {/* Dribbble / Design Portal */}
-              <li className="icon-content">
-                <a
-                  href="#pipeline"
-                  aria-label="Campus Portal"
-                  data-social="dribbble"
-                >
-                  <div className="filled"></div>
-                  <svg version="1.1" viewBox="0 0 100 100">
-                    <path
-                      d="M83.5,18.5C74.9,9.3,62.8,4,50.2,4c-6.1,0-12,1.1-17.6,3.4C15.2,14.5,4,31.3,4,50c0,13.9,6.2,26.9,17,35.7  C29.2,92.3,39.4,96,50,96c6.6,0,13.2-1.5,19.2-4.2c12.5-5.7,21.7-16.6,25.2-29.8C95.5,57.9,96,53.8,96,50  C96,38.3,91.6,27.1,83.5,18.5z"
-                      fill="currentColor"
-                    ></path>
-                  </svg>
-                </a>
-                <div className="tooltip">Portal</div>
-              </li>
-
-              {/* Central Security Desk Hotline */}
-              <li className="icon-content">
-                <a
-                  href={`tel:${CAMPUS_CONFIG.securityOffice.helpline.replace(/[^0-9+]/g, '')}`}
-                  aria-label="Security Desk Hotline"
-                  data-social="spotify"
-                >
-                  <div className="filled"></div>
-                  <svg version="1.1" viewBox="0 0 100 100">
-                    <path
-                      d="M50,4C24.7,4,4,24.7,4,50s20.6,46,46,46s46-20.6,46-46S75.4,4,50,4z M71.6,71.5c-0.8,1.2-2,1.8-3.2,1.8 c-0.7,0-1.4-0.2-2-0.6c-10.2-6.3-23.3-7.7-38.8-4.1c-2.1,0.6-4-0.9-4.5-2.7c-0.6-2.3,0.9-4.1,2.7-4.6c17.7-4,32.6-2.3,44.4,5 c0.9,0.4,1.5,1,1.8,1.9C72.2,69.3,72.1,70.5,71.6,71.5z"
-                      fill="currentColor"
-                    ></path>
-                  </svg>
-                </a>
-                <div className="tooltip">Hotline</div>
-              </li>
-            </ul>
-          </div>
-
-          <div style={{ marginTop: '2rem', fontSize: '0.8125rem', color: isLuxury ? '#D3C4B2' : '#94A3B8' }}>
-            {CAMPUS_CONFIG.securityOffice.name}: <strong style={{ color: '#FFFFFF' }}>{CAMPUS_CONFIG.securityOffice.helpline}</strong> • Hours: {CAMPUS_CONFIG.securityOffice.hours}
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive Canvas Meadow Rise Footer */}
+      {/* Interactive Closing Canvas & Platform Footer */}
       <MeadowRiseFooter
         name="TraceBack"
         brandHref="/"
         heading="Recover what is *rightfully yours*&#10;across VIT Pune."
-        subheading="Official item custody, deterministic matching, and secure verification at Building 1 Central Security Desk."
+        subheading="Official item custody, deterministic matching, and physical verification at Building 1 Central Security Desk."
         cta={{ label: "Report or Browse Items", href: "/browse" }}
-        tagline="Empowering VIT Pune students with verified, privacy-preserving campus recovery."
-        preset="golden"
+        tagline="Empowering Vishwakarma Institute of Technology, Pune with verified, privacy-preserving campus recovery."
+        preset="auto"
         height="840px"
         heroHeight="clamp(380px, 50svh, 540px)"
       />
