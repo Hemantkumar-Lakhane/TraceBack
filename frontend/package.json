@@ -10,6 +10,7 @@
     "test": "node --test tests/"
   },
   "devDependencies": {
+    "puppeteer-core": "^24.43.1",
     "typescript": "~6.0.2",
     "vite": "^8.2.2"
   },
