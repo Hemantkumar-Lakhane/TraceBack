@@ -1,92 +1,166 @@
-# TraceBack - API Specification
+# TraceBack — REST & WebSocket API Specification
+### Vishwakarma Institute of Technology, Pune (VIT Pune)
+**Course Project: Computer Networks (CNT_CP)**
 
-All endpoints are prefixed with `/api`. Unless marked as PUBLIC, all endpoints require a valid JWT in the `Authorization: Bearer <token>` header.
+All REST endpoints are prefixed with `/api`. Unless explicitly designated as **PUBLIC**, all requests require a signed JWT token provided in the HTTP `Authorization: Bearer <token>` header.
 
-## 1. Authentication
+---
+
+## 1. Authentication (`/api/auth`)
+
 ### `POST /api/auth/register` (PUBLIC)
-* **Request**: `{ "name": "...", "email": "...", "password": "..." }`
-* **Note**: Registration always creates a `STUDENT` account. Security/Admin accounts must be provisioned separately.
-* **Response (200 OK)**: `{ "message": "User registered successfully" }`
-* **Errors**: `400` (Validation), `409` (Email exists)
+- **Description**: Registers a new verified student account in the campus directory.
+- **Request Body**:
+  ```json
+  {
+    "name": "Aarav Sharma",
+    "email": "aarav.sharma@vit.edu",
+    "password": "password123"
+  }
+  ```
+- **Response (`200 OK`)**:
+  ```json
+  {
+    "message": "User registered successfully"
+  }
+  ```
+- **Errors**: `400 Bad Request` (validation failures), `409 Conflict` (email already exists in database).
 
 ### `POST /api/auth/login` (PUBLIC)
-* **Request**: `{ "email": "...", "password": "..." }`
-* **Response (200 OK)**: `{ "token": "jwt.string.here", "user": { "id": 1, "name": "...", "role": "STUDENT" } }`
-* **Errors**: `401` (Invalid credentials)
+- **Description**: Authenticates campus credentials using salted BCrypt hashing and returns a signed HS256 JWT token.
+- **Request Body**:
+  ```json
+  {
+    "email": "aarav.sharma@vit.edu",
+    "password": "password123"
+  }
+  ```
+- **Response (`200 OK`)**:
+  ```json
+  {
+    "token": "eyJhbGciOiJIUzI1NiJ9...",
+    "user": {
+      "id": 1,
+      "name": "Aarav Sharma",
+      "role": "STUDENT"
+    }
+  }
+  ```
+- **Errors**: `401 Unauthorized` (invalid credentials or suspended account).
 
 ---
 
-## 2. Reports
-### `POST /api/reports/lost` (STUDENT)
-* **Content-Type**: `multipart/form-data`
-* **Parameters**: `category`, `name`, `description`, `color`, `brand`, `location`, `date_lost` (Strings/Dates) + `image` (File - JPG/PNG only. No PDF).
-* **Response (201 Created)**: The created `LostReport` object with nested `Item`.
+## 2. Report Management (`/api/reports`)
 
-### `POST /api/reports/found` (STUDENT, SECURITY)
-* **Content-Type**: `multipart/form-data`
-* **Parameters**: Same as lost, but with `date_found`.
-* **Response (201 Created)**: The created `FoundReport` object with nested `Item`.
+### `POST /api/reports/lost` (Role: `STUDENT`)
+- **Content-Type**: `multipart/form-data`
+- **Fields**: `name`, `category`, `brand`, `color`, `location`, `date_lost`, `description`, optional `image` (PNG/JPEG up to 10MB).
+- **Response (`201 Created`)**: The persisted `LostReport` object with nested `Item` and correlation engine triggers.
 
-### `GET /api/reports` (ALL ROLES)
-* **Parameters**: `?type=LOST|FOUND&category=...&location=...`
-* **Response (200 OK)**: Pagination array of report objects.
+### `POST /api/reports/found` (Roles: `STUDENT`, `SECURITY`)
+- **Content-Type**: `multipart/form-data`
+- **Fields**: `name`, `category`, `brand`, `color`, `location`, `date_found`, `description`, optional `image`, optional `storage_location`.
+- **Response (`201 Created`)**: The persisted `FoundReport` object.
 
-### `GET /api/reports/my` (STUDENT)
-* **Purpose**: Returns reports belonging only to the currently authenticated student.
-* **Parameters**: `?type=LOST|FOUND`
-* **Response (200 OK)**: Pagination array of report objects for the current user.
+### `GET /api/reports` (All Authenticated Roles)
+- **Parameters**: `?type=LOST|FOUND&category=ELECTRONICS&location=Library`
+- **Response (`200 OK`)**: Paginated array of campus report entities.
 
-### `GET /api/reports/lost/{id}` (ALL ROLES)
-* **Response (200 OK)**: Full lost report details.
+### `GET /api/reports/my` (Role: `STUDENT`)
+- **Parameters**: `?type=LOST|FOUND`
+- **Response (`200 OK`)**: Reports created exclusively by the currently authenticated user.
 
-### `GET /api/reports/found/{id}` (ALL ROLES)
-* **Response (200 OK)**: Full found report details.
+### `GET /api/reports/lost/{id}` & `GET /api/reports/found/{id}` (All Roles)
+- **Response (`200 OK`)**: Complete report details, custody notes, and masking metadata.
 
 ---
 
-## 3. Matches
-### `GET /api/matches/my-matches` (STUDENT)
-* **Response (200 OK)**: List of `MatchRecord` objects belonging to the current user's reports.
+## 3. Correlation Engine (`/api/matches`)
 
-### `GET /api/matches/{id}` (STUDENT - if involved)
-* **Response (200 OK)**: Detailed MatchRecord including nested `lost_report` and `found_report`.
+### `GET /api/matches/my-matches` (Role: `STUDENT`)
+- **Description**: Retrieves matches computed via the 40/30/30 deterministic algorithm:
+  - Category Match: 40%
+  - Campus Landmark Proximity: 30%
+  - Timestamp Temporal Proximity: 30%
+- **Response (`200 OK`)**: Array of `MatchRecord` objects belonging to the student's reports.
 
----
-
-## 4. Claims
-### `POST /api/claims` (STUDENT)
-* **Content-Type**: `multipart/form-data`
-* **Parameters**: `match_id`, `verification_data`, `pickup_date`, `pickup_time`, and optional `proof_file` (File - JPG/PNG/PDF).
-* **Response (201 Created)**: Created `Claim` object. FoundReport status becomes `CLAIM_REQUESTED`.
-
-### `GET /api/claims/pending` (SECURITY)
-* **Response (200 OK)**: List of claims with status `PENDING`.
-
-### `PUT /api/claims/{id}/status` (SECURITY)
-* **Request**: `{ "status": "APPROVED" | "REJECTED" }`
-* **Response (200 OK)**: Updated claim. 
-* **Note (Approval Transaction)**: If APPROVED, the backend executes an atomic transaction where: CLAIM becomes APPROVED, FOUND_REPORT becomes RETURNED, MATCH_RECORD becomes CLOSED, reviewed_at is updated, and a notification is created. If any step fails, the transaction rolls back.
+### `GET /api/matches/{id}` (Role: `STUDENT`)
+- **Response (`200 OK`)**: Deep side-by-side comparison matrix with attribute breakdown.
 
 ---
 
-## 5. Conversations & Messages
-### `GET /api/conversations/{id}/messages` (STUDENT - if involved)
-* **Response (200 OK)**: List of historical `Message` objects for the given conversation.
+## 4. Custody Claims & Handover (`/api/claims`)
+
+### `POST /api/claims` (Role: `STUDENT`)
+- **Content-Type**: `multipart/form-data`
+- **Fields**: `match_id`, `verification_data` (secret marks, serial numbers, wallpaper hint), `pickup_date`, `pickup_time`, optional `proof_file`.
+- **Response (`201 Created`)**: Created `Claim` voucher; updates found report status to `CLAIM_REQUESTED`.
+
+### `GET /api/claims/pending` (Role: `SECURITY`)
+- **Response (`200 OK`)**: List of pending ownership claims awaiting physical verification at Central Security Desk.
+
+### `PUT /api/claims/{id}/status` (Role: `SECURITY`)
+- **Request Body**:
+  ```json
+  {
+    "status": "APPROVED"
+  }
+  ```
+- **Response (`200 OK`)**: Executes atomic database transaction: updates `Claim` to `APPROVED`, `FoundReport` to `RETURNED`, `MatchRecord` to `CLOSED`, and issues audit log.
 
 ---
 
-## 6. Notifications
-### `GET /api/notifications` (ALL ROLES)
-* **Response (200 OK)**: List of user's notifications.
+## 5. Production Administration (`/api/admin`)
 
-### `PUT /api/notifications/{id}/read` (ALL ROLES)
-* **Response (200 OK)**: Updated notification status.
+*All admin endpoints strictly require `ROLE_ADMIN`.*
+
+### `GET /api/admin/users`
+- **Response (`200 OK`)**: Complete directory of campus users with account status (`ACTIVE` vs `SUSPENDED`).
+
+### `POST /api/admin/users`
+- **Description**: Provisions new Security Officers or Staff accounts with BCrypt encrypted passwords.
+- **Request Body**:
+  ```json
+  {
+    "name": "Officer Ramesh Patil",
+    "email": "ramesh.patil@vit.edu",
+    "role": "SECURITY",
+    "password": "secure_password"
+  }
+  ```
+- **Response (`201 Created`)**: Created user metadata with auto-generated badge PRN.
+
+### `PUT /api/admin/users/{id}/status`
+- **Description**: Instantly toggles account access. Suspended users are locked out of Spring Security (`isAccountNonLocked() = false`).
+- **Request Body**:
+  ```json
+  {
+    "status": "SUSPENDED"
+  }
+  ```
+- **Response (`200 OK`)**: Updated user object.
+
+### `DELETE /api/admin/users/{id}`
+- **Description**: Permanently purges user account and associated audit tokens.
+
+### `GET /api/admin/moderation`
+- **Description**: Content moderation queue scanning submissions against institutional safety policies and spam triggers.
+- **Response (`200 OK`)**: Flagged reports with scanner reason and reporter details.
+
+### `GET /api/admin/stats`
+- **Description**: University-wide recovery KPIs, department return rates, and institutional telemetry for accreditation.
+- **Response (`200 OK`)**: Aggregate metrics and turnover velocity.
 
 ---
 
-## 7. Admin Operations
-### `GET /api/admin/users` (ADMIN)
-* **Response (200 OK)**: List of all users.
+## 6. Real-Time Communication (WebSocket & STOMP)
 
-### `DELETE /api/admin/reports/{id}` (ADMIN)
-* **Response (204 No Content)**: Moderation removal of a report.
+TraceBack implements full-duplex WebSocket framing over persistent TCP sockets:
+
+| Channel / Topic | Direction | Purpose |
+| :--- | :--- | :--- |
+| **`/ws`** | Client ⇄ Server | SockJS transport negotiation endpoint (HTTP `101 Switching Protocols`) |
+| **`/app/chat/{convId}`** | Client → Server | Transmit real-time message payload |
+| **`/topic/messages/{convId}`** | Server → Subscribed Clients | Broadcast message to authenticated room participants |
+| **`/user/queue/notifications`** | Server → Specific Client | Push instantaneous match and claim alerts to active user |
+| **Heartbeats (`[10000, 10000]`)** | Bidirectional (10s) | Periodic ping/pong frames preventing campus NAT router timeouts |

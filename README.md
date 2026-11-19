@@ -1,12 +1,14 @@
 # TraceBack — Campus Lost & Found Recovery Network
+
 ### Vishwakarma Institute of Technology, Pune (VIT Pune)
+
 **Course Project: Computer Networks (CNT_CP) • Academic Year 2026**
 
 [![CI/CD Pipeline](https://github.com/Hemantkumar-Lakhane/TraceBack/actions/workflows/deploy.yml/badge.svg)](https://github.com/Hemantkumar-Lakhane/TraceBack/actions)
-[![Frontend](https://img.shields.io/badge/Frontend-Vercel%20Live-black?logo=vercel)](https://vercel.com)
-[![Backend](https://img.shields.io/badge/Backend-Render%20Live-46E3B7?logo=render)](https://traceback-oh5a.onrender.com)
-[![Database](https://img.shields.io/badge/Database-PostgreSQL%20%7C%20MySQL-blue?logo=postgresql)](https://render.com)
-[![Security](https://img.shields.io/badge/Auth-JWT%20%2B%208--Digit%20PRN-success)](https://vit.edu)
+[![Frontend](<https://img.shields.io/badge/Frontend-Vercel%20Live-black?logo=vercel>)](https://vercel.com)
+[![Backend](<https://img.shields.io/badge/Backend-Render%20Live-46E3B7?logo=render>)](https://traceback-oh5a.onrender.com)
+[![Database](<https://img.shields.io/badge/Database-PostgreSQL%20%7C%20MySQL-blue?logo=postgresql>)](https://render.com)
+[![Security](<https://img.shields.io/badge/Auth-JWT%20%2B%208--Digit%20PRN-success>)](https://vit.edu)
 
 ---
 
@@ -20,7 +22,7 @@ The system connects students across all engineering branches (including Computer
 
 - **Live Backend API**: [https://traceback-oh5a.onrender.com](https://traceback-oh5a.onrender.com)
 - **Interactive Swagger OpenAPI Docs**: [https://traceback-oh5a.onrender.com/swagger-ui/index.html](https://traceback-oh5a.onrender.com/swagger-ui/index.html)
-- **Live Frontend (Vercel)**: Configured via `TraceBack/frontend` on Vercel
+- **Live Frontend (Vercel)**: [https://trace-back-six.vercel.app](https://trace-back-six.vercel.app)
 - **Local Dev Server**: `http://localhost:5173` (Frontend) & `http://localhost:8080` (Backend)
 
 ---
@@ -58,6 +60,7 @@ TraceBack is architected specifically around the **OSI / TCP-IP 5-Layer Model**:
 ```
 
 ### Key Technical Concepts for Viva Defense:
+
 1. **Full-Duplex Framing (RFC 6455)**: Replaces polling overhead with a persistent WebSocket socket upgraded via HTTP `101 Switching Protocols`.
 2. **NAT Session Survival**: College firewalls silently drop inactive TCP state mappings after 30–60 seconds. TraceBack negotiates dual 10-second STOMP heartbeats (`heartbeat: [10000, 10000]`) to keep NAT router state tables active.
 3. **CORS Security Filter**: Spring Security enforces strict `Access-Control-Allow-Origin`, `Access-Control-Allow-Credentials: true`, and `Access-Control-Allow-Headers` validating Vercel, Render, and campus origins.
@@ -68,13 +71,13 @@ TraceBack is architected specifically around the **OSI / TCP-IP 5-Layer Model**:
 
 The system provides 4 complete campus roles for testing and viva demonstration:
 
-| Campus Role | Name / Title | Campus Email | Password (PRN) | Assigned Station / Department |
-| :--- | :--- | :--- | :--- | :--- |
-| **Student (Owner)** | Aarav Sharma | `aarav.sharma@vit.edu` | `12110104` | Computer Engineering (B-Building) |
-| **Student (Finder)** | Rohan Verma | `rohan.verma@vit.edu` | `12110208` | Mechanical Engineering |
-| **Student (Claimant)** | Ananya Iyer | `ananya.iyer@vit.edu` | `12110305` | Information Technology |
-| **Security Officer** | Insp. Rajesh Kumar | `rajesh.kumar@vit.edu` | `SEC-409` | Central Security Desk (Bldg 1, Gate 1) |
-| **Administrator** | Prof. Priya Nair | `priya.nair@vit.edu` | `ADM-101` | Dean of Student Affairs |
+| Campus Role                  | Name / Title       | Campus Email             | Password (PRN) | Assigned Station / Department          |
+| :--------------------------- | :----------------- | :----------------------- | :------------- | :------------------------------------- |
+| **Student (Owner)**    | Aarav Sharma       | `aarav.sharma@vit.edu` | `12110104`   | Computer Engineering (B-Building)      |
+| **Student (Finder)**   | Rohan Verma        | `rohan.verma@vit.edu`  | `12110208`   | Mechanical Engineering                 |
+| **Student (Claimant)** | Ananya Iyer        | `ananya.iyer@vit.edu`  | `12110305`   | Information Technology                 |
+| **Security Officer**   | Insp. Rajesh Kumar | `rajesh.kumar@vit.edu` | `SEC-409`    | Central Security Desk (Bldg 1, Gate 1) |
+| **Administrator**      | Prof. Priya Nair   | `priya.nair@vit.edu`   | `ADM-101`    | Dean of Student Affairs                |
 
 ---
 
@@ -144,7 +147,9 @@ TAP version 13
 ## 🚀 Running Locally
 
 ### Quickstart (Windows 1-Click Launcher):
+
 Double-click [`run_all.bat`](run_all.bat) in the project root. It will:
+
 1. Verify `backend/.env` exists (creating from template if missing).
 2. Launch the Spring Boot backend on `http://localhost:8080`.
 3. Launch the Vite React frontend on `http://localhost:5173`.
@@ -152,6 +157,7 @@ Double-click [`run_all.bat`](run_all.bat) in the project root. It will:
 ### Manual Setup:
 
 #### 1. Backend (Spring Boot 3 + Maven)
+
 ```bash
 cd backend
 # Edit .env with your MySQL or PostgreSQL credentials
@@ -159,6 +165,7 @@ cd backend
 ```
 
 #### 2. Frontend (React 19 + Vite)
+
 ```bash
 cd frontend
 npm install
@@ -168,6 +175,7 @@ npm run dev
 ---
 
 ## 👥 Contributors & Academic Credits
+
 - **Project**: TraceBack — Campus Recovery Network
 - **Department**: Computer Engineering / Information Technology
 - **Institute**: Vishwakarma Institute of Technology, Pune (VIT Pune)
