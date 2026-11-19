@@ -1,15 +1,17 @@
-import api from './axiosConfig';
-import { MOCK_CLAIMS } from './mockData';
+import api from './axiosConfig.js';
+import { MOCK_CLAIMS } from './mockData.js';
 
 const CLAIMS_STORAGE_KEY = 'tb_claims_store';
 
 // Helper to get all stored claims durably
 const getLocalClaimsStore = () => {
   try {
-    const raw = localStorage.getItem(CLAIMS_STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    if (typeof localStorage !== 'undefined') {
+      const raw = localStorage.getItem(CLAIMS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     }
   } catch (e) {
     console.warn("Error parsing claims store", e);
@@ -20,14 +22,18 @@ const getLocalClaimsStore = () => {
 // Helper to save claims durably
 const saveLocalClaimsStore = (claims) => {
   try {
-    localStorage.setItem(CLAIMS_STORAGE_KEY, JSON.stringify(claims));
-    window.dispatchEvent(new CustomEvent('tb_claims_updated', { detail: claims }));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(CLAIMS_STORAGE_KEY, JSON.stringify(claims));
+    }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('tb_claims_updated', { detail: claims }));
+    }
   } catch (e) {
     console.warn("Error saving claims store", e);
   }
 };
 
-const isDemo = () => localStorage.getItem('tb_is_demo_session') === 'true';
+const isDemo = () => (typeof localStorage !== 'undefined' ? localStorage.getItem('tb_is_demo_session') === 'true' : true);
 
 export const submitClaim = async (formData) => {
   if (isDemo()) {

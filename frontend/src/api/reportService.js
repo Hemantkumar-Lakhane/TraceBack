@@ -1,5 +1,5 @@
-import api from './axiosConfig';
-import { MOCK_REPORTS } from './mockData';
+import api from './axiosConfig.js';
+import { MOCK_REPORTS } from './mockData.js';
 
 const isDemo = () => localStorage.getItem('tb_is_demo_session') === 'true';
 

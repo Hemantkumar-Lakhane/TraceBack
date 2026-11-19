@@ -21,6 +21,16 @@ export const MyClaims = () => {
       }
     };
     fetchClaims();
+
+    const handleClaimsUpdated = () => {
+      getMyClaims().then(data => setClaims(data || []));
+    };
+    window.addEventListener('tb_claims_updated', handleClaimsUpdated);
+    window.addEventListener('storage', handleClaimsUpdated);
+    return () => {
+      window.removeEventListener('tb_claims_updated', handleClaimsUpdated);
+      window.removeEventListener('storage', handleClaimsUpdated);
+    };
   }, []);
 
   return (
@@ -96,6 +106,19 @@ export const MyClaims = () => {
                     </h4>
                     <StatusBadge status={c.status} />
                   </div>
+                  {c.reviewNotes && (
+                    <div style={{
+                      fontSize: '0.8125rem',
+                      color: c.status === 'REJECTED' ? '#b91c1c' : 'var(--slate-700)',
+                      margin: '4px 0 6px 0',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      background: c.status === 'REJECTED' ? '#fee2e2' : 'var(--slate-100)',
+                      border: c.status === 'REJECTED' ? '1px solid #fca5a5' : '1px solid var(--slate-200)'
+                    }}>
+                      <strong>Officer Note:</strong> {c.reviewNotes}
+                    </div>
+                  )}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.75rem', color: 'var(--slate-500)' }}>
                     <span>Location: {c.item?.storageLocation || 'Central Security Desk'}</span>
                     <span>•</span>

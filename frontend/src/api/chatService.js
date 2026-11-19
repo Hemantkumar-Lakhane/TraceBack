@@ -1,6 +1,6 @@
-import api from './axiosConfig';
-import { MOCK_CONVERSATIONS } from './mockData';
-import wsManager from './websocketClient';
+import api from './axiosConfig.js';
+import { MOCK_CONVERSATIONS } from './mockData.js';
+import wsManager from './websocketClient.js';
 import { getItemImageUrl } from '../utils/imageUtils';
 
 const isDemo = () => localStorage.getItem('tb_is_demo_session') === 'true';
