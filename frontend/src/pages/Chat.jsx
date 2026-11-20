@@ -32,10 +32,11 @@ export const Chat = () => {
   const { id: paramConvId } = useParams();
   const [searchParams] = useSearchParams();
   const queryConvId = searchParams.get('conversationId') || searchParams.get('id');
+  const queryMatchId = searchParams.get('matchId');
   const targetRouteId = paramConvId || queryConvId;
 
   const [conversations, setConversations] = useState([]);
-  const [activeConvId, setActiveConvId] = useState(() => (targetRouteId ? Number(targetRouteId) : 1));
+  const [activeConvId, setActiveConvId] = useState(null);
   const [activeConv, setActiveConv] = useState(null);
   const [inputText, setInputText] = useState('');
   const [searchFilter, setSearchFilter] = useState('');
@@ -60,11 +61,32 @@ export const Chat = () => {
     try {
       const list = await chatService.getConversations(user);
       setConversations(list || []);
-      const defaultId = (list && list.length > 0) ? list[0].id : 1;
-      const targetId = targetRouteId ? Number(targetRouteId) : (activeConvId || defaultId);
-      setActiveConvId(targetId);
-      const conv = await chatService.getConversationById(targetId, user);
-      setActiveConv(conv);
+
+      if (!list || list.length === 0) {
+        setActiveConvId(null);
+        setActiveConv(null);
+        return;
+      }
+
+      // Check if user specified a matchId or conversationId
+      let matchedConv = null;
+      if (queryMatchId) {
+        matchedConv = list.find(c => Number(c.matchId) === Number(queryMatchId));
+      }
+      if (!matchedConv && targetRouteId) {
+        const num = Number(targetRouteId);
+        matchedConv = list.find(c => Number(c.id) === num || Number(c.matchId) === num);
+      }
+
+      const selectedId = matchedConv ? matchedConv.id : (activeConvId && list.some(c => c.id === activeConvId) ? activeConvId : list[0].id);
+      setActiveConvId(selectedId);
+
+      if (selectedId) {
+        const conv = await chatService.getConversationById(selectedId, user);
+        setActiveConv(conv);
+      } else {
+        setActiveConv(null);
+      }
     } catch (err) {
       console.error("Chat load error", err);
     } finally {
@@ -80,7 +102,10 @@ export const Chat = () => {
   useEffect(() => {
     let isCancelled = false;
     const fetchActive = async () => {
-      if (!activeConvId) return;
+      if (!activeConvId) {
+        setActiveConv(null);
+        return;
+      }
       try {
         const conv = await chatService.getConversationById(activeConvId, user);
         if (!isCancelled) {
@@ -88,6 +113,9 @@ export const Chat = () => {
         }
       } catch (e) {
         console.error("Error switching conversation", e);
+        if (!isCancelled) {
+          setActiveConv(null);
+        }
       }
     };
     fetchActive();
@@ -443,81 +471,121 @@ export const Chat = () => {
 
         {/* Right Pane: WhatsApp Chat Room Canvas */}
         <div className="chat-right-pane" style={{ backgroundColor: chatCanvasBg }}>
-          {/* WhatsApp Room Header */}
-          <div style={{
-            padding: '10px 14px',
-            backgroundColor: 'var(--card-bg)',
-            borderBottom: '1px solid var(--border-color)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            flexShrink: 0,
-            zIndex: 10
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {/* Mobile Back to List Button */}
-              <button
-                onClick={() => setShowMobileList(true)}
-                className="chat-mobile-back-btn"
-                title="Back to conversation list"
-              >
-                <ArrowLeft size={18} />
-              </button>
-
-              <div style={{ position: 'relative' }}>
-                <img
-                  src={activeConv?.otherParticipant?.avatar || resolveOtherParticipant(activeConv?.id || activeConvId, user).avatar}
-                  alt="Avatar"
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    border: '1px solid var(--border-color)'
-                  }}
-                />
-                <span style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0,
-                  width: '9px',
-                  height: '9px',
-                  borderRadius: '50%',
-                  backgroundColor: '#10b981',
-                  border: '1.5px solid var(--card-bg)'
-                }}></span>
+          {!activeConv ? (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              padding: '2.5rem',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '68px',
+                height: '68px',
+                borderRadius: '50%',
+                backgroundColor: isDark ? 'rgba(37, 99, 235, 0.2)' : '#dbeafe',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '1.25rem',
+                color: '#2563eb'
+              }}>
+                <ShieldCheck size={36} />
               </div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--slate-900)', marginBottom: '0.5rem' }}>
+                No Active Verification Chats
+              </h3>
+              <p style={{ maxWidth: '440px', color: 'var(--slate-500)', fontSize: '0.875rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+                When an automated match is detected between your lost/found report and another student's report, a private, end-to-end recovery channel will open here automatically.
+              </p>
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <Link to="/matches" className="btn btn-primary btn-sm" style={{ gap: '6px' }}>
+                  <GitMerge size={14} /> View Matched Items
+                </Link>
+                <Link to="/browse" className="btn btn-outline btn-sm" style={{ gap: '6px' }}>
+                  Browse All Reports
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* WhatsApp Room Header */}
+              <div style={{
+                padding: '10px 14px',
+                backgroundColor: 'var(--card-bg)',
+                borderBottom: '1px solid var(--border-color)',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                flexShrink: 0,
+                zIndex: 10
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* Mobile Back to List Button */}
+                  <button
+                    onClick={() => setShowMobileList(true)}
+                    className="chat-mobile-back-btn"
+                    title="Back to conversation list"
+                  >
+                    <ArrowLeft size={18} />
+                  </button>
 
-              <div>
-                <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--slate-900)', margin: 0 }}>
-                  {activeConv?.otherParticipant?.name || resolveOtherParticipant(activeConv?.id || activeConvId, user).name}
-                </h4>
-                {activeConv?.itemName && (
-                  <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
-                    {activeConv.itemName}
+                  <div style={{ position: 'relative' }}>
+                    <img
+                      src={activeConv.otherParticipant?.avatar || getCampusAvatar(activeConv.otherParticipant?.name, activeConv.otherParticipant?.role)}
+                      alt="Avatar"
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '1px solid var(--border-color)'
+                      }}
+                    />
+                    <span style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      right: 0,
+                      width: '9px',
+                      height: '9px',
+                      borderRadius: '50%',
+                      backgroundColor: '#10b981',
+                      border: '1.5px solid var(--card-bg)'
+                    }}></span>
                   </div>
-                )}
-              </div>
-            </div>
 
-            {/* Quick Actions */}
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <Link
-                to={`/claims/new/${activeConv?.matchId || 1}`}
-                className="btn btn-primary btn-sm"
-                style={{ padding: '6px 12px', fontSize: '0.75rem', gap: '5px' }}
-              >
-                <ShieldCheck size={14} /> Claim Voucher
-              </Link>
-              <Link
-                to={`/matches/${activeConv?.matchId || 1}`}
-                className="btn btn-outline btn-sm"
-                style={{ padding: '6px 12px', fontSize: '0.75rem' }}
-              >
-                View Match
-              </Link>
-            </div>
-          </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--slate-900)', margin: 0 }}>
+                      {activeConv.otherParticipant?.name || 'Verified Student'}
+                    </h4>
+                    {activeConv.itemName && (
+                      <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
+                        📦 {activeConv.itemName}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <Link
+                    to={`/claims/new/${activeConv.matchId || activeConv.id}`}
+                    className="btn btn-primary btn-sm"
+                    style={{ padding: '6px 12px', fontSize: '0.75rem', gap: '5px' }}
+                  >
+                    <ShieldCheck size={14} /> Claim Voucher
+                  </Link>
+                  <Link
+                    to={`/matches/${activeConv.matchId || activeConv.id}`}
+                    className="btn btn-outline btn-sm"
+                    style={{ padding: '6px 12px', fontSize: '0.75rem' }}
+                  >
+                    View Match
+                  </Link>
+                </div>
+              </div>
 
           {/* WhatsApp Scrollable Message History Area */}
           <div
@@ -764,7 +832,9 @@ export const Chat = () => {
               <Send size={16} />
             </button>
           </form>
-        </div>
+        </>
+      )}
+    </div>
       </div>
     </div>
   );

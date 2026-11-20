@@ -19,6 +19,7 @@ import Modal from '../components/Modal';
 import { useToast } from '../context/ToastContext';
 import reportService from '../api/reportService';
 import matchService from '../api/matchService';
+import chatService from '../api/chatService';
 import { getItemImageUrl, LOCAL_CATEGORY_IMAGES, CATEGORY_PLACEHOLDERS } from '../utils/imageUtils';
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -30,6 +31,8 @@ export const ReportDetails = () => {
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showQRModal, setShowQRModal] = useState(false);
+  const [matchRecord, setMatchRecord] = useState(null);
+  const [chatConvId, setChatConvId] = useState(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -37,8 +40,33 @@ export const ReportDetails = () => {
       try {
         const data = await reportService.getReportById(id, type);
         setReport(data);
+
+        // Check if there is an active match for this report
+        const isLostReport = (type || '').toLowerCase() === 'lost';
+        const matches = await matchService.getMatchesByReport({
+          lostReportId: isLostReport ? Number(id) : null,
+          foundReportId: !isLostReport ? Number(id) : null
+        });
+
+        if (matches && matches.length > 0) {
+          const topMatch = matches[0];
+          setMatchRecord(topMatch);
+
+          // Find conversation ID for this match
+          try {
+            const convs = await chatService.getConversations();
+            const matchingConv = (convs || []).find(c => Number(c.matchId) === Number(topMatch.id));
+            if (matchingConv) {
+              setChatConvId(matchingConv.id);
+            } else {
+              setChatConvId(topMatch.id);
+            }
+          } catch (e) {
+            setChatConvId(topMatch.id);
+          }
+        }
       } catch (err) {
-        console.error(err);
+        console.error("Error loading report details", err);
       } finally {
         setLoading(false);
       }
@@ -212,12 +240,33 @@ export const ReportDetails = () => {
               </div>
 
               <div style={{ display: 'flex', gap: '8px' }}>
-                <Link to="/matches" className="btn btn-primary btn-sm">
-                  <GitMerge size={14} /> View Matches
+                <Link
+                  to={matchRecord ? `/matches/${matchRecord.id}` : "/matches"}
+                  className="btn btn-primary btn-sm"
+                  style={{ gap: '6px' }}
+                >
+                  <GitMerge size={14} /> {matchRecord ? `View Match (${matchRecord.score}%)` : 'View Matches'}
                 </Link>
-                <Link to="/chat" className="btn btn-secondary btn-sm">
-                  <MessageSquare size={14} /> Open Chat
-                </Link>
+
+                {chatConvId ? (
+                  <Link
+                    to={`/chat?conversationId=${chatConvId}`}
+                    className="btn btn-secondary btn-sm"
+                    style={{ gap: '6px' }}
+                  >
+                    <MessageSquare size={14} /> Open Verification Chat
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => toast('No confirmed match detected yet. Once the matching engine correlates this item with another report, a direct chat channel will open here.', 'info')}
+                    className="btn btn-secondary btn-sm"
+                    style={{ gap: '6px', opacity: 0.8 }}
+                    title="Awaiting matching engine correlation"
+                  >
+                    <MessageSquare size={14} /> Open Chat
+                  </button>
+                )}
               </div>
             </div>
           </div>

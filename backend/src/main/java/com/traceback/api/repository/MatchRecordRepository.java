@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface MatchRecordRepository extends JpaRepository<MatchRecord, Long> {
     List<MatchRecord> findByLostReportUserIdOrFoundReportUserId(Long lostUserId, Long foundUserId);
+    List<MatchRecord> findByLostReportId(Long lostReportId);
+    List<MatchRecord> findByFoundReportId(Long foundReportId);
     boolean existsByLostReportIdAndFoundReportId(Long lostId, Long foundId);
 }

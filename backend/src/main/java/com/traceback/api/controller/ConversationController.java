@@ -3,6 +3,7 @@ package com.traceback.api.controller;
 import com.traceback.api.model.Conversation;
 import com.traceback.api.model.Message;
 import com.traceback.api.model.User;
+import com.traceback.api.repository.ConversationRepository;
 import com.traceback.api.repository.UserRepository;
 import com.traceback.api.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,10 +20,14 @@ import java.util.Map;
 public class ConversationController {
 
     private final ChatService chatService;
+    private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
 
-    public ConversationController(ChatService chatService, UserRepository userRepository) {
+    public ConversationController(ChatService chatService,
+                                  ConversationRepository conversationRepository,
+                                  UserRepository userRepository) {
         this.chatService = chatService;
+        this.conversationRepository = conversationRepository;
         this.userRepository = userRepository;
     }
 
@@ -32,6 +37,15 @@ public class ConversationController {
         if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         User user = userRepository.findByEmail(principal.getName()).orElseThrow();
         return ResponseEntity.ok(chatService.getUserConversations(user));
+    }
+
+    @GetMapping("/by-match/{matchId}")
+    @Operation(summary = "Get conversation corresponding to a match record ID")
+    public ResponseEntity<?> getConversationByMatchId(@PathVariable Long matchId, Principal principal) {
+        if (principal == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return conversationRepository.findByMatchRecordId(matchId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}/messages")

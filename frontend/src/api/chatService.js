@@ -158,11 +158,11 @@ export const resolveOtherParticipant = (convId, viewerOrId) => {
   }
 
   return {
-    id: 2,
-    name: "Rohan Verma",
-    email: "rohan.verma@vit.edu",
+    id: 0,
+    name: "Campus Student",
+    email: "student@vit.edu",
     role: "STUDENT",
-    avatar: getCampusAvatar("Rohan Verma", "STUDENT")
+    avatar: getCampusAvatar("Student", "STUDENT")
   };
 };
 
@@ -298,26 +298,29 @@ export const getConversations = async (currentViewer) => {
       const foundUser = match?.foundReport?.user;
 
       // Determine who the other person is relative to current viewer
-      let other = foundUser;
-      if (viewer?.id && String(foundUser?.id) === String(viewer.id)) {
-        other = lostUser;
-      } else if (!viewer?.id && lostUser?.email?.includes('aarav')) {
-        other = foundUser;
-      }
+      const isViewerLost = (
+        (viewer?.id && String(lostUser?.id) === String(viewer.id)) ||
+        (viewer?.email && lostUser?.email && viewer.email.toLowerCase() === lostUser.email.toLowerCase())
+      );
+      const isViewerFound = (
+        (viewer?.id && String(foundUser?.id) === String(viewer.id)) ||
+        (viewer?.email && foundUser?.email && viewer.email.toLowerCase() === foundUser.email.toLowerCase())
+      );
 
+      const other = isViewerLost ? foundUser : (isViewerFound ? lostUser : (viewer?.role === 'ADMIN' ? foundUser : (foundUser || lostUser)));
       const item = match?.lostReport?.item || match?.foundReport?.item;
 
       return {
         id: c.id,
-        matchId: match?.id || 1,
-        itemName: item?.name || 'Space Gray MacBook Pro 14"',
-        itemCategory: item?.category || 'ELECTRONICS',
+        matchId: match?.id || c.id,
+        itemName: item?.name || 'Lost & Found Item',
+        itemCategory: item?.category || 'OTHER',
         itemImageUrl: getItemImageUrl(item, true),
         otherParticipant: {
-          id: other?.id || 2,
-          name: other?.name || 'Rohan Verma',
-          email: other?.email || 'rohan.verma@vit.edu',
-          role: other?.role === 'STUDENT' ? 'VIT Student' : other?.role === 'SECURITY' ? 'Campus Security Office' : 'Campus Member',
+          id: other?.id,
+          name: other?.name || (isViewerLost ? 'Item Finder' : 'Item Owner'),
+          email: other?.email || '',
+          role: other?.role === 'STUDENT' ? (isViewerLost ? 'Student (Finder)' : 'Student (Owner)') : (other?.role || 'Campus Member'),
           avatar: other?.avatar || getCampusAvatar(other?.name, other?.role)
         },
         lastMessage: lastMsg?.content || 'No messages yet',
@@ -329,18 +332,21 @@ export const getConversations = async (currentViewer) => {
 
     return enriched;
   } catch (error) {
-    console.warn("Backend conversations unavailable, using dual-perspective mock data", error);
-    return MOCK_CONVERSATIONS.map(c => {
-      const other = resolveOtherParticipant(c.id, viewer);
-      const msgs = getLocalMessages(c.id);
-      const lastMsg = msgs[msgs.length - 1];
-      return {
-        ...c,
-        otherParticipant: other,
-        lastMessage: lastMsg?.text || lastMsg?.content || c.lastMessage,
-        lastMessageTime: lastMsg?.timestamp || c.lastMessageTime
-      };
-    });
+    if (isDemo()) {
+      return MOCK_CONVERSATIONS.map(c => {
+        const other = resolveOtherParticipant(c.id, viewer);
+        const msgs = getLocalMessages(c.id);
+        const lastMsg = msgs[msgs.length - 1];
+        return {
+          ...c,
+          otherParticipant: other,
+          lastMessage: lastMsg?.text || lastMsg?.content || c.lastMessage,
+          lastMessageTime: lastMsg?.timestamp || c.lastMessageTime
+        };
+      });
+    }
+    console.warn("Backend conversations fetch failed", error);
+    return [];
   }
 };
 
@@ -351,7 +357,7 @@ export const getConversationById = async (id, currentViewer) => {
     const list = MOCK_CONVERSATIONS;
     const base = list.find(c => String(c.id) === String(id)) || list[0];
     const msgs = getLocalMessages(id);
-    const other = resolveOtherParticipant(id, viewer);
+    const other = resolveOtherParticipant(id, viewer, base);
 
     const formattedMessages = msgs.map(m => ({
       ...m,
@@ -372,17 +378,23 @@ export const getConversationById = async (id, currentViewer) => {
     ]);
 
     const messages = msgRes.data || [];
-    const foundConv = (convsRes.data || []).find(c => String(c.id) === String(id));
+    const convList = convsRes.data || [];
+    const foundConv = convList.find(c => String(c.id) === String(id) || String(c.matchRecord?.id) === String(id));
 
     const match = foundConv?.matchRecord;
     const lostUser = match?.lostReport?.user;
     const foundUser = match?.foundReport?.user;
 
-    let other = foundUser;
-    if (viewer?.id && String(foundUser?.id) === String(viewer.id)) {
-      other = lostUser;
-    }
+    const isViewerLost = (
+      (viewer?.id && String(lostUser?.id) === String(viewer.id)) ||
+      (viewer?.email && lostUser?.email && viewer.email.toLowerCase() === lostUser.email.toLowerCase())
+    );
+    const isViewerFound = (
+      (viewer?.id && String(foundUser?.id) === String(viewer.id)) ||
+      (viewer?.email && foundUser?.email && viewer.email.toLowerCase() === foundUser.email.toLowerCase())
+    );
 
+    const other = isViewerLost ? foundUser : (isViewerFound ? lostUser : (viewer?.role === 'ADMIN' ? foundUser : (foundUser || lostUser)));
     const item = match?.lostReport?.item || match?.foundReport?.item;
 
     const formattedMessages = messages.map(m => {
@@ -398,37 +410,41 @@ export const getConversationById = async (id, currentViewer) => {
     });
 
     return {
-      id: Number(id),
-      matchId: match?.id || 1,
-      itemName: item?.name || 'Space Gray MacBook Pro 14"',
-      itemCategory: item?.category || 'ELECTRONICS',
+      id: foundConv ? Number(foundConv.id) : Number(id),
+      matchId: match?.id,
+      itemName: item?.name || 'Lost & Found Item',
+      itemCategory: item?.category || 'OTHER',
       itemImageUrl: getItemImageUrl(item, true),
       otherParticipant: {
-        id: other?.id || 2,
-        name: other?.name || 'Rohan Verma',
-        email: other?.email || 'rohan.verma@vit.edu',
-        role: other?.role === 'STUDENT' ? 'VIT Student' : other?.role === 'SECURITY' ? 'Campus Security Office' : 'Campus Member',
+        id: other?.id,
+        name: other?.name || (isViewerLost ? 'Item Finder' : 'Item Owner'),
+        email: other?.email || '',
+        role: other?.role === 'STUDENT' ? (isViewerLost ? 'Student (Finder)' : 'Student (Owner)') : (other?.role || 'Campus Member'),
         avatar: other?.avatar || getCampusAvatar(other?.name, other?.role)
       },
       messages: formattedMessages
     };
   } catch (error) {
-    console.warn(`Backend message load failed for conv #${id}, using dual-perspective fallback`, error);
-    const list = MOCK_CONVERSATIONS;
-    const base = list.find(c => String(c.id) === String(id)) || list[0];
-    const msgs = getLocalMessages(id);
-    const other = resolveOtherParticipant(id, viewer);
+    console.warn(`Backend message load failed for conv #${id}`, error);
+    if (isDemo()) {
+      const list = MOCK_CONVERSATIONS;
+      const base = list.find(c => String(c.id) === String(id)) || list[0];
+      const msgs = getLocalMessages(id);
+      const other = resolveOtherParticipant(id, viewer, base);
 
-    const formattedMessages = msgs.map(m => ({
-      ...m,
-      isMe: isMessageFromViewer(m, viewer)
-    }));
+      const formattedMessages = msgs.map(m => ({
+        ...m,
+        isMe: isMessageFromViewer(m, viewer)
+      }));
 
-    return {
-      ...base,
-      otherParticipant: other,
-      messages: formattedMessages
-    };
+      return {
+        ...base,
+        otherParticipant: other,
+        messages: formattedMessages
+      };
+    }
+    // Return null in real mode so unauthorized or non-existent conversation is handled cleanly
+    return null;
   }
 };
 
