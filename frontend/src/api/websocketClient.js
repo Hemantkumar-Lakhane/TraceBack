@@ -9,6 +9,7 @@ if (typeof window !== 'undefined' && !window.global) {
 const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE_URL) || 'http://localhost:8080';
 const WS_URL = `${API_BASE.replace(/\/$/, '')}/ws`;
 
+// Manages real-time STOMP over SockJS client lifecycle
 class WebSocketManager {
   constructor() {
     this.client = null;
@@ -16,6 +17,7 @@ class WebSocketManager {
     this.connectPromise = null;
   }
 
+  // Establishes persistent connection to Spring Boot /ws endpoint
   connect() {
     if (this.connected && this.client?.active) {
       return Promise.resolve(this.client);
@@ -29,12 +31,13 @@ class WebSocketManager {
       try {
         const token = localStorage.getItem('token') || '';
 
+        // Configure STOMP client with SockJS fallback and auto-reconnect
         this.client = new Client({
-          webSocketFactory: () => new SockJS(WS_URL),
-          connectHeaders: token ? { Authorization: `Bearer ${token}` } : {},
-          reconnectDelay: 5000,
-          heartbeatIncoming: 4000,
-          heartbeatOutgoing: 4000,
+          webSocketFactory: () => new SockJS(WS_URL), // SockJS transport fallback
+          connectHeaders: token ? { Authorization: `Bearer ${token}` } : {}, // Pass JWT in STOMP headers
+          reconnectDelay: 5000,   // Auto-reconnect after 5 seconds if connection drops
+          heartbeatIncoming: 4000,// Expect broker heartbeat every 4000ms
+          heartbeatOutgoing: 4000,// Send client heartbeat every 4000ms
           onConnect: () => {
             this.connected = true;
             this.connectPromise = null;
@@ -55,7 +58,7 @@ class WebSocketManager {
           }
         });
 
-        this.client.activate();
+        this.client.activate(); // Initiate handshake
       } catch (err) {
         console.warn('[WebSocket Init Warning]:', err.message || err);
         this.connectPromise = null;

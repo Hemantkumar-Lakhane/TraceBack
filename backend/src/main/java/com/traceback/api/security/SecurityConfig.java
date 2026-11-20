@@ -28,6 +28,7 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    // Password hashing using BCrypt with demo password fallback
     @Bean
     public PasswordEncoder passwordEncoder() {
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
@@ -55,12 +56,13 @@ public class SecurityConfig {
         return authConfig.getAuthenticationManager();
     }
 
+    // Core security filter chain configuring stateless JWT access control
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(org.springframework.security.config.Customizer.withDefaults())
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .cors(org.springframework.security.config.Customizer.withDefaults()) // Cross-Origin Resource Sharing
+            .csrf(csrf -> csrf.disable()) // CSRF disabled because we use stateless Bearer JWTs (no ambient cookies)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No HTTP sessions stored in memory
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setContentType("application/json");
@@ -76,14 +78,15 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/ws/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/api/auth/**").permitAll() // Public: login & registration
+                .requestMatchers("/ws/**").permitAll()       // Public: WebSocket STOMP handshake
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // API docs
+                .requestMatchers("/uploads/**").permitAll()  // Uploaded item photos
                 .requestMatchers("/error").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().authenticated()                // All other endpoints require valid JWT
             );
 
+        // Register custom JWT filter ahead of standard username/password filter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

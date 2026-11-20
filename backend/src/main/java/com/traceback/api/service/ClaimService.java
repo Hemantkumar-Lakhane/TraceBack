@@ -32,6 +32,7 @@ public class ClaimService {
         this.notificationRepository = notificationRepository;
     }
 
+    // Files an ownership verification claim and updates physical item status to CLAIM_REQUESTED
     @Transactional
     public Claim submitClaim(Long matchId, User claimant, String verificationData,
                             LocalDate pickupDate, LocalTime pickupTime, MultipartFile proofFile) {
