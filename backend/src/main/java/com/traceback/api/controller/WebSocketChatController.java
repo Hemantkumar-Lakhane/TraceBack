@@ -27,8 +27,8 @@ public class WebSocketChatController {
     @MessageMapping("/chat/{conversationId}")
     public void handleChatMessage(
             @DestinationVariable Long conversationId, // Target room ID
-            @Payload ChatMessageDto payload,          // Incoming message body (JSON)
-            Principal principal) {                    // Authenticated user principal from JWT
+            @Payload ChatMessageDto payload, // Incoming message body (JSON)
+            Principal principal) { // Authenticated user principal from JWT
 
         // 1. Identify the sender via authenticated Principal or payload ID
         User sender = null;
@@ -51,4 +51,3 @@ public class WebSocketChatController {
         chatService.sendMessage(conversationId, sender, payload.getContent().trim());
     }
 }
-

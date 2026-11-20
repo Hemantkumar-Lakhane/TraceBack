@@ -28,9 +28,9 @@ public class MatchingService {
 
     @Autowired
     public MatchingService(LostReportRepository lostReportRepository,
-                           FoundReportRepository foundReportRepository,
-                           MatchRecordRepository matchRecordRepository,
-                           ConversationRepository conversationRepository) {
+            FoundReportRepository foundReportRepository,
+            MatchRecordRepository matchRecordRepository,
+            ConversationRepository conversationRepository) {
         this.lostReportRepository = lostReportRepository;
         this.foundReportRepository = foundReportRepository;
         this.matchRecordRepository = matchRecordRepository;
@@ -65,7 +65,8 @@ public class MatchingService {
         int score = calculateScore(lostReport, foundReport);
         if (score >= 70) {
             if (matchRecordRepository.existsByLostReportIdAndFoundReportId(lostReport.getId(), foundReport.getId())) {
-                log.debug("Duplicate match ignored for lost_id={} and found_id={}", lostReport.getId(), foundReport.getId());
+                log.debug("Duplicate match ignored for lost_id={} and found_id={}", lostReport.getId(),
+                        foundReport.getId());
                 return;
             }
 
@@ -74,14 +75,15 @@ public class MatchingService {
             matchRecord.setFoundReport(foundReport);
             matchRecord.setScore(score);
             matchRecord.setStatus(MatchStatus.ACTIVE);
-            
+
             MatchRecord savedMatch = matchRecordRepository.saveAndFlush(matchRecord);
-            
+
             Conversation conversation = new Conversation();
             conversation.setMatchRecord(savedMatch);
             conversationRepository.saveAndFlush(conversation);
-            
-            log.info("Successfully created match between lost_id={} and found_id={} with score={}", lostReport.getId(), foundReport.getId(), score);
+
+            log.info("Successfully created match between lost_id={} and found_id={} with score={}", lostReport.getId(),
+                    foundReport.getId(), score);
         }
     }
 
@@ -98,7 +100,8 @@ public class MatchingService {
             }
         }
 
-        // 2. Location (30 points) - Normalize input (trim + lowercase) and exact equality
+        // 2. Location (30 points) - Normalize input (trim + lowercase) and exact
+        // equality
         if (lostReport.getLocation() != null && foundReport.getLocation() != null) {
             String lostLoc = lostReport.getLocation().trim().toLowerCase();
             String foundLoc = foundReport.getLocation().trim().toLowerCase();
@@ -109,7 +112,8 @@ public class MatchingService {
 
         // 3. Date (30 points) - Absolute difference <= 2 days
         if (lostReport.getDateLost() != null && foundReport.getDateFound() != null) {
-            long daysDifference = Math.abs(ChronoUnit.DAYS.between(lostReport.getDateLost(), foundReport.getDateFound()));
+            long daysDifference = Math
+                    .abs(ChronoUnit.DAYS.between(lostReport.getDateLost(), foundReport.getDateFound()));
             if (daysDifference <= 2) {
                 score += 30;
             }

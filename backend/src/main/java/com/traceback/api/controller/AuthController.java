@@ -38,7 +38,7 @@ public class AuthController {
     private final JwtTokenProvider tokenProvider;
 
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
-                          PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+            PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -53,7 +53,8 @@ public class AuthController {
     @PostMapping("/register")
     @Operation(summary = "Register a new student user")
     @SecurityRequirements // Public endpoint - bypasses JWT authorization filter
-    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequest registerRequest,
+            HttpServletRequest request) {
         // Prevent duplicate account registrations
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
             ErrorResponse error = new ErrorResponse();
@@ -70,7 +71,7 @@ public class AuthController {
         user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        
+
         // Institutional policy: Self-registration always provisions STUDENT role.
         // Security and Admin staff must be provisioned via the Admin Console.
         user.setRole(Role.STUDENT);
@@ -81,7 +82,8 @@ public class AuthController {
     }
 
     /**
-     * Authenticates student/staff credentials and returns a signed HS256 JWT bearer token.
+     * Authenticates student/staff credentials and returns a signed HS256 JWT bearer
+     * token.
      */
     @PostMapping("/login")
     @Operation(summary = "Authenticate a user and get JWT")
@@ -91,9 +93,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         authRequest.getEmail(),
-                        authRequest.getPassword()
-                )
-        );
+                        authRequest.getPassword()));
 
         // Bind authentication to current Spring SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -106,8 +106,7 @@ public class AuthController {
         AuthResponse.UserDto userDto = new AuthResponse.UserDto(
                 user.getId(),
                 user.getName(),
-                user.getRole().name()
-        );
+                user.getRole().name());
 
         return ResponseEntity.ok(new AuthResponse(jwt, userDto));
     }

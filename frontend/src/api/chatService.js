@@ -1,5 +1,5 @@
 import api from './axiosConfig.js';
-import { MOCK_CONVERSATIONS } from './mockData.js';
+import { MOCK_CONVERSATIONS, DEMO_USERS } from './mockData.js';
 import wsManager from './websocketClient.js';
 import { getItemImageUrl } from '../utils/imageUtils.js';
 
@@ -23,6 +23,147 @@ export const getCampusAvatar = (name = '', role = '') => {
     return 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
   }
   return 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80';
+};
+
+/**
+ * Robust identity resolver: extracts user details regardless of whether
+ * an object, ID, email string, or undefined is passed.
+ */
+export const resolveViewer = (viewerOrId) => {
+  if (viewerOrId && typeof viewerOrId === 'object' && (viewerOrId.id || viewerOrId.name || viewerOrId.email)) {
+    return viewerOrId;
+  }
+  if (viewerOrId !== undefined && viewerOrId !== null) {
+    const s = String(viewerOrId).toLowerCase().trim();
+    if (s === '2' || s.includes('rohan')) return DEMO_USERS.rohan;
+    if (s === '1' || s.includes('aarav')) return DEMO_USERS.student;
+    if (s === '3' || s.includes('rajesh') || s.includes('sec')) return DEMO_USERS.security;
+    if (s === '4' || s.includes('priya') || s.includes('adm')) return DEMO_USERS.admin;
+    if (s === '9' || s.includes('ananya')) return DEMO_USERS.ananya;
+  }
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const saved = localStorage.getItem('tb_user_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && (parsed.id || parsed.name || parsed.email)) return parsed;
+      }
+    }
+  } catch (e) {}
+  return DEMO_USERS.student;
+};
+
+/**
+ * Determines whether a chat message was authored by the current viewer
+ * (outbound = right side with blue ticks, inbound = left side with sender name).
+ */
+export const isMessageFromViewer = (msg, viewerOrId) => {
+  if (!msg) return false;
+  const viewer = resolveViewer(viewerOrId);
+  if (!viewer) return false;
+
+  // 1. By numerical ID
+  const viewerId = viewer.id !== undefined ? Number(viewer.id) : null;
+  const msgSenderId = msg.senderId !== undefined
+    ? Number(msg.senderId)
+    : (msg.sender?.id !== undefined ? Number(msg.sender.id) : null);
+
+  if (viewerId !== null && msgSenderId !== null && !isNaN(viewerId) && !isNaN(msgSenderId)) {
+    return viewerId === msgSenderId;
+  }
+
+  // 2. By first name comparison (e.g. "Rohan" vs "Aarav")
+  const viewerName = (viewer.name || '').toLowerCase().trim();
+  const senderName = (msg.senderName || msg.sender?.name || '').toLowerCase().trim();
+  if (viewerName && senderName) {
+    const vFirst = viewerName.split(' ')[0];
+    const sFirst = senderName.split(' ')[0];
+    if (vFirst && sFirst && (vFirst === sFirst || viewerName.includes(sFirst) || senderName.includes(vFirst))) {
+      return true;
+    }
+  }
+
+  // 3. By email comparison
+  const viewerEmail = (viewer.email || '').toLowerCase().trim();
+  const senderEmail = (msg.senderEmail || msg.sender?.email || '').toLowerCase().trim();
+  if (viewerEmail && senderEmail && viewerEmail === senderEmail) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Resolves who the other chat participant is relative to the current viewer.
+ * In a lost-and-found recovery channel:
+ * - If Rohan (Finder) logs in, the other participant is Aarav Sharma (Owner).
+ * - If Aarav (Owner) logs in, the other participant is Rohan Verma (Finder).
+ */
+export const resolveOtherParticipant = (convId, viewerOrId) => {
+  const viewer = resolveViewer(viewerOrId);
+  const numId = Number(convId);
+
+  if (numId === 1 || !numId) {
+    // Conversation 1: MacBook Air (between Aarav Sharma [id: 1] and Rohan Verma [id: 2])
+    const isRohan = (
+      Number(viewer?.id) === 2 ||
+      (viewer?.email && viewer.email.toLowerCase().includes('rohan')) ||
+      (viewer?.name && viewer.name.toLowerCase().includes('rohan'))
+    );
+
+    if (isRohan) {
+      return {
+        id: 1,
+        name: "Aarav Sharma",
+        email: "aarav.sharma@vit.edu",
+        role: "STUDENT (Owner)",
+        avatar: getCampusAvatar("Aarav Sharma", "STUDENT")
+      };
+    } else {
+      return {
+        id: 2,
+        name: "Rohan Verma",
+        email: "rohan.verma@vit.edu",
+        role: "STUDENT (Finder)",
+        avatar: getCampusAvatar("Rohan Verma", "STUDENT")
+      };
+    }
+  }
+
+  if (numId === 2) {
+    // Conversation 2: Milton Water Bottle (between Aarav Sharma [id: 1] and Ananya Iyer [id: 9])
+    const isAnanya = (
+      Number(viewer?.id) === 9 ||
+      (viewer?.email && viewer.email.toLowerCase().includes('ananya')) ||
+      (viewer?.name && viewer.name.toLowerCase().includes('ananya'))
+    );
+
+    if (isAnanya) {
+      return {
+        id: 1,
+        name: "Aarav Sharma",
+        email: "aarav.sharma@vit.edu",
+        role: "STUDENT (Owner)",
+        avatar: getCampusAvatar("Aarav Sharma", "STUDENT")
+      };
+    } else {
+      return {
+        id: 9,
+        name: "Ananya Iyer",
+        email: "ananya.iyer@vit.edu",
+        role: "STUDENT (Finder)",
+        avatar: getCampusAvatar("Ananya Iyer", "STUDENT")
+      };
+    }
+  }
+
+  return {
+    id: 2,
+    name: "Rohan Verma",
+    email: "rohan.verma@vit.edu",
+    role: "STUDENT",
+    avatar: getCampusAvatar("Rohan Verma", "STUDENT")
+  };
 };
 
 // Seed storage helpers for durable demo conversations
@@ -92,7 +233,7 @@ const getLocalMessages = (convId) => {
   return [
     {
       id: 201,
-      senderId: 3,
+      senderId: 9,
       senderName: "Ananya Iyer",
       content: "Hi Aarav! I turned in your silver Milton bottle to the Mechanical Workshop security desk.",
       text: "Hi Aarav! I turned in your silver Milton bottle to the Mechanical Workshop security desk.",
@@ -115,29 +256,12 @@ const saveLocalMessages = (convId, messages) => {
   }
 };
 
-export const getConversations = async (currentUserId) => {
+export const getConversations = async (currentViewer) => {
+  const viewer = resolveViewer(currentViewer);
+
   if (isDemo()) {
     return MOCK_CONVERSATIONS.map(c => {
-      // Perspective check: If current user is Rohan (id: 2), other participant is Aarav Sharma
-      let other = c.otherParticipant;
-      if (Number(currentUserId) === 2) {
-        other = {
-          id: 1,
-          name: "Aarav Sharma",
-          email: "aarav.sharma@vit.edu",
-          role: "STUDENT (Owner)",
-          avatar: getCampusAvatar("Aarav Sharma", "STUDENT")
-        };
-      } else {
-        other = {
-          id: 2,
-          name: "Rohan Verma",
-          email: "rohan.verma@vit.edu",
-          role: "STUDENT (Finder)",
-          avatar: getCampusAvatar("Rohan Verma", "STUDENT")
-        };
-      }
-
+      const other = resolveOtherParticipant(c.id, viewer);
       const msgs = getLocalMessages(c.id);
       const lastMsg = msgs[msgs.length - 1];
 
@@ -173,11 +297,11 @@ export const getConversations = async (currentUserId) => {
       const lostUser = match?.lostReport?.user;
       const foundUser = match?.foundReport?.user;
 
-      // Determine who the other person is relative to current user
+      // Determine who the other person is relative to current viewer
       let other = foundUser;
-      if (currentUserId && String(foundUser?.id) === String(currentUserId)) {
+      if (viewer?.id && String(foundUser?.id) === String(viewer.id)) {
         other = lostUser;
-      } else if (!currentUserId && lostUser?.email?.includes('aarav')) {
+      } else if (!viewer?.id && lostUser?.email?.includes('aarav')) {
         other = foundUser;
       }
 
@@ -205,41 +329,33 @@ export const getConversations = async (currentUserId) => {
 
     return enriched;
   } catch (error) {
-    console.error("Failed to load real conversations from backend, falling back to mock data", error);
-    return MOCK_CONVERSATIONS;
+    console.warn("Backend conversations unavailable, using dual-perspective mock data", error);
+    return MOCK_CONVERSATIONS.map(c => {
+      const other = resolveOtherParticipant(c.id, viewer);
+      const msgs = getLocalMessages(c.id);
+      const lastMsg = msgs[msgs.length - 1];
+      return {
+        ...c,
+        otherParticipant: other,
+        lastMessage: lastMsg?.text || lastMsg?.content || c.lastMessage,
+        lastMessageTime: lastMsg?.timestamp || c.lastMessageTime
+      };
+    });
   }
 };
 
-export const getConversationById = async (id, currentUserId) => {
+export const getConversationById = async (id, currentViewer) => {
+  const viewer = resolveViewer(currentViewer);
+
   if (isDemo()) {
     const list = MOCK_CONVERSATIONS;
     const base = list.find(c => String(c.id) === String(id)) || list[0];
     const msgs = getLocalMessages(id);
+    const other = resolveOtherParticipant(id, viewer);
 
-    // Swap otherParticipant based on who is viewing
-    let other = base.otherParticipant;
-    if (Number(currentUserId) === 2) {
-      other = {
-        id: 1,
-        name: "Aarav Sharma",
-        email: "aarav.sharma@vit.edu",
-        role: "STUDENT (Owner)",
-        avatar: getCampusAvatar("Aarav Sharma", "STUDENT")
-      };
-    } else {
-      other = {
-        id: 2,
-        name: "Rohan Verma",
-        email: "rohan.verma@vit.edu",
-        role: "STUDENT (Finder)",
-        avatar: getCampusAvatar("Rohan Verma", "STUDENT")
-      };
-    }
-
-    // Explicitly compute isMe based on currentUserId
     const formattedMessages = msgs.map(m => ({
       ...m,
-      isMe: currentUserId ? Number(m.senderId) === Number(currentUserId) : Number(m.senderId) === 1
+      isMe: isMessageFromViewer(m, viewer)
     }));
 
     return {
@@ -263,17 +379,13 @@ export const getConversationById = async (id, currentUserId) => {
     const foundUser = match?.foundReport?.user;
 
     let other = foundUser;
-    if (currentUserId && String(foundUser?.id) === String(currentUserId)) {
+    if (viewer?.id && String(foundUser?.id) === String(viewer.id)) {
       other = lostUser;
     }
 
     const item = match?.lostReport?.item || match?.foundReport?.item;
 
     const formattedMessages = messages.map(m => {
-      const isMe = currentUserId
-        ? String(m.sender?.id) === String(currentUserId)
-        : m.sender?.email?.includes('aarav') || m.sender?.id === 1;
-
       return {
         id: m.id,
         content: m.content,
@@ -281,7 +393,7 @@ export const getConversationById = async (id, currentUserId) => {
         timestamp: m.timestamp,
         senderId: m.sender?.id,
         senderName: m.sender?.name,
-        isMe: isMe
+        isMe: isMessageFromViewer(m, viewer)
       };
     });
 
@@ -301,9 +413,22 @@ export const getConversationById = async (id, currentUserId) => {
       messages: formattedMessages
     };
   } catch (error) {
-    console.error(`Failed to load messages for conversation #${id}`, error);
+    console.warn(`Backend message load failed for conv #${id}, using dual-perspective fallback`, error);
     const list = MOCK_CONVERSATIONS;
-    return list.find(c => String(c.id) === String(id)) || list[0];
+    const base = list.find(c => String(c.id) === String(id)) || list[0];
+    const msgs = getLocalMessages(id);
+    const other = resolveOtherParticipant(id, viewer);
+
+    const formattedMessages = msgs.map(m => ({
+      ...m,
+      isMe: isMessageFromViewer(m, viewer)
+    }));
+
+    return {
+      ...base,
+      otherParticipant: other,
+      messages: formattedMessages
+    };
   }
 };
 
@@ -313,10 +438,11 @@ export const getConversationById = async (id, currentUserId) => {
  * to all active STOMP WebSocket subscribers on /topic/chat/{conversationId}
  */
 export const sendMessage = async (conversationId, text, senderId, senderName) => {
+  const viewer = resolveViewer({ id: senderId, name: senderName });
   const newMsg = {
     id: Date.now(),
-    senderId: senderId || 1,
-    senderName: senderName || 'You',
+    senderId: viewer?.id || senderId || 1,
+    senderName: viewer?.name || senderName || 'You',
     content: text,
     text,
     timestamp: new Date().toISOString(),
@@ -369,5 +495,8 @@ export default {
   getConversationById,
   sendMessage,
   subscribeToChat,
-  getCampusAvatar
+  getCampusAvatar,
+  resolveViewer,
+  resolveOtherParticipant,
+  isMessageFromViewer
 };

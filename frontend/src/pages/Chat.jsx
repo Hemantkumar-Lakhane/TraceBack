@@ -20,7 +20,7 @@ import {
   Clock,
   Sparkles
 } from 'lucide-react';
-import chatService, { getCampusAvatar } from '../api/chatService';
+import chatService, { getCampusAvatar, isMessageFromViewer, resolveOtherParticipant } from '../api/chatService';
 import { getItemImageUrl } from '../utils/imageUtils';
 import { CAMPUS_CONFIG } from '../config/campusConfig';
 
@@ -58,12 +58,12 @@ export const Chat = () => {
   // Load real conversations from backend
   const loadChatData = async () => {
     try {
-      const list = await chatService.getConversations(user?.id);
+      const list = await chatService.getConversations(user);
       setConversations(list || []);
       const defaultId = (list && list.length > 0) ? list[0].id : 1;
       const targetId = targetRouteId ? Number(targetRouteId) : (activeConvId || defaultId);
       setActiveConvId(targetId);
-      const conv = await chatService.getConversationById(targetId, user?.id);
+      const conv = await chatService.getConversationById(targetId, user);
       setActiveConv(conv);
     } catch (err) {
       console.error("Chat load error", err);
@@ -74,7 +74,7 @@ export const Chat = () => {
 
   useEffect(() => {
     loadChatData();
-  }, [user?.id]);
+  }, [user?.id, user?.email]);
 
   // When active conversation changes, fetch its messages
   useEffect(() => {
@@ -82,7 +82,7 @@ export const Chat = () => {
     const fetchActive = async () => {
       if (!activeConvId) return;
       try {
-        const conv = await chatService.getConversationById(activeConvId, user?.id);
+        const conv = await chatService.getConversationById(activeConvId, user);
         if (!isCancelled) {
           setActiveConv(conv);
         }
@@ -92,7 +92,7 @@ export const Chat = () => {
     };
     fetchActive();
     return () => { isCancelled = true; };
-  }, [activeConvId, user?.id]);
+  }, [activeConvId, user?.id, user?.email]);
 
   // Real-time STOMP WebSocket subscription
   useEffect(() => {
@@ -366,8 +366,8 @@ export const Chat = () => {
                     {/* Participant Avatar */}
                     <div style={{ position: 'relative', flexShrink: 0 }}>
                       <img
-                        src={c.otherParticipant?.avatar || getCampusAvatar(c.otherParticipant?.name, c.otherParticipant?.role)}
-                        alt={c.otherParticipant?.name}
+                        src={c.otherParticipant?.avatar || resolveOtherParticipant(c.id, user).avatar}
+                        alt={c.otherParticipant?.name || resolveOtherParticipant(c.id, user).name}
                         style={{
                           width: '42px',
                           height: '42px',
@@ -400,7 +400,7 @@ export const Chat = () => {
                           textOverflow: 'ellipsis',
                           whiteSpace: 'nowrap'
                         }}>
-                          {c.otherParticipant?.name || 'Rohan Verma'}
+                          {c.otherParticipant?.name || resolveOtherParticipant(c.id, user).name}
                         </h4>
                         <span style={{ fontSize: '0.6875rem', color: 'var(--slate-400)', flexShrink: 0, marginLeft: '6px' }}>
                           {formattedTime}
@@ -466,7 +466,7 @@ export const Chat = () => {
 
               <div style={{ position: 'relative' }}>
                 <img
-                  src={activeConv?.otherParticipant?.avatar || getCampusAvatar(activeConv?.otherParticipant?.name, activeConv?.otherParticipant?.role)}
+                  src={activeConv?.otherParticipant?.avatar || resolveOtherParticipant(activeConv?.id || activeConvId, user).avatar}
                   alt="Avatar"
                   style={{
                     width: '38px',
@@ -490,7 +490,7 @@ export const Chat = () => {
 
               <div>
                 <h4 style={{ fontSize: '0.9375rem', fontWeight: 700, color: 'var(--slate-900)', margin: 0 }}>
-                  {activeConv?.otherParticipant?.name || 'Rohan Verma'}
+                  {activeConv?.otherParticipant?.name || resolveOtherParticipant(activeConv?.id || activeConvId, user).name}
                 </h4>
                 {activeConv?.itemName && (
                   <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)', marginTop: '2px' }}>
@@ -549,7 +549,7 @@ export const Chat = () => {
               }}>
                 <Lock size={13} color="#ca8a04" style={{ flexShrink: 0 }} />
                 <span style={{ fontSize: '0.71875rem', color: isDark ? '#fef08a' : '#854d0e', lineHeight: 1.4 }}>
-                  <strong>End-to-End Encrypted:</strong> Messages in this campus recovery channel are sealed. Only you and <strong>{activeConv?.otherParticipant?.name || 'the recipient'}</strong> can read them.
+                  <strong>End-to-End Encrypted:</strong> Messages in this campus recovery channel are sealed. Only you and <strong>{activeConv?.otherParticipant?.name || resolveOtherParticipant(activeConv?.id || activeConvId, user).name}</strong> can read them.
                 </span>
               </div>
             </div>
@@ -572,12 +572,8 @@ export const Chat = () => {
 
             {/* Message Bubbles */}
             {activeConv?.messages?.map((msg) => {
-              // Resilient perspective resolution: strict check against current logged-in user
-              const isMe = (user?.id && msg.senderId)
-                ? Number(msg.senderId) === Number(user.id)
-                : (user?.name && msg.senderName
-                    ? user.name.toLowerCase().includes(msg.senderName.toLowerCase().split(' ')[0])
-                    : (msg.isMe !== undefined ? msg.isMe : (msg.senderId === 1)));
+              // Resilient perspective resolution: strict check against current logged-in viewer
+              const isMe = isMessageFromViewer(msg, user);
               const displayText = msg.text || msg.content;
               const formattedTime = msg.timestamp
                 ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -606,8 +602,8 @@ export const Chat = () => {
                       wordBreak: 'break-word',
                       border: isMe
                         ? (isLuxury
-                            ? (isDark ? '1px solid rgba(142, 197, 255, 0.25)' : '1px solid #BAE0FF')
-                            : (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.25)'))
+                          ? (isDark ? '1px solid rgba(142, 197, 255, 0.25)' : '1px solid #BAE0FF')
+                          : (isDark ? '1px solid rgba(0, 92, 75, 0.4)' : '1px solid rgba(16, 185, 129, 0.25)'))
                         : (isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid #e2e8f0'),
                       position: 'relative'
                     }}
@@ -620,7 +616,7 @@ export const Chat = () => {
                         color: isDark ? '#38bdf8' : '#0284c7',
                         marginBottom: '3px'
                       }}>
-                        {msg.senderName || activeConv?.otherParticipant?.name || 'Campus Student'}
+                        {msg.senderName || activeConv?.otherParticipant?.name || resolveOtherParticipant(activeConv?.id || activeConvId, user).name}
                       </div>
                     )}
 

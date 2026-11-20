@@ -25,11 +25,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    // Intercepts every incoming HTTP request once to extract and validate Bearer token
+    // Intercepts every incoming HTTP request once to extract and validate Bearer
+    // token
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        
+
         try {
             // 1. Extract raw JWT string from Authorization header
             String jwt = getJwtFromRequest(request);
@@ -47,7 +48,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception ex) {
-            // Unauthenticated requests fall through to SecurityFilterChain authorization checks
+            // Unauthenticated requests fall through to SecurityFilterChain authorization
+            // checks
         }
 
         filterChain.doFilter(request, response);

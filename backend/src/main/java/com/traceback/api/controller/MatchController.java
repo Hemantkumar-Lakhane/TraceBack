@@ -34,7 +34,8 @@ public class MatchController {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        List<MatchRecord> matches = matchRecordRepository.findByLostReportUserIdOrFoundReportUserId(user.getId(), user.getId());
+        List<MatchRecord> matches = matchRecordRepository.findByLostReportUserIdOrFoundReportUserId(user.getId(),
+                user.getId());
         return ResponseEntity.ok(matches);
     }
 
@@ -54,7 +55,7 @@ public class MatchController {
 
         // Check authorization
         boolean isOwner = match.getLostReport().getUser().getId().equals(user.getId()) ||
-                          match.getFoundReport().getUser().getId().equals(user.getId());
+                match.getFoundReport().getUser().getId().equals(user.getId());
 
         if (!isOwner) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

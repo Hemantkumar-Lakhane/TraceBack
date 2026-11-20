@@ -60,31 +60,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .cors(org.springframework.security.config.Customizer.withDefaults()) // Cross-Origin Resource Sharing
-            .csrf(csrf -> csrf.disable()) // CSRF disabled because we use stateless Bearer JWTs (no ambient cookies)
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No HTTP sessions stored in memory
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) -> {
-                    response.setContentType("application/json");
-                    response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \"" + authException.getMessage() + "\"}");
-                })
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setContentType("application/json");
-                    response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
-                    response.getWriter().write("{\"error\": \"Forbidden\", \"message\": \"Insufficient role\"}");
-                })
-            )
-            .authorizeHttpRequests(auth -> auth
-                .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll() // Public: login & registration
-                .requestMatchers("/ws/**").permitAll()       // Public: WebSocket STOMP handshake
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // API docs
-                .requestMatchers("/uploads/**").permitAll()  // Uploaded item photos
-                .requestMatchers("/error").permitAll()
-                .anyRequest().authenticated()                // All other endpoints require valid JWT
-            );
+                .cors(org.springframework.security.config.Customizer.withDefaults()) // Cross-Origin Resource Sharing
+                .csrf(csrf -> csrf.disable()) // CSRF disabled because we use stateless Bearer JWTs (no ambient cookies)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No HTTP
+                                                                                                              // sessions
+                                                                                                              // stored
+                                                                                                              // in
+                                                                                                              // memory
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"error\": \"Unauthorized\", \"message\": \""
+                                    + authException.getMessage() + "\"}");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_FORBIDDEN);
+                            response.getWriter()
+                                    .write("{\"error\": \"Forbidden\", \"message\": \"Insufficient role\"}");
+                        }))
+                .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll() // Public: login & registration
+                        .requestMatchers("/ws/**").permitAll() // Public: WebSocket STOMP handshake
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // API
+                                                                                                              // docs
+                        .requestMatchers("/uploads/**").permitAll() // Uploaded item photos
+                        .requestMatchers("/error").permitAll()
+                        .anyRequest().authenticated() // All other endpoints require valid JWT
+                );
 
         // Register custom JWT filter ahead of standard username/password filter
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -102,8 +108,7 @@ public class SecurityConfig {
                 "https://*.vercel.app",
                 "https://*.onrender.com",
                 "https://*.github.io",
-                "*"
-        ));
+                "*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

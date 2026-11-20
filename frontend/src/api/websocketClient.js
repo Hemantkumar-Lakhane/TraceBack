@@ -109,7 +109,7 @@ class WebSocketManager {
     if (this.client) {
       try {
         this.client.deactivate();
-      } catch (e) {}
+      } catch (e) { }
       this.connected = false;
       this.client = null;
       this.connectPromise = null;

@@ -13,10 +13,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        // In-memory broker: sends outgoing messages to subscribers on /topic (rooms) & /queue (user-specific)
+        // In-memory broker: sends outgoing messages to subscribers on /topic (rooms) &
+        // /queue (user-specific)
         config.enableSimpleBroker("/topic", "/queue");
-        
-        // Incoming messages from clients must start with /app (routed to @MessageMapping controllers)
+
+        // Incoming messages from clients must start with /app (routed to
+        // @MessageMapping controllers)
         config.setApplicationDestinationPrefixes("/app");
     }
 
@@ -32,4 +34,3 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setAllowedOriginPatterns("*");
     }
 }
-

@@ -18,27 +18,29 @@ public class ChatService {
     private final SimpMessagingTemplate messagingTemplate;
 
     public ChatService(ConversationRepository conversationRepository,
-                       MessageRepository messageRepository,
-                       NotificationRepository notificationRepository,
-                       @Autowired(required = false) SimpMessagingTemplate messagingTemplate) {
+            MessageRepository messageRepository,
+            NotificationRepository notificationRepository,
+            @Autowired(required = false) SimpMessagingTemplate messagingTemplate) {
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.notificationRepository = notificationRepository;
         this.messagingTemplate = messagingTemplate;
     }
 
-    // Fetch conversations accessible to the current user (only where user is loser or finder)
+    // Fetch conversations accessible to the current user (only where user is loser
+    // or finder)
     public List<Conversation> getUserConversations(User user) {
         return conversationRepository.findAll().stream()
                 .filter(c -> {
                     MatchRecord match = c.getMatchRecord();
-                    if (match == null) return false;
+                    if (match == null)
+                        return false;
                     Long lostUserId = match.getLostReport().getUser().getId();
                     Long foundUserId = match.getFoundReport().getUser().getId();
                     // ADMINs can view all; students only view their own matches
                     return user.getRole() == Role.ADMIN ||
-                           user.getId().equals(lostUserId) ||
-                           user.getId().equals(foundUserId);
+                            user.getId().equals(lostUserId) ||
+                            user.getId().equals(foundUserId);
                 })
                 .toList();
     }
@@ -79,7 +81,8 @@ public class ChatService {
             Notification notif = new Notification();
             notif.setUser(receiver);
             notif.setType("CHAT");
-            notif.setMessage("New message from " + sender.getName() + " regarding " + match.getLostReport().getItem().getName());
+            notif.setMessage(
+                    "New message from " + sender.getName() + " regarding " + match.getLostReport().getItem().getName());
             notif.setReferenceId(conversation.getId());
             Notification savedNotif = notificationRepository.save(notif);
 
@@ -87,23 +90,28 @@ public class ChatService {
             if (messagingTemplate != null) {
                 try {
                     messagingTemplate.convertAndSend("/topic/notifications/" + receiver.getId(), savedNotif);
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
         }
 
-        // 3. Broadcast the message live to all subscribers in this room (/topic/chat/{conversationId})
+        // 3. Broadcast the message live to all subscribers in this room
+        // (/topic/chat/{conversationId})
         if (messagingTemplate != null) {
             try {
                 messagingTemplate.convertAndSend("/topic/chat/" + conversationId, savedMessage);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         return savedMessage;
     }
 
-    // Role-based security guardrail: prevents students from reading rooms they do not own
+    // Role-based security guardrail: prevents students from reading rooms they do
+    // not own
     private void validateAccess(Conversation conversation, User user) {
-        if (user.getRole() == Role.ADMIN || user.getRole() == Role.SECURITY) return;
+        if (user.getRole() == Role.ADMIN || user.getRole() == Role.SECURITY)
+            return;
 
         MatchRecord match = conversation.getMatchRecord();
         Long lostUserId = match.getLostReport().getUser().getId();

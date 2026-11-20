@@ -12,8 +12,10 @@
 3. [Authentication, Authorization & Role-Based Access Control (RBAC)](#3-authentication-authorization--role-based-access-control-rbac)
 4. [Correlation Engine & Multi-Factor Matching Algorithm](#4-correlation-engine--multi-factor-matching-algorithm)
 5. [ACID Database Transactions & Physical Vault Custody Lifecycle](#5-acid-database-transactions--physical-vault-custody-lifecycle)
-6. [Exhaustive Codebase File-by-File Directory](#6-exhaustive-codebase-file-by-file-directory)
-7. [Master Viva Questions & Model Oral Defense Answers](#7-master-viva-questions--model-oral-defense-answers)
+6. [Database Architecture, Relational Schema & ORM Mapping](#6-database-architecture-relational-schema--orm-mapping)
+7. [Computer Networking & Protocol Stack (TCP, UDP, IP, Sockets & IDP)](#7-computer-networking--protocol-stack-tcp-udp-ip-sockets--idp)
+8. [Exhaustive Codebase File-by-File Directory](#8-exhaustive-codebase-file-by-file-directory)
+9. [Master Viva Questions & Model Oral Defense Answers](#9-master-viva-questions--model-oral-defense-answers)
 
 ---
 
@@ -210,9 +212,205 @@ public Claim updateClaimStatus(Long claimId, ClaimStatus newStatus, User reviewe
 
 ---
 
-## 6. Exhaustive Codebase File-by-File Directory
+## 6. Database Architecture, Relational Schema & ORM Mapping
 
-### 6.1 Backend Java Source Code (`com.traceback.api.*`)
+TraceBack uses **MySQL 8.0** with the **InnoDB** storage engine. Data mapping and object-relational abstraction are handled via **Spring Data JPA** and **Hibernate ORM**, with **HikariCP** high-performance connection pooling.
+
+### 6.1 Entity-Relationship (ER) Schema Diagram
+
+```mermaid
+erDiagram
+    USERS ||--o{ LOST_REPORTS : "submits"
+    USERS ||--o{ FOUND_REPORTS : "turns_in"
+    USERS ||--o{ CLAIMS : "files"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS ||--o{ MESSAGES : "sends"
+
+    ITEMS ||--|| LOST_REPORTS : "associated_with"
+    ITEMS ||--|| FOUND_REPORTS : "associated_with"
+
+    LOST_REPORTS ||--o{ MATCH_RECORDS : "matched_in"
+    FOUND_REPORTS ||--o{ MATCH_RECORDS : "matched_in"
+
+    MATCH_RECORDS ||--o| CONVERSATIONS : "initiates"
+    MATCH_RECORDS ||--o{ CLAIMS : "verified_by"
+
+    CONVERSATIONS ||--o{ MESSAGES : "contains"
+
+    USERS {
+        bigint id PK
+        varchar email UK
+        varchar password
+        varchar name
+        varchar prn
+        varchar role
+        datetime created_at
+    }
+
+    ITEMS {
+        bigint id PK
+        varchar name
+        varchar category
+        varchar brand
+        varchar color
+        text description
+        varchar image_url
+    }
+
+    LOST_REPORTS {
+        bigint id PK
+        bigint user_id FK
+        bigint item_id FK
+        varchar location
+        date date_lost
+        varchar status
+        datetime created_at
+    }
+
+    FOUND_REPORTS {
+        bigint id PK
+        bigint user_id FK
+        bigint item_id FK
+        varchar location
+        varchar storage_location
+        date date_found
+        varchar status
+        datetime created_at
+    }
+
+    MATCH_RECORDS {
+        bigint id PK
+        bigint lost_id FK
+        bigint found_id FK
+        int score
+        varchar status
+        datetime created_at
+    }
+
+    CLAIMS {
+        bigint id PK
+        bigint match_id FK
+        bigint claimant_id FK
+        text verification_data
+        varchar proof_file_url
+        date pickup_date
+        time pickup_time
+        varchar status
+        datetime created_at
+        datetime reviewed_at
+    }
+
+    CONVERSATIONS {
+        bigint id PK
+        bigint match_id FK
+        datetime created_at
+    }
+
+    MESSAGES {
+        bigint id PK
+        bigint conversation_id FK
+        bigint sender_id FK
+        text content
+        datetime timestamp
+    }
+
+    NOTIFICATIONS {
+        bigint id PK
+        bigint user_id FK
+        varchar type
+        varchar message
+        bigint reference_id
+        boolean is_read
+        datetime created_at
+    }
+```
+
+### 6.2 Relational Model Entities & JPA Annotations
+
+- **User Entity** $\to$ [`User.java`](backend/src/main/java/com/traceback/api/model/User.java): `@Entity`, `@Table(name = "users")`. Contains `@Column(unique = true)` on `email`, 8-digit `prn`, and `@Enumerated(EnumType.STRING)` for `Role`.
+- **Item Entity** $\to$ [`Item.java`](backend/src/main/java/com/traceback/api/model/Item.java): Physical property attributes (`category`, `brand`, `color`, `image_url`).
+- **Lost Report Entity** $\to$ [`LostReport.java`](backend/src/main/java/com/traceback/api/model/LostReport.java): `@ManyToOne` referencing `User` and `Item`, with `@Enumerated` status (`OPEN`, `MATCHED`, `RESOLVED`, `CLOSED`).
+- **Found Report Entity** $\to$ [`FoundReport.java`](backend/src/main/java/com/traceback/api/model/FoundReport.java): `@ManyToOne` referencing `User` and `Item`, holding physical locker custody string (`storage_location`), with status (`OPEN`, `MATCHED`, `CLAIM_REQUESTED`, `RETURNED`).
+- **Match Record Entity** $\to$ [`MatchRecord.java`](backend/src/main/java/com/traceback/api/model/MatchRecord.java): `@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"lost_id", "found_id"}))`. Prevents duplicate correlation rows. Stores correlation `score` (0–100) and `status`.
+- **Claim Entity** $\to$ [`Claim.java`](backend/src/main/java/com/traceback/api/model/Claim.java): `@ManyToOne` to `MatchRecord` and `User` (`claimant`). Holds student's secret markings (`verification_data`), proof document URL, pickup schedule, and status (`PENDING`, `APPROVED`, `REJECTED`).
+- **Conversation Entity** $\to$ [`Conversation.java`](backend/src/main/java/com/traceback/api/model/Conversation.java): Connects correlated match to live chat room. Holds `@OneToMany` relation to `Message`.
+- **Message Entity** $\to$ [`Message.java`](backend/src/main/java/com/traceback/api/model/Message.java): Text content, timestamp, foreign key to `Conversation` and `User` (sender).
+- **Notification Entity** $\to$ [`Notification.java`](backend/src/main/java/com/traceback/api/model/Notification.java): In-app push notification entity with read receipt boolean.
+
+### 6.3 Direct Concept-to-Code Mapping (All 9 JPA Repositories)
+
+- **User Repository** $\to$ [`UserRepository.java`](backend/src/main/java/com/traceback/api/repository/UserRepository.java): `findByEmail(email)`, `existsByEmail(email)`.
+- **Item Repository** $\to$ [`ItemRepository.java`](backend/src/main/java/com/traceback/api/repository/ItemRepository.java): Standard Spring Data CRUD operations for physical assets.
+- **Lost Report Repository** $\to$ [`LostReportRepository.java`](backend/src/main/java/com/traceback/api/repository/LostReportRepository.java): `findByStatus(LostReportStatus.OPEN)`, `findByUserId(userId)`.
+- **Found Report Repository** $\to$ [`FoundReportRepository.java`](backend/src/main/java/com/traceback/api/repository/FoundReportRepository.java): `findByStatus(FoundReportStatus.OPEN)`, `findByUserId(userId)`.
+- **Match Record Repository** $\to$ [`MatchRecordRepository.java`](backend/src/main/java/com/traceback/api/repository/MatchRecordRepository.java): `existsByLostReportIdAndFoundReportId()`, `findByLostReportUserId()`.
+- **Claim Repository** $\to$ [`ClaimRepository.java`](backend/src/main/java/com/traceback/api/repository/ClaimRepository.java): `findByStatus(ClaimStatus.PENDING)`, `findByClaimantId()`.
+- **Conversation Repository** $\to$ [`ConversationRepository.java`](backend/src/main/java/com/traceback/api/repository/ConversationRepository.java): `findByMatchRecordId()`.
+- **Message Repository** $\to$ [`MessageRepository.java`](backend/src/main/java/com/traceback/api/repository/MessageRepository.java): `findByConversationIdOrderByTimestampAsc()`.
+- **Notification Repository** $\to$ [`NotificationRepository.java`](backend/src/main/java/com/traceback/api/repository/NotificationRepository.java): `findByUserIdOrderByCreatedAtDesc()`, `countByUserIdAndIsReadFalse()`.
+
+### 6.4 Database Connection Pool & Configuration
+Located in: [`application.properties`](backend/src/main/resources/application.properties)
+- `spring.datasource.url`: MySQL JDBC connection endpoint (e.g. `jdbc:mysql://localhost:3306/traceback_db`).
+- `spring.jpa.hibernate.ddl-auto=update`: Auto-synchronizes Java entity classes with MySQL tables on startup.
+- **HikariCP Connection Pool:** Spring Boot default pool maintaining open TCP sockets to MySQL port 3306, reusing connections to avoid per-query TCP three-way handshake overhead.
+
+---
+
+## 7. Computer Networking & Protocol Stack (TCP, UDP, IP, Sockets & IDP)
+
+Understanding the network protocol stack is a standard focus of engineering oral examinations. TraceBack uses a layered client-server architecture running over the Internet Protocol suite.
+
+### 7.1 Protocol Stack Comparison in TraceBack
+
+| Layer (OSI / TCP-IP) | Protocol Used | Port / Address | Where in TraceBack? | Purpose & Characteristics |
+| :--- | :--- | :--- | :--- | :--- |
+| **Application Layer** | **HTTP/1.1 & HTTP/2** | `8080`, `5173`, `443` | Axios REST calls, Vite dev server, image uploads | Request-response protocol for authentication, reports, and static assets. |
+| **Application Layer** | **WebSocket (RFC 6455)** | `8080/ws` | [`WebSocketConfig.java`](backend/src/main/java/com/traceback/api/config/WebSocketConfig.java) | Upgraded bidirectional framing protocol over persistent TCP connection. |
+| **Application Layer** | **STOMP v1.2** | Sub-protocol | [`WebSocketChatController.java`](backend/src/main/java/com/traceback/api/controller/WebSocketChatController.java) | Text-oriented messaging protocol over WebSocket with publish-subscribe topics (`/topic`). |
+| **Application Layer** | **MySQL Wire Protocol** | `3306` | HikariCP JDBC DataSource | Binary database protocol for SQL query execution and transactional commits. |
+| **Transport Layer** | **TCP (Transmission Control Protocol)** | Ephemeral $\to$ `8080`, `5173`, `3306` | Operating System Network Stack | Reliable, connection-oriented byte stream using 3-way handshake (`SYN`, `SYN-ACK`, `ACK`), flow control, and retransmission. |
+| **Network Layer** | **IP (IPv4 / IPv6)** | `127.0.0.1`, LAN, Cloud IPs | Network Interface Card (NIC) | Logical host addressing, packet routing across campus LAN and public WAN. |
+| **Data Link / Physical**| **Ethernet / 802.11 Wi-Fi** | MAC Addresses | Campus Infrastructure (VIT Pune) | Physical transmission of electromagnetic or optical signals. |
+
+### 7.2 TCP vs. UDP: Why TCP is Strictly Required in TraceBack
+
+In viva examinations, examiners frequently ask: *"Where did you use TCP and UDP, and could you replace TCP with UDP for chat or reports?"*
+
+#### The Defense:
+1. **TCP (Transmission Control Protocol):**
+   - **Connection-Oriented:** Establishes a verified connection via a 3-way handshake before transmitting data.
+   - **Guaranteed In-Order Delivery:** Packets contain sequence numbers. If a packet is lost in transit, TCP automatically retransmits it.
+   - **Flow Control & Congestion Control:** Implements sliding window algorithms to avoid overwhelming the server or network.
+   - **Where TCP is used in TraceBack:**
+     * **REST APIs (Port 8080 & 5173):** All HTTP requests run on TCP.
+     * **Real-time Chat (WebSocket `/ws`):** WebSocket is an upgraded TCP socket. Messages arrive in the exact order typed.
+     * **Database Transactions (Port 3306):** MySQL queries run over TCP. A dropped packet in a transaction would cause corrupted state.
+2. **Why UDP (User Datagram Protocol) is NOT Used:**
+   - UDP is connectionless and unreliable ("fire-and-forget"). It has no acknowledgments, no sequence guarantees, and no retransmission of dropped packets.
+   - **Catastrophic in Property Recovery:** If UDP were used, a student's verification claim or a security officer's rejection note could be silently dropped by campus Wi-Fi without notification. A lost item could be mistakenly handed to an unauthorized person due to a lost message. Therefore, **TCP is mandatory**.
+
+### 7.3 IDP (Identity Provider & Identity Management Protocol)
+
+#### What is an IDP?
+An **Identity Provider (IDP)** is a centralized system entity that creates, maintains, and manages identity information for principals (users) while providing authentication services to relying applications.
+
+#### How TraceBack Acts as an Institutional IDP:
+1. **Centralized Credential Authority:**
+   - Validates student identity against campus credentials: institutional email (`@vit.edu`) and 8-digit Permanent Registration Numbers (PRNs e.g. `12110104`).
+   - Implemented in: [`CustomUserDetailsService.java`](backend/src/main/java/com/traceback/api/security/CustomUserDetailsService.java) and [`UserRepository.java`](backend/src/main/java/com/traceback/api/repository/UserRepository.java).
+2. **Cryptographic Assertion Token Generation (RFC 7519):**
+   - Instead of maintaining server-side state, TraceBack acts as an IDP by issuing signed **JWT assertions**.
+   - The token contains verified identity claims: User ID, subject email, and institutional role (`ROLE_STUDENT`, `ROLE_SECURITY`, `ROLE_ADMIN`).
+   - Implemented in: [`JwtTokenProvider.java`](backend/src/main/java/com/traceback/api/security/JwtTokenProvider.java).
+3. **Decoupled Identity Verification (Token Consumer):**
+   - Both the REST APIs and the WebSocket STOMP broker act as Relying Parties (Resource Servers). They do not re-query passwords; they verify the IDP's cryptographic signature via [`JwtAuthenticationFilter.java`](backend/src/main/java/com/traceback/api/security/JwtAuthenticationFilter.java).
+
+---
+
+## 8. Exhaustive Codebase File-by-File Directory
+
+### 8.1 Backend Java Source Code (`com.traceback.api.*`)
 
 - [`TraceBackApplication.java`](backend/src/main/java/com/traceback/api/TraceBackApplication.java) — Spring Boot entry point (`@SpringBootApplication`).
 - [`WebSocketConfig.java`](backend/src/main/java/com/traceback/api/config/WebSocketConfig.java) — STOMP `/ws` handshake and `/topic` broker config.
@@ -247,7 +445,7 @@ public Claim updateClaimStatus(Long claimId, ClaimStatus newStatus, User reviewe
 - [`Notification.java`](backend/src/main/java/com/traceback/api/model/Notification.java) — Alert notification entity.
 - [`Role.java`](backend/src/main/java/com/traceback/api/model/Role.java) — Enum: `STUDENT`, `SECURITY`, `ADMIN`.
 
-### 6.2 Frontend Source Code (`frontend/src/*`)
+### 8.2 Frontend Source Code (`frontend/src/*`)
 
 - [`App.jsx`](frontend/src/App.jsx) — Central route definitions and shell layout.
 - [`main.jsx`](frontend/src/main.jsx) — React 18 DOM mount entry point.
@@ -280,7 +478,7 @@ public Claim updateClaimStatus(Long claimId, ClaimStatus newStatus, User reviewe
 
 ---
 
-## 7. Master Viva Questions & Model Oral Defense Answers
+## 9. Master Viva Questions & Model Oral Defense Answers
 
 ### Q1: Why did you choose WebSockets over traditional HTTP Polling or Long-Polling for the Chat module?
 > **Model Answer:**  
@@ -324,6 +522,18 @@ public Claim updateClaimStatus(Long claimId, ClaimStatus newStatus, User reviewe
 ### Q8: What happens if the backend server is temporarily down or in a sleeping state on a free-tier host?
 > **Model Answer:**  
 > "We engineered a dual-mode resilient architecture. In `AuthContext.jsx`, `claimService.js`, and `chatService.js`, the frontend attempts live API calls first. If the remote backend is unreachable, it gracefully falls back to an internal institutional state machine backed by `localStorage` (`tb_claims_store` and `tb_chat_msgs_{id}`). It dispatches DOM events like `tb_claims_updated` across open tabs so claim evictions, badge decrements, and chat messages continue functioning seamlessly without blank screen crashes."
+
+### Q9: Where exactly is TCP used in this project, and could you use UDP instead?
+> **Model Answer:**  
+> "TCP is used at three vital network boundaries in TraceBack:  
+> 1. In REST communication between React and Spring Boot over port 8080 (3-way handshake `SYN`, `SYN-ACK`, `ACK`).  
+> 2. In real-time chat over persistent WebSocket connections (`/ws`) over port 8080.  
+> 3. In the database connection pool (HikariCP) connecting Spring Boot to MySQL on port 3306.  
+> We cannot use UDP because UDP is connectionless and does not guarantee packet arrival or ordering. In property recovery and custody handover, dropping a single chat packet or claim update could result in wrongful ownership transfer or lost audit trails. TCP guarantees error-checked, in-order byte delivery."
+
+### Q10: What is an Identity Provider (IDP) and how does TraceBack implement it?
+> **Model Answer:**  
+> "An Identity Provider (IDP) is a centralized authentication system that validates user credentials and issues cryptographic identity assertions. TraceBack acts as an institutional IDP for VIT Pune: it authenticates student emails and 8-digit PRNs via `CustomUserDetailsService.java`, and then issues signed JSON Web Tokens (JWT) using HMAC-SHA256 in `JwtTokenProvider.java`. These tokens contain encrypted claims (User ID, Email, Role) that allow both our REST controllers and WebSocket broker to authorize actions statelessly."
 
 ---
 
